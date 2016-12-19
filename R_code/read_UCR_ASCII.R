@@ -1,4 +1,4 @@
-setwd("C:/Users/user/Dropbox/R_project/crime/UCR_offenses")
+setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/UCR_offenses")
 library(readr)
 library(stringr)
 library(dplyr)
@@ -29,8 +29,8 @@ for (i in 1961:2014) {
 }
 ucr <- year_fixer(ucr)
 ucr <- ucr[!is.na(ucr$year),]
-setwd("C:/Users/user/Dropbox/R_project/crime/ucr_data")
-load("UCR_2015.rda")
+load(paste0("C:/Users/user/Dropbox/R_project/crime_data/raw_data/",
+            "UCR_offenses/UCR_2015.rda"))
 UCR_2015 <- UCR_2015[, c(3, 5:65)]
 ucr <- plyr::rbind.fill(ucr, UCR_2015)
 # Makes dummy rows
@@ -46,7 +46,7 @@ all.years <- merge(all.years, ucr, by = c("ORI", "year"),
                    all = TRUE)
 ucr_offenses <- all.years
 
-setwd("C:/Users/user/Dropbox/crime_data")
+setwd("C:/Users/user/Dropbox/R_project/crime_data")
 save(ucr_offenses, file = "ucr_offenses.rda", compress = "xz")
 
 

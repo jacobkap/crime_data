@@ -1,4 +1,4 @@
-setwd("C:/Users/user/Dropbox/R_project/crime/leoka")
+setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/leoka")
 devtools::install_github("jacobkap/spssSetup")
 library(spssSetup)
 
@@ -22,7 +22,8 @@ for (i in 1976:2014) {
 
 leoka$total_officers <- leoka$male_officers + leoka$female_officers
 leoka$total_civilians <- leoka$male_civilians + leoka$female_civilians
-load("C:/Users/user/Dropbox/R_project/crime/UCR_2015/leoka_2015.rda")
+load(paste0("C:/Users/user/Dropbox/R_project/crime_data/raw_data/",
+            "leoka/leoka_2015.rda"))
 leoka <- plyr::rbind.fill(leoka, leoka_2015)
 leoka$officers_per_1000_pop <- (leoka$total_officers /
                                 leoka$population) * 1000
@@ -43,7 +44,7 @@ for (i in 3:ncol(leoka)) {
 leoka$total_civilians[is.na(leoka$total_employees)] <- NA
 leoka$total_officers[is.na(leoka$total_employees)] <- NA
 leoka <- year_fixer(leoka)
-setwd("C:/Users/user/Dropbox/crime_data")
+setwd("C:/Users/user/Dropbox/R_project/crime_data")
 save(leoka, file = "leoka.rda", compress = "xz")
 
 leoka_name_fixer <- function(dataset) {

@@ -1,4 +1,4 @@
-setwd("C:/Users/user/Dropbox/R_project/crime/crosswalk")
+setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/crosswalk")
 devtools::install_github("jacobkap/spssSetup")
 library(spssSetup)
 
@@ -61,7 +61,7 @@ for (i in 1:ncol(crosswalk)) {
 
 }
 
-setwd("C:/Users/user/Dropbox/crime_data")
+setwd("C:/Users/user/Dropbox/R_project/crime_data")
 save(crosswalk, file = "crosswalk.rda", compress = "xz")
 
 
@@ -84,9 +84,3 @@ tolower_all <- function(dataset) {
   return(dataset)
 }
 
-load(paste0("C:/Users/user/Dropbox/Consent Decrees/",
-            "consentDecree/clean_data/offenses.rda"))
-ucr <- dplyr::left_join(ucr, crosswalk, by = "ORI")
-setwd("C:/Users/user/Dropbox/mayors")
-save(ucr, file = "ucr.rda")
-write.csv(ucr, file = "ucr.csv")

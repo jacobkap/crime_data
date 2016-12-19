@@ -1,4 +1,4 @@
-setwd("C:/Users/user/Dropbox/R_project/crime/SHR")
+setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/SHR")
 devtools::install_github("jacobkap/spssSetup")
 library(spssSetup)
 
@@ -6,19 +6,6 @@ system.time(shr <- spssSetup(dataset_name = "1975_SHR.txt",
                                setup_file_name = "1975_SHR.sps",
                                smart_col_class = TRUE))
 shr <- shr_cleaner(shr)
-
-#
-system.time(test <- spssSetup(dataset_name = "1987_SHR.txt",
-                              setup_file_name = "1987_SHR.sps",
-                              smart_col_class = TRUE))
-test <- shr_cleaner(test)
-
-system.time(test2 <- spssSetup(dataset_name = "2010_SHR.txt",
-                              setup_file_name = "2010_SHR.sps",
-                              smart_col_class = TRUE))
-test2 <- shr_cleaner(test2)
-test2 <- shr_subsetter(test2)
-test3 <- plyr::rbind.fill(test, test2)
 
 for (i in 1976:2014) {
   timeStart <- proc.time()
@@ -39,7 +26,7 @@ for (i in 1976:2014) {
 supplementary_homicide <- shr
 library(dplyr)
 supplementary_homicide <- shr_subsetter(supplementary_homicide)
-setwd("C:/Users/user/Dropbox/crime_data")
+setwd("C:/Users/user/Dropbox/R_project/crime_data")
 save(supplementary_homicide, file = "supplementary_homicide.rda",
      compress = "xz")
 
