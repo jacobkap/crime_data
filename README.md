@@ -15,4 +15,4 @@ This will be an ongoing process to create a single dataset for research related 
 If you have any questions, find any bugs, or have any data to offer, my email is jacobkap@sas.upenn.edu.
 
 
-The raw data can be found on Dropbox. https://www.dropbox.com/sh/9jy8ds057h7m00d/AACC082n_hahaKooNnxuJBs7a?dl=0
+For file types other than R (.rda), please use the Dropbox link to download the files. The cleaned files are in the "clean_files" folder. The raw data I used (from ICPSR) to create the datasets are also on Dropbox. https://www.dropbox.com/sh/9jy8ds057h7m00d/AACC082n_hahaKooNnxuJBs7a?dl=0
