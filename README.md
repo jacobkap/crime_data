@@ -11,6 +11,8 @@ This will be an ongoing process to create a single dataset for research related 
 
 4. police_agency_identifier_crosswalk - Law Enforcement Agency Identifiers Crosswalk Series (http://www.icpsr.umich.edu/icpsrweb/NACJD/series/366)
 
+5. master_column_dictionary - Explains which dataset each of the columns in master_crime is from. 
+
 
 If you have any questions, find any bugs, or have any data to offer, my email is jacobkap@sas.upenn.edu.
 
