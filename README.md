@@ -2,19 +2,22 @@ Crime data from the UCR and other sources.
 
 This will be an ongoing process to create a single dataset for research related to crime. The single data is called "master\_crime". The datasets currently included here are:
 
-1.  ucr\_offenses\_clearances - UCR Offenses Known and Clearances by Arrest 1960-2015 <http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57>
+1.  ucr\_offenses\_clearances - [UCR Offenses Known and Clearances by Arrest 1960-2015](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57)
+
     This dataset contains:
     -   Yearly counts for crimes committed (aggregated from monthly count)
     -   Yearly counts for crimes cleared (aggregated from monthly count)
 
-2.  ucr\_police\_employee\_leoka - UCR Police Employee (LEOKA) 1975-2015 <http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57>
+2.  ucr\_police\_employee\_leoka - [UCR Police Employee (LEOKA) 1975-2015](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57)
+
     This dataset contains:
     -   The number of male/female officers and civilian employees
     -   Number of male/female officers per 1,000 population
     -   Number of total officers per 1,000 population
     -   Number of total civilian employees per 1,000 population
 
-3.  ucr\_supplementary\_homicide\_report - UCR Supplementary Homicide Reports 1975-2014 <http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57>
+3.  ucr\_supplementary\_homicide\_report - \[UCR Supplementary Homicide Reports 1975-2014\] (<http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57>)
+
     This dataset contains:
     -   Details on homicide victims, offenders, and circumstances
     -   Age, race, and gender of homicide victims
@@ -27,7 +30,8 @@ This will be an ongoing process to create a single dataset for research related 
     -   Number of murders
     -   This is different than total homicides. Total homicides includes all instances reported in this dataset. Total murders excludes negligent use of a firearm (e.g. hunting accident), shootings by very young children or felons who are killed by police officers or citizens.
 
-4.  police\_agency\_identifier\_crosswalk - Law Enforcement Agency Identifiers Crosswalk Series <http://www.icpsr.umich.edu/icpsrweb/NACJD/series/366>
+4.  police\_agency\_identifier\_crosswalk - [Law Enforcement Agency Identifiers Crosswalk Series](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/366)
+
     This dataset contains:
     -   The name of the agency, its county and census name, address and longitude/latitude.
     -   FIPS codes, census codes, csllea codes, and lemas codes to connect to various datasets
