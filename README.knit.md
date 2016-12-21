@@ -1,7 +1,7 @@
 ---
 title: "Crime Data"
 author: "Jacob Kaplan"
-date: "`r Sys.Date()`"
+date: "2016-12-20"
 output:  
   md_document:
     variant: markdown_github
