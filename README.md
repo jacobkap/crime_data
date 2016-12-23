@@ -14,7 +14,7 @@ This will be an ongoing process to create a single dataset for research related 
     -   Number of total officers per 1,000 population
     -   Number of total civilian employees per 1,000 population
 
-3.  ucr\_supplementary\_homicide\_report - \[UCR Supplementary Homicide Reports 1975-2014\] (<http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57>)
+3.  ucr\_supplementary\_homicide\_report - [UCR Supplementary Homicide Reports 1975-2014](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57)
 
     This dataset contains:
     -   Details on homicide victims, offenders, and circumstances
