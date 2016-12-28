@@ -1,5 +1,5 @@
-# This data will read and clean the FBI's UCR data from 2015
-setwd("C:/Users/user/Dropbox/R_project/crime/UCR_2015")
+# This code will read and clean the FBI's UCR data from 2015
+setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/UCR_offenses")
 
 offenses_2015 <- readLines("offenses2015.txt")
 # Keeps only rows with agency info, and crimes/clearances countys
@@ -43,7 +43,7 @@ for (i in seq(1, nrow(offenses_2015), 5)) {
 }
 offenses_2015_final <- offenses_2015_final[-1,]
 offenses_2015_final$year <- 2015
-# Checki  ng that it worked
+# Checking that it worked
 for (i in sample(1:nrow(offenses_2015_final), 100)) {
   Sys.sleep(0.5)
   print(offenses_2015_final[i,])

@@ -1,3 +1,8 @@
+# Thank you to Daniel Goldberg for helping
+# me with the supplemental homicide report
+# categories and with ideas about this
+# dataset in general.
+
 # Combine files into master file
 
 setwd("C:/Users/user/Dropbox/R_project/crime_data")
@@ -6,6 +11,10 @@ load("ucr_police_employee_leoka.rda")
 load("ucr_supplementary_homicide_report.rda")
 load("ucr_offenses_clearances.rda")
 
+ucr_supplementary_homicide_report$year <-
+  as.numeric(ucr_supplementary_homicide_report$year)
+ucr_police_employee_leoka$year <-
+  as.numeric(ucr_police_employee_leoka$year)
 
 master_crime <- dplyr::left_join(ucr_offenses_clearances,
                                  police_agency_identifier_crosswalk)

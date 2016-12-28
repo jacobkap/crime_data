@@ -31,7 +31,7 @@ ucr <- year_fixer(ucr)
 ucr <- ucr[!is.na(ucr$year),]
 load(paste0("C:/Users/user/Dropbox/R_project/crime_data/raw_data/",
             "UCR_offenses/UCR_2015.rda"))
-UCR_2015 <- UCR_2015[, c(3, 5:65)]
+UCR_2015 <- UCR_2015[, c(3:4, 5:65)]
 ucr <- plyr::rbind.fill(ucr, UCR_2015)
 # Makes dummy rows
 all.years <- ucr[!duplicated(ucr$ORI),]
@@ -45,9 +45,13 @@ all.years$year <- ucr_years$year
 all.years <- merge(all.years, ucr, by = c("ORI", "year"),
                    all = TRUE)
 ucr_offenses <- all.years
+ucr_offenses_clearances <- ucr_offenses[ucr_offenses$ORI != "9999999",]
+ucr_offenses_clearances$population <-
+          as.numeric(ucr_offenses_clearances$population)
 
 setwd("C:/Users/user/Dropbox/R_project/crime_data")
-save(ucr_offenses, file = "ucr_offenses.rda", compress = "xz")
+save(ucr_offenses_clearances, file = "ucr_offenses.rda",
+     compress = "xz")
 
 
 ucrchecking <- ucr[,c(2, 4, 7:8,5, 37, 10, 12, 15, 26, 38, 27, 31:32)]
