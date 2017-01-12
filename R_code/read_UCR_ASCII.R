@@ -50,7 +50,7 @@ ucr_offenses_clearances$population <-
           as.numeric(ucr_offenses_clearances$population)
 
 setwd("C:/Users/user/Dropbox/R_project/crime_data")
-save(ucr_offenses_clearances, file = "ucr_offenses.rda",
+save(ucr_offenses_clearances, file = "ucr_offenses_clearances.rda",
      compress = "xz")
 
 

@@ -5,6 +5,7 @@ This will be an ongoing process to create a single dataset for research related 
     This dataset contains:
     -   Yearly counts for crimes committed (aggregated from monthly count)
     -   Yearly counts for crimes cleared (aggregated from monthly count)
+    -   WARNING: The UCR does not differentiate between true zeroes (no crime committed) and missing value zeroes. All missing values are labeled as a 0.
 
 2.  ucr\_police\_employee\_leoka - [UCR Police Employee (LEOKA) 1975-2015](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57)
 
