@@ -1,4 +1,4 @@
-This will be an ongoing process to create a single dataset for research related to crime. The single data is called "master\_crime". The datasets currently included here are:
+This will be an ongoing process to create a single dataset for research related to crime. Thank you to Daniel Goldberg for assistance with this project. The single data is called "master\_crime". The datasets currently included here are:
 
 1.  ucr\_offenses\_clearances - [UCR Offenses Known and Clearances by Arrest 1960-2015](http://www.icpsr.umich.edu/icpsrweb/NACJD/series/57)
 
