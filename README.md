@@ -1,4 +1,4 @@
-For file types other than R (.rda), please use the Dropbox link to download the files. The cleaned files are in the "clean\_files" folder. The raw data I used (from ICPSR) to create the datasets are also on Dropbox. The code used to create the cleaned files are in the "R\_code" folder. [Dropbox link](https://www.dropbox.com/sh/9jy8ds057h7m00d/AACC082n_hahaKooNnxuJBs7a?dl=0)
+To download the files please use the Dropbox link. The cleaned files are in the "clean\_data" folder. The raw data I used (from ICPSR) to create the datasets are also on Dropbox in the "raw\_data" folder. The code used to create the cleaned files are in the "R\_code" folder. [Dropbox link](https://www.dropbox.com/sh/9jy8ds057h7m00d/AACC082n_hahaKooNnxuJBs7a?dl=0)
 
 This will be an ongoing process to create a single dataset for research related to crime. Thank you to Daniel Goldberg for assistance with this project. The single data is called "master\_crime". The datasets currently included here are:
 
@@ -43,5 +43,3 @@ This will be an ongoing process to create a single dataset for research related 
 5.  master\_column\_dictionary - Explains which dataset each of the columns in master\_crime is from.
 
 If you have any questions, find any bugs, or have any data to offer, my email is <jacobkap@sas.upenn.edu>.
-
-For file types other than R (.rda), please use the Dropbox link to download the files. The cleaned files are in the "clean\_files" folder. The raw data I used (from ICPSR) to create the datasets are also on Dropbox. The code used to create the cleaned files are in the "R\_code" folder. [Dropbox link](https://www.dropbox.com/sh/9jy8ds057h7m00d/AACC082n_hahaKooNnxuJBs7a?dl=0)
