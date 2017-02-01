@@ -60,9 +60,10 @@ for (i in 1:ncol(crosswalk)) {
   crosswalk[,i][crosswalk[,i] == "not in lemas files"] <- NA
 
 }
-
-setwd("C:/Users/user/Dropbox/R_project/crime_data")
-save(crosswalk, file = "crosswalk.rda", compress = "xz")
+police_agency_identifier_crosswalk <- crosswalk
+setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/R_files")
+save(police_agency_identifier_crosswalk,
+     file = "police_agency_identifier_crosswalk.rda")
 
 
 

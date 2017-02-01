@@ -5,7 +5,7 @@
 
 # Combine files into master file
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data")
+setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/R_files")
 load("police_agency_identifier_crosswalk.rda")
 load("ucr_police_employee_leoka.rda")
 load("ucr_supplementary_homicide_report.rda")
@@ -25,7 +25,7 @@ master_crime <- dplyr::left_join(master_crime,
 rownames(master_crime) <- 1:nrow(master_crime)
 master_crime <- master_crime[, c(1:3, 66:103, 64:65, 4:63, 104:147)]
 master_crime <- dplyr::arrange(master_crime, year, ORI)
-save(master_crime, file = "master_crime.rda", compress = "xz")
+save(master_crime, file = "master_crime.rda")
 
 master_column_dictionary <- data.frame(column = "1-27",
                   source = "police_agency_identifier_crosswalk")
@@ -40,9 +40,9 @@ master_column_dictionary <- rbind(master_column_dictionary,
                                   offenses_column,
                                   shr_column)
 master_column_dictionary$info <- ""
-master_column_dictionary$info[1] <- "Column dictionary for UCR master dataset"
-save(master_column_dictionary, file = "master_column_dictionary.rda",
-     compress = "xz")
+master_column_dictionary$info[1] <-
+  "Column dictionary for UCR master dataset"
+save(master_column_dictionary, file = "master_column_dictionary.rda")
 
 
 # Save all as compress excel files
@@ -53,7 +53,8 @@ write.csv(master_column_dictionary,
           file = "master_column_dictionary.csv")
 write.csv(ucr_supplementary_homicide_report,
           file = "ucr_supplementary_homicide_report.csv")
-write.csv(ucr_police_employee_leoka, file = "ucr_police_employee_leoka.csv")
+write.csv(ucr_police_employee_leoka,
+          file = "ucr_police_employee_leoka.csv")
 write.csv(ucr_offenses_clearances,
           file = "ucr_offenses_clearances.csv")
 write.csv(master_crime,

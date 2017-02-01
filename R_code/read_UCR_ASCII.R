@@ -45,13 +45,14 @@ all.years$year <- ucr_years$year
 all.years <- merge(all.years, ucr, by = c("ORI", "year"),
                    all = TRUE)
 ucr_offenses <- all.years
-ucr_offenses_clearances <- ucr_offenses[ucr_offenses$ORI != "9999999",]
+ucr_offenses_clearances <- ucr_offenses[grep("99999|NANA",
+                           ucr_offenses$ORI,
+                           invert = TRUE, ignore.case = TRUE),]
 ucr_offenses_clearances$population <-
           as.numeric(ucr_offenses_clearances$population)
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data")
-save(ucr_offenses_clearances, file = "ucr_offenses_clearances.rda",
-     compress = "xz")
+setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/R_files")
+save(ucr_offenses_clearances, file = "ucr_offenses_clearances.rda")
 
 
 ucrchecking <- ucr[,c(2, 4, 7:8,5, 37, 10, 12, 15, 26, 38, 27, 31:32)]
@@ -102,7 +103,7 @@ offenses_cleaner <- function(dataset_name,
   dataset$temp_murder <- rowSums(dataset[,
            grep("act_num_murder|off_murder", names(dataset))]) # Murder
   dataset$temp_manslaughter <- rowSums(dataset[,
-           grep("act_num_manslghtr|off_mansau", names(dataset))]) # Manslaughter
+           grep("act_num_manslghtr|off_mansau", names(dataset))])# Manslaughter
   dataset$temp_rape <- rowSums(dataset[,
            grep("act_num_rape_totl|off_total_rape", names(dataset))]) # Rape
   dataset$temp_forcible_rape <- rowSums(dataset[,
@@ -174,13 +175,13 @@ offenses_cleaner <- function(dataset_name,
   dataset$temp_auto_theft <- rowSums(dataset[,
            grep("act_auto|num_auto_theft", names(dataset))]) # Auto Theft
   dataset$temp_truckbus_theft <- rowSums(dataset[,
-   grep("act_trckbus|off_truck_and_van|num_truck_theft|act_truckvan_thf|act_trck",
+grep("act_trckbus|off_truck_and_van|num_truck_theft|act_truckvan_thf|act_trck",
                 names(dataset))]) # Truck/bus Theft
   dataset$temp_other_vehicle_theft <- rowSums(dataset[,
            grep("act_oth_vhc|off_other_vehicle",
                 names(dataset))]) # Other vehicle Theft
   dataset$temp_all_fields <- rowSums(dataset[,
-          grep("act_all_fields|off_grand_total|num_all_offncs|act_all_offenses",
+grep("act_all_fields|off_grand_total|num_all_offncs|act_all_offenses",
                names(dataset))]) # All Fields
   dataset$temp_violent_crime <- dataset$temp_murder +
     dataset$temp_rape +
@@ -193,7 +194,8 @@ offenses_cleaner <- function(dataset_name,
                          dataset$temp_property_crime
 
 
-  # Make yearly total columns - cleared number of offenses (Total cleared count)
+  # Make yearly total columns - cleared number of offenses
+  # (Total cleared count)
 
   dataset$temp_murder_cleared <- rowSums(dataset[,
              grep("tot_clr_murder|arst_murder",
@@ -251,8 +253,10 @@ offenses_cleaner <- function(dataset_name,
            grep("tot_clr_simple|arst_simple_aslt|clr_simpl_assaul",
                 names(dataset))]) # Simple Assault
   # cleared
-  dataset$temp_aggravated_assault_cleared <- dataset$temp_gun_assault_cleared +
-    dataset$temp_knife_assault_cleared + dataset$temp_unarmed_assault_cleared +
+  dataset$temp_aggravated_assault_cleared <-
+    dataset$temp_gun_assault_cleared +
+    dataset$temp_knife_assault_cleared +
+    dataset$temp_unarmed_assault_cleared +
     dataset$temp_other_weapon_assault_cleared # Aggravated Assault cleared
   dataset$temp_burglary_cleared <- rowSums(dataset[,
           grep("tot_clr_brg|arst_total_burg|clr_burg_total",

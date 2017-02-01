@@ -44,8 +44,14 @@ for (i in 3:ncol(leoka)) {
 leoka$total_civilians[is.na(leoka$total_employees)] <- NA
 leoka$total_officers[is.na(leoka$total_employees)] <- NA
 leoka <- year_fixer(leoka)
-setwd("C:/Users/user/Dropbox/R_project/crime_data")
-save(leoka, file = "leoka.rda", compress = "xz")
+leoka <- leoka[grep("99999|NANA",
+                    leoka$ORI,
+                    invert = TRUE,
+                    ignore.case = TRUE),]
+setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/R_files")
+ucr_police_employee_leoka <- leoka
+save(ucr_police_employee_leoka,
+     file = "ucr_police_employee_leoka.rda")
 
 leoka_name_fixer <- function(dataset) {
 

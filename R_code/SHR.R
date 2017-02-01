@@ -23,12 +23,13 @@ for (i in 1976:2014) {
                 round(as.numeric((timeEnd - timeStart))[3], 5),
                 "seconds elapsed", sep = " "))
 }
-supplementary_homicide <- shr
+ucr_supplementary_homicide_report <- shr
 library(dplyr)
-supplementary_homicide <- shr_subsetter(supplementary_homicide)
-setwd("C:/Users/user/Dropbox/R_project/crime_data")
-save(supplementary_homicide, file = "supplementary_homicide.rda",
-     compress = "xz")
+ucr_supplementary_homicide_report <-
+     shr_subsetter(ucr_supplementary_homicide_report)
+setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/R_files")
+save(ucr_supplementary_homicide_report,
+     file = "ucr_supplementary_homicide_report.rda")
 
 shr_cleaner <- function(dataset) {
 
