@@ -37,7 +37,7 @@ library(dplyr)
 # 12. Window Recovered Property Segment
 # 13. Window Arrestee Segment
 
-devtools::install_github("jacobkap/spssSetup")
+devtools::install_github("jacobkap/asciiReader")
 library(spssSetup)
 
 system.time(offenses <- spssSetup(dataset_name = "test.txt",
