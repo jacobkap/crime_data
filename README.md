@@ -19,4 +19,4 @@ Thank you to Daniel Goldberg for assistance with this project. Follow the link t
 
 3.  [Uniform Crime Reporting Program Data: National Incident-Based Reporting System, 2015](https://www.openicpsr.org/openicpsr/project/100713/version/V1/view)
 
-If you have any questions, find any bugs, or have any data to offer, my email is <jacobkap@sas.upenn.edu>.
+If you have any questions, find any bugs, or have any data to offer, my email is <jkkaplan6@gmail.com>.

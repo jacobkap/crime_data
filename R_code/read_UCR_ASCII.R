@@ -2,12 +2,11 @@ setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/UCR_offenses")
 library(readr)
 library(stringr)
 library(dplyr)
-devtools::install_github("jacobkap/spssSetup")
-library(spssSetup)
+devtools::install_github("jacobkap/asciiSetupReader")
+library(asciiSetupReader)
 
-system.time(x <- spssSetup(dataset_name = "1960_offenses.txt",
-               setup_file_name = "1960_offenses.sps",
-               smart_col_class = TRUE))
+system.time(ucr1960 <- spss_ascii_reader(dataset_name = "1960_offenses.txt",
+               sps_name = "1960_offenses.sps"))
 
 system.time(ucr <- offenses_cleaner(dataset_name = "1960_offenses.txt",
                         setup_file_name = "1960_offenses.sps",
