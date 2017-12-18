@@ -51,7 +51,7 @@ saving_yearly <- function() {
   UCR_offenses_known_yearly_1960_2016 <- ucr
 
   Write(codebook(UCR_offenses_known_yearly_1960_2016),
-        file = paste0("UCR_offenses_known_yearly_1960_2016.txt"))
+        file = paste0("UCR_offenses_known_yearly_1960_2016_codebook.txt"))
 
   save(UCR_offenses_known_yearly_1960_2016,
        file = "UCR_offenses_known_yearly_1960_2016.rda")
