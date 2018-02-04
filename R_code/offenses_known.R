@@ -27,13 +27,17 @@ for (year in 1960:2016) {
 
 
   do.call("write_dta", list(as.name(paste0("UCR_offenses_known_", year)),
-                            path = paste0("UCR_offenses_known_monthly_", year, ".dta")))
+                            path = paste0("UCR_offenses_known_monthly_",
+                                          year, ".dta")))
   do.call("write_feather", list(as.name(paste0("UCR_offenses_known_", year)),
-                            path = paste0("UCR_offenses_known_monthly_", year, ".feather")))
+                            path = paste0("UCR_offenses_known_monthly_",
+                                          year, ".feather")))
   do.call("write_csv", list(as.name(paste0("UCR_offenses_known_", year)),
-                                path = paste0("UCR_offenses_known_monthly_", year, ".csv")))
+                                path = paste0("UCR_offenses_known_monthly_",
+                                              year, ".csv")))
   try(do.call("write_sav", list(as.name(paste0("UCR_offenses_known_", year)),
-                            path = paste0("UCR_offenses_known_monthly_", year, ".sav"))))
+                            path = paste0("UCR_offenses_known_monthly_",
+                                          year, ".sav"))))
   # do.call("write_sas", list(as.name(paste0("UCR_offenses_", year)),
   #                           path = paste0("UCR_offenses_sas_", year, ".sas")))
   do.call("rm", list(as.name(paste0("UCR_offenses_known_", year))))
@@ -51,7 +55,8 @@ save_as_zip <- function() {
     zip_files <- all_files[grep(file_ext[i], all_files)]
     zip_files <- c(zip_files, codebooks)
 
-    zip::zip(zipfile = paste0("UCR_offenses_known_monthly_1960_2016_", file_ext[i], ".zip"),
+    zip::zip(zipfile = paste0("UCR_offenses_known_monthly_1960_2016_",
+                              file_ext[i], ".zip"),
                  files = zip_files)
   }
 }
