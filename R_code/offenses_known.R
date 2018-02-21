@@ -10,6 +10,21 @@ library(zip)
 
 
 # Save in various data formats --------------------------------------------
+setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/UCR_offenses")
+for (year in 1960:2016) {
+
+  temp <- spss_ascii_reader(dataset_name = paste0(year, "_UCR_offenses_known.txt"),
+                            sps_name = paste0(year, "_UCR_offenses_known.sps"))
+  temp <- cleaning_UCR(temp)
+  load(paste0("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known/UCR_offenses_known_monthly_",
+               year, ".rda"))
+  message(paste0(year, "      ",
+                 all.equal(temp, get(paste0("UCR_offenses_known_", year)),
+                           check.attributes = FALSE)))
+  rm(temp); do.call(rm, list(paste0("UCR_offenses_known_", year))); gc()
+  Sys.sleep(3)
+}
+
 
 for (year in 1960:2016) {
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/UCR_offenses")

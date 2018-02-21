@@ -239,3 +239,37 @@ for (i in 1975:2015) {
 }
 
 
+leoka <- leoka[leoka$YEAR %in% 1990:2015, ]
+leoka$GEOGRAPHIC_DIVISION <- NULL
+leoka$GROUP <- NULL
+leoka$MSA <- NULL
+leoka$AGENCY_NAME <- NULL
+leoka$state_abb <- substr(leoka$ORI_CODE, 1, 2)
+unique(leoka$state_abb)
+leoka_agg <- aggregate(cbind(MALE_EMPLOYEES_OFFICERS, MALE_EMPLOYEES_CIVILIANS,
+                             MALE_EMPLOYEES_TOT, FEMALE_EMPLOYEES_OFFICERS,
+                             FEMALE_EMPLOYEES_CIVILIANS, FEMALE_EMPLOYEES_TOT,
+                             TOT_EMPLOYEES) ~ state_abb + YEAR, data = leoka,
+                       FUN = sum)
+leoka_agg$total_officers <- leoka_agg$MALE_EMPLOYEES_OFFICERS +
+  leoka_agg$FEMALE_EMPLOYEES_OFFICERS
+leoka_agg$YEAR <- as.numeric(as.character(leoka_agg$YEAR))
+names(leoka_agg)[3:10] <- paste0("leoka_", names(leoka_agg)[3:10])
+names(leoka_agg) <- tolower(names(leoka_agg))
+leoka_agg$state_abb <- gsub("NB", "NE", leoka_agg$state_abb)
+leoka_agg <- leoka_agg[!leoka_agg$state_abb %in% c("VI", "CZ", "GM", "PR"), ]
+
+setwd("C:/Users/user/Dropbox/R_project/aspep/data/state_and_local")
+aspep <- readr::read_csv("aspep_1993_2016_state_and_local.csv")
+aspep <- aspep[aspep$government_function %in% "police protection - officers", ]
+aspep <- aspep[, c("state", "year", "full_time_equivalent_employees",
+                   "full_time_employees",
+                   "part_time_employees")]
+names(aspep)[3:5] <- paste0("aspep_police_", names(aspep)[3:5])
+names(aspep)[1] <- "state_abb"
+names(aspep) <- tolower(names(aspep))
+
+
+leoka_aspep <- dplyr::left_join(leoka_agg, aspep)
+leoka_aspep <- leoka_aspep[order(leoka_aspep$year, leoka_aspep$state_abb), ]
+readr::write_csv(leoka_aspep, "leoka_aspep.csv")
