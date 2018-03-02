@@ -1,6 +1,7 @@
 Thank you to Daniel Goldberg for assistance with this project. Follow the link to the openICPSR page to download.
 
-1.  [Uniform Crime Reporting Program Data: Offenses Known and Clearances by Arrest, 1960-2016](https://www.openicpsr.org/openicpsr/project/100707/version/V2/view/)
+1.  [Uniform Crime Reporting Program Data: Offenses Known and Clearances by Arrest, 1960-2016](https://www.openicpsr.org/openicpsr/project/100707/version/V3/view/)
+
 
     These datasets contains:
     -  Monthly counts for crimes committed, declared unfounded, and cleared
@@ -17,6 +18,5 @@ Thank you to Daniel Goldberg for assistance with this project. Follow the link t
     -   Circumstances of the homicide
     -   Weapon used
 
-3.  [Uniform Crime Reporting Program Data: National Incident-Based Reporting System, 2015](https://www.openicpsr.org/openicpsr/project/100713/version/V1/view)
 
-If you have any questions, find any bugs, or have any data to offer, my email is <jkkaplan6@gmail.com>.
+If you have any questions, find any bugs, or have any data to offer/request, my email is <jkkaplan6@gmail.com>.

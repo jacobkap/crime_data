@@ -39,6 +39,11 @@ for (year in 1960:2016) {
                             sps_name = paste0(year, "_UCR_offenses_known.sps"))
   temp <- cleaning_UCR(temp)
 
+  if (year == 1972) {
+    temp$ORI[temp$NUMERIC_STATE_CODE == "virginia" &
+             temp$POPULATION_1 == "446963"] <- "VA02901"
+  }
+
   factor_cols <- sapply(temp, is.factor)
   temp[factor_cols] <- sapply(temp[factor_cols], function(x) as.character(x))
 
