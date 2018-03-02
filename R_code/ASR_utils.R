@@ -109,7 +109,8 @@ arrest_cols <- c("ORI", "YEAR", "OFFENSE",
                  "AH", "AN", "JH","JN")
 
 remove_missing <- function(column) {
-  column[column %in% c(99999, 99998)] <- NA
+  column[column %in% c(99999, 99998, 10000, 20000,
+                       30000, 40000, 50000)] <- NA
   return(column)
 }
 
@@ -117,4 +118,13 @@ remove_missing <- function(column) {
 NA_to_zero <- function(column) {
   column[is.na(column)] <- 0
   return(column)
+}
+
+
+clean_crimes <- function(crimes) {
+  crimes <- gsub("\\(|\\)|\\s|:|-|/", "_", crimes)
+  crimes <- gsub("_+", "_", crimes)
+  crimes <- gsub("_$|^_", "", crimes)
+  crimes <- tolower(crimes)
+  return(crimes)
 }

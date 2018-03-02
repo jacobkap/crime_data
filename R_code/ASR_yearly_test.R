@@ -1,8 +1,7 @@
 # Reads and cleans Arrest by Age, Sex, and Race (ASR) data from
 # the FBI's UCR.
-
 setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/ASR")
-
+source('C:/Users/user/Dropbox/R_project/crime_data/R_code/ASR_utils.R')
 
 # Year 1989, ORIs AZ00310 and MD00204 are in yearly but not monthly data
 # Year 2001, ORIs are in "AL02306" "AL02805" "AL02814" are in monthly but
