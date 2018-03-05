@@ -5,7 +5,7 @@ library(dplyr)
 library(stringr)
 library(data.table)
 
-name_fixer2 <- function(col_names) {
+name_fixer <- function(col_names) {
   many_col_names <- c(
     # Months
     "(.*)_JAN" = "JAN_\\1",
@@ -87,6 +87,8 @@ name_fixer2 <- function(col_names) {
     "TOT_ASSLTS_ASLT_CLRS"         = "_TOT_ASSLT_CLEARED",
     "CLEAREDS"                     = "CLEARED",
     "_CLD$"                        = "_CLEARED",
+    "_ASSLT_OF_ASSLT_"              = "_ASSLT_",
+    "_TOT_ASSLT_TOT_"              = "_TOT_",
 
 
     # Weapons
@@ -182,8 +184,9 @@ name_fixer2 <- function(col_names) {
             "_DT_RB_"                       = "_DISTURBANCE_",
             "_9028"                         = "",
             "ICPSR_SEQ.*"                   = "ICPSR_SEQUENCE_ID",
-            "NUMERIC_STATE_CODE"            = "STATE"
-            )
+            "NUMERIC_STATE_CODE"            = "STATE",
+            "ORI_CODE"                      = "ORI"
+  )
 
   col_names <- stringr::str_replace_all(col_names, many_col_names)
   col_names <- stringr::str_replace_all(col_names, shifts)
@@ -191,32 +194,90 @@ name_fixer2 <- function(col_names) {
   col_names <- stringr::str_replace_all(col_names, misc)
 }
 
-employee_cols <- c("STATE", "ORI_CODE", "GROUP",
-                   "GEOGRAPHIC_DIVISION", "YEAR",
-                   "MSA", "POPULATION", "AGENCY_NAME",
-                   "MALE_EMPLOYEES_OFFICERS", "MALE_EMPLOYEES_CIVILIANS",
-                   "MALE_EMPLOYEES_TOT", "FEMALE_EMPLOYEES_OFFICERS",
-                   "FEMALE_EMPLOYEES_CIVILIANS", "FEMALE_EMPLOYEES_TOT",
-                   "TOT_EMPLOYEES")
+injury_cols <- c("JAN_ASSLT_INJURY", "FEB_ASSLT_INJURY",
+                 "MAR_ASSLT_INJURY", "APR_ASSLT_INJURY",
+                 "MAY_ASSLT_INJURY", "JUN_ASSLT_INJURY",
+                 "JUL_ASSLT_INJURY", "AUG_ASSLT_INJURY",
+                 "SEP_ASSLT_INJURY", "OCT_ASSLT_INJURY",
+                 "NOV_ASSLT_INJURY", "DEC_ASSLT_INJURY",
+                 "JAN_ASSLT_NO_INJURY", "FEB_ASSLT_NO_INJURY",
+                 "MAR_ASSLT_NO_INJURY", "APR_ASSLT_NO_INJURY",
+                 "MAY_ASSLT_NO_INJURY", "JUN_ASSLT_NO_INJURY",
+                 "JUL_ASSLT_NO_INJURY", "AUG_ASSLT_NO_INJURY",
+                 "SEP_ASSLT_NO_INJURY", "OCT_ASSLT_NO_INJURY",
+                 "NOV_ASSLT_NO_INJURY", "DEC_ASSLT_NO_INJURY")
+indicator_cols <- c("JAN_MONTH_INDICATOR", "FEB_MONTH_INDICATOR",
+                    "MAR_MONTH_INDICATOR", "APR_MONTH_INDICATOR",
+                    "MAY_MONTH_INDICATOR", "JUN_MONTH_INDICATOR",
+                    "JUL_MONTH_INDICATOR", "AUG_MONTH_INDICATOR",
+                    "SEP_MONTH_INDICATOR", "OCT_MONTH_INDICATOR",
+                    "NOV_MONTH_INDICATOR", "DEC_MONTH_INDICATOR")
+misc_cols <- c("STATE", "GROUP",
+                 "GEOGRAPHIC_DIVISION", "YEAR",
+                 "STATE_NAME", "REPORT_INDICATOR", "RECORD_INDICATOR",
+                 "MONTH_INCLUDED", "COVERED_BY_OTH_AGENCY", "SHIFT_DATA")
+cols_to_fix <- c(misc_cols, injury_cols, indicator_cols)
+
 
 leoka <- data.table()
 for (i in 1975:2015) {
-  temp <- spss_ascii_reader(dataset_name =
-                              paste0(i, "_leoka.txt"),
-                            sps_name =
-                              paste0(i, "_leoka.sps"))
-                            #keep_columns = 1:80)
+
+  temp <- spss_ascii_reader(dataset_name = paste0(i, "_leoka.txt"),
+                            sps_name = paste0(i, "_leoka.sps"))
   names(temp) <- name_fixer(names(temp))
-  # usable_cols <- employee_cols[employee_cols %in% names(temp)]
-  # temp <- temp[, usable_cols]
+  cols <- cols_to_fix[cols_to_fix %in% names(temp)]
+  temp <- temp[, cols]
+  temp <- clean_leoka_cols(temp, cols)
+
   temp <- data.table(temp)
 
   leoka <- rbind(leoka, temp, fill = TRUE)
-  message(paste(i, "Length: ", length(names(leoka)),
-                 "     Duplicated: ",
-                 names(leoka)[duplicated(names(leoka))]))
-  gc()
+  rm(temp); message(i);  gc(); Sys.sleep(5)
 
 }
-unique(temp$SEP_MONTH_INDICATOR)
+unique(leoka$STATE_NAME)
+unique(leoka$STATE)
+injury_col_fix <- c("informt complete"      = "information complete",
+                    "asslts not reptd"      = "assaults not reported",
+                    "assaults not reported" = "assaults not reported",
+                    "information complete"  = "information complete",
+                    "assaults not rep$"     = "assaults not reported",
+                    "informat complet"      = "information complete",
+                    "info complete"         = "information complete")
+indicator_col_fix <- c("reported,no data" = "reported, no data")
+year_fix <- c("^75$" = "1975",
+              "^79$" = "1979",
+              "^80$" = "1980",
+              "^81$" = "1981",
+              "^82$" = "1982")
 
+clean_leoka_cols <- function(data, cols) {
+  data[cols] <- sapply(data[cols], tolower)
+  injury_cols2 <- injury_cols[injury_cols %in% cols]
+  indicator_cols2 <- indicator_cols[indicator_cols %in% cols]
+
+  data[injury_cols2] <- sapply(data[injury_cols2], str_replace_all,
+                              injury_col_fix)
+  data[indicator_cols2] <- sapply(data[indicator_cols2], str_replace_all,
+                                 indicator_col_fix)
+  data$YEAR <- as.numeric(str_replace_all(data$YEAR, year_fix))
+
+  return(data)
+}
+
+leoka <- data.table()
+for (i in 1975:2015) {
+  temp <- spss_ascii_reader(dataset_name = paste0(i, "_leoka.txt"),
+                            sps_name = paste0(i, "_leoka.sps"))
+  temp <- temp[, 2201:ncol(temp)]
+  names(temp) <- name_fixer(names(temp))
+  temp <- data.table(temp)
+  leoka <- rbind(leoka, temp, fill = TRUE)
+  rm(temp); message(i);  gc();
+}
+summary(leoka)
+table(sapply(leoka, class))
+names(leoka)[!sapply(leoka, is.numeric)]
+unique(leoka$SEP_TIME_OF_ASSLT_2201_TO_0000)
+# Some numeric columns have a value of "BLANK" or "Blank",
+# making them character type # AUG_TIME_OF_ASSLT_2201_TO_0000
