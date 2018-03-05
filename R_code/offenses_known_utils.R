@@ -525,8 +525,12 @@ make_agg_assault <- function(dataset) {
 make_yearly_cols <- function(dataset, types, crimes) {
   for (crime in crimes) {
     for (type in types) {
-      dataset[, paste(type, crime, sep = "_")] <- rowSums(dataset[, grep(paste(type, crime, sep = "_"),
-                                                                         names(dataset), value = TRUE)])
+      dataset[, paste(type, crime, sep = "_")] <- rowSums(dataset[,
+                                                                  grep(paste(type,
+                                                                             crime,
+                                                                             sep = "_"),
+                                                                         names(dataset),
+                                                                       value = TRUE)])
     }
   }
 
@@ -545,7 +549,7 @@ remove_monthly_cols <- function(dataset, months) {
     types <- c(types, "OFFICER")
   }
 
-  dataset <- dataset[, -grep("LAST|ICPSR|OLD|NUMBER|SEQU|SOURCE|AGE|SUB|MONTH|IDENT|FIELD",
+  dataset <- dataset[, -grep("LAST|ICPSR|OLD|NUMBER|SEQU|SOURCE|AGE|SUB|IDENT|FIELD|_MONTH",
                              names(dataset))]
 
 

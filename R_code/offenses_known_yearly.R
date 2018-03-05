@@ -37,7 +37,7 @@ for (year in 1960:2016) {
 
 
   ucr <- bind_rows(ucr, temp)
-  rm(temp); message(year)
+  rm(temp); message(year); gc(); Sys.sleep(3)
 }
 
 
