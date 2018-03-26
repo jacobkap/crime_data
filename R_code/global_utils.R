@@ -160,3 +160,22 @@ group_number <- c("cit\\. |cit |citie "                  = "cities ",
                   "\\+\\+"           = "+",
                   "counties"         = "county"
 )
+
+save_files <- function(data, file_name, save_name) {
+  assign(paste0(file_name, year), data) # Change name
+  Write(codebook(temp),
+        file = paste0(file_name, "codebook_", year, ".txt"))
+
+  save( list = paste0(file_name, year),
+        file = paste0(save_name, year, ".rda"))
+  do.call("write_dta", list(as.name(paste0(file_name, year)),
+                            path = paste0(save_name,
+                                          year, ".dta")))
+  do.call("write_csv", list(as.name(paste0(file_name, year)),
+                            path = paste0(save_name,
+                                          year, ".csv")))
+  do.call("write_sav", list(as.name(paste0(file_name, year)),
+                            path = paste0(save_name,
+                                          year, ".sav")))
+  do.call("rm", list(as.name(paste0(file_name, year))))
+}

@@ -278,3 +278,12 @@ clean_leoka_cols <- function(data, cols) {
 
   return(data)
 }
+
+
+name_fixer <- function(col_names) {
+  col_names <- stringr::str_replace_all(col_names, many_col_names)
+  col_names <- stringr::str_replace_all(col_names, shifts)
+  col_names <- stringr::str_replace_all(col_names, count)
+  col_names <- stringr::str_replace_all(col_names, misc)
+}
+
