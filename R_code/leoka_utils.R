@@ -1,3 +1,12 @@
+devtools::install_github("jacobkap/asciisetupreader")
+library(asciiSetupReader)
+library(dplyr)
+library(stringr)
+library(data.table)
+library(memisc)
+library(haven)
+library(readr)
+
 injury_cols <- c("JAN_ASSLT_INJURY", "FEB_ASSLT_INJURY",
                  "MAR_ASSLT_INJURY", "APR_ASSLT_INJURY",
                  "MAY_ASSLT_INJURY", "JUN_ASSLT_INJURY",
@@ -287,3 +296,16 @@ name_fixer <- function(col_names) {
   col_names <- stringr::str_replace_all(col_names, misc)
 }
 
+# Fixes officers/employees per 1k pop. columns
+fix_persons_per_1k <- function(data) {
+  data$TOT_OFFICERS <- data$MALE_EMPLOYEES_OFFICERS + data$FEMALE_EMPLOYEES_OFFICERS
+  data$TOT_CIVILIANS <- data$MALE_EMPLOYEES_CIVILIANS + data$FEMALE_EMPLOYEES_CIVILIANS
+  data$EMPLOYEES_PER_1K_POP <- data$TOT_EMPLOYEES / data$POPULATION * 1000
+  data$OFFICERS_PER_1K_POP <- data$TOT_OFFICERS / data$POPULATION * 1000
+  data$CIVILIANS_PER_1K_POP <- data$TOT_CIVILIANS / data$POPULATION * 1000
+
+  data$EMPLOYEES_PER_1K_POP[is.nan(data$EMPLOYEES_PER_1K_POP)] <- NA
+  data$OFFICERS_PER_1K_POP[is.nan(data$OFFICERS_PER_1K_POP)] <- NA
+  data$CIVILIANS_PER_1K_POP[is.nan(data$CIVILIANS_PER_1K_POP)] <- NA
+  return(data)
+}

@@ -161,9 +161,9 @@ group_number <- c("cit\\. |cit |citie "                  = "cities ",
                   "counties"         = "county"
 )
 
-save_files <- function(data, file_name, save_name) {
+save_files <- function(data, year, file_name, save_name) {
   assign(paste0(file_name, year), data) # Change name
-  Write(codebook(temp),
+  Write(codebook(data),
         file = paste0(file_name, "codebook_", year, ".txt"))
 
   save( list = paste0(file_name, year),
@@ -178,4 +178,24 @@ save_files <- function(data, file_name, save_name) {
                             path = paste0(save_name,
                                           year, ".sav")))
   do.call("rm", list(as.name(paste0(file_name, year))))
+}
+
+save_as_zip <- function(file_name) {
+  file_ext <- c("rda", "dta", "csv", "sav")
+  all_files <- list.files()
+  codebooks <- all_files[grep("codebook", all_files)]
+  for (i in seq_along(file_ext)) {
+    zip_files <- all_files[grep(file_ext[i], all_files)]
+    zip_files <- c(zip_files, codebooks)
+
+    zip::zip(zipfile = paste0(file_name,
+                              file_ext[i], ".zip"),
+             files = zip_files)
+  }
+}
+
+save_raw_as_zip <- function(file_name) {
+  all_files <- list.files()
+  zip::zip(zipfile = paste0(file_name, ".zip"),
+           files = all_files)
 }
