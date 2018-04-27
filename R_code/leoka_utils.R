@@ -25,7 +25,7 @@ indicator_cols <- c("JAN_MONTH_INDICATOR", "FEB_MONTH_INDICATOR",
                     "JUL_MONTH_INDICATOR", "AUG_MONTH_INDICATOR",
                     "SEP_MONTH_INDICATOR", "OCT_MONTH_INDICATOR",
                     "NOV_MONTH_INDICATOR", "DEC_MONTH_INDICATOR")
-misc_cols <- c("STATE", "GROUP", "GEOGRAPHIC_DIVISION",
+misc_cols <- c("STATE", "GROUP", "SUB_GROUP", "GEOGRAPHIC_DIVISION",
                "YEAR", "REPORT_INDICATOR", "RECORD_INDICATOR",
                "MONTH_INCLUDED", "COVERED_BY_OTH_AGENCY", "SHIFT_DATA",
                "POPULATION")
@@ -75,7 +75,7 @@ many_col_names <- c(
   "_TRAFF_PURS_STOPS_"         = "_TRAFFIC_",
   "_MENT_DERANGED_|_MENTAL_"   = "_DERANGED_",
   "_AMBUSH_NO_WARN_"           = "_AMBUSH_",
-  "_CUSTODY_"                  = "_CUST_OF_PRISONERS_",
+  "_CUSTODY_"                  = "_CUST_PRISONERS_",
   "^(...)_DISORDER"            = "\\1_CIVIL_DISORDER",
   "_DISTRBNC_CALLS_|_DISTURB_" = "_DISTURBANCE_",
   "_SUSPIC_PERSONS_"           = "_SUSP_PERS_",
@@ -111,8 +111,9 @@ many_col_names <- c(
   "TOT_ASSLTS_ASLT_CLRS"         = "_TOT_ASSLT_CLEARED",
   "CLEAREDS"                     = "CLEARED",
   "_CLD$"                        = "_CLEARED",
-  "_ASSLT_OF_ASSLT_"              = "_ASSLT_",
+  "_ASSLT_OF_ASSLT_"             = "_ASSLT_",
   "_TOT_ASSLT_TOT_"              = "_TOT_",
+
 
 
   # Weapons
@@ -209,8 +210,111 @@ misc <- c("^POP$"                         = "POPULATION",
           "_9028"                         = "",
           "ICPSR_SEQ.*"                   = "ICPSR_SEQUENCE_ID",
           "NUMERIC_STATE_CODE"            = "STATE",
-          "ORI_CODE"                      = "ORI"
+          "ORI_CODE"                      = "ORI",
+          "TOT_EMPLOYEES"                 = "TOTAL_EMPLOYEES",
+          "SMSA"                          = "MSA",
+          "TOT_ASSLT_OF_ASSLT_CLEARED"    = "TOT_ASSLT_CLEARED",
+          "CUST_OF_PRISONERS"             = "CUST_PRISONERS",
+          "ASSLT"                         = "ASSAULT",
+          "TOT"                           = "TOTAL",
+          "_FT"                           = "_FEET",
+          "TOTALAL"                       = "TOTAL",
+        "TOT_ASSLT_TOT_ASSLT"             = "TOT_ASSLT",
+        "ASSISTED"                        = "ASSIST",
+        "CLEARED"                         = "CLEAR"
 )
+
+yearly_cols <- c("officers_killed_felony",
+                 "officers_killed_accident",     "assault_injury_gun",
+                 "assault_injury_knife",           "assault_injury_other",
+                 "assault_injury_hand_feet",         "assault_injury_total",
+                 "assault_no_injury_gun",          "assault_no_injury_knife",
+                 "assault_no_injury_other",        "assault_no_injury_hand_feet",
+                 "assault_no_injury_total",          "disturbance_total_assault",
+                 "disturbance_gun",              "disturbance_knife",
+                 "disturbance_other",            "disturbance_hand_feet",
+                 "disturbance_2man_veh",         "disturbance_1man_alone",
+                 "disturbance_1man_assit",    "disturbance_det_alone",
+                 "disturbance_det_assit",     "disturbance_oth_alone",
+                 "disturbance_oth_assit",     "disturbance_assault_clear",
+                 "burglary_total_assault",           "burglary_gun",
+                 "burglary_knife",               "burglary_other",
+                 "burglary_hand_feet",             "burglary_2man_veh",
+                 "burglary_1man_alone",          "burglary_1man_assit",
+                 "burglary_det_alone",           "burglary_det_assit",
+                 "burglary_oth_alone",           "burglary_oth_assit",
+                 "burglary_assault_clear",       "robbery_total_assault",
+                 "robbery_gun",                  "robbery_knife",
+                 "robbery_other",                "robbery_hand_feet",
+                 "robbery_2man_veh",             "robbery_1man_alone",
+                 "robbery_1man_assit",        "robbery_det_alone",
+                 "robbery_det_assit",         "robbery_oth_alone",
+                 "robbery_oth_assit",         "robbery_assault_clear",
+                 "att_oth_arrest_total_assault",   "att_oth_arrest_gun",
+                 "att_oth_arrest_knife",         "att_oth_arrest_other",
+                 "att_oth_arrest_hand_feet",     "att_oth_arrest_2man_veh",
+                 "att_oth_arrest_1man_alone",    "att_oth_arrest_1man_assit",
+                 "att_oth_arrest_det_alone",     "att_oth_arrest_det_assit",
+                 "att_oth_arrest_oth_alone",     "att_oth_arrest_oth_assit",
+                 "att_oth_arrest_assault_clear", "civil_disorder_total_assault",
+                 "civil_disorder_gun",           "civil_disorder_knife",
+                 "civil_disorder_other",         "civil_disorder_hand_feet",
+                 "civil_disorder_2man_veh",      "civil_disorder_1man_alone",
+                 "civil_disorder_1man_assit", "civil_disorder_det_alone",
+                 "civil_disorder_det_assit",  "civil_disorder_oth_alone",
+                 "civil_disorder_oth_assit",  "civil_disorder_assault_clear",
+                 "cust_prisoners_total_assault",     "cust_prisoners_gun",
+                 "cust_prisoners_knife",         "cust_prisoners_other",
+                 "cust_prisoners_hand_feet",       "cust_prisoners_2man_veh",
+                 "cust_prisoners_1man_alone",    "cust_prisoners_1man_assit",
+                 "cust_prisoners_det_alone",     "cust_prisoners_det_assit",
+                 "cust_prisoners_oth_alone",     "cust_prisoners_oth_assit",
+                 "cust_prisoners_assault_clear", "susp_pers_total_assault",
+                 "susp_pers_gun",                "susp_pers_knife",
+                 "susp_pers_other",              "susp_pers_hand_feet",
+                 "susp_pers_2man_veh",           "susp_pers_1man_alone",
+                 "susp_pers_1man_assit",      "susp_pers_det_alone",
+                 "susp_pers_det_assit",       "susp_pers_oth_alone",
+                 "susp_pers_oth_assit",       "susp_pers_assault_clear",
+                 "ambush_total_assault",             "ambush_gun",
+                 "ambush_knife",                 "ambush_other",
+                 "ambush_hand_feet",               "ambush_2man_veh",
+                 "ambush_1man_alone",            "ambush_1man_assit",
+                 "ambush_det_alone",             "ambush_det_assit",
+                 "ambush_oth_alone",             "ambush_oth_assit",
+                 "ambush_assault_clear",         "deranged_total_assault",
+                 "deranged_gun",                 "deranged_knife",
+                 "deranged_other",               "deranged_hand_feet",
+                 "deranged_2man_veh",            "deranged_1man_alone",
+                 "deranged_1man_assit",       "deranged_det_alone",
+                 "deranged_det_assit",        "deranged_oth_alone",
+                 "deranged_oth_assit",        "deranged_assault_clear",
+                 "traffic_total_assault",            "traffic_gun",
+                 "traffic_knife",                "traffic_other",
+                 "traffic_hand_feet",              "traffic_2man_veh",
+                 "traffic_1man_alone",           "traffic_1man_assit",
+                 "traffic_det_alone",            "traffic_det_assit",
+                 "traffic_oth_alone",            "traffic_oth_assit",
+                 "traffic_assault_clear",        "all_oth_total_assault",
+                 "all_oth_gun",                  "all_oth_knife",
+                 "all_oth_other",                "all_oth_hand_feet",
+                 "all_oth_2man_veh",             "all_oth_1man_alone",
+                 "all_oth_1man_assit",        "all_oth_det_alone",
+                 "all_oth_det_assit",         "all_oth_oth_alone",
+                 "all_oth_oth_assit",         "all_oth_assault_clear",
+                 "total_assault",                    "total_assault_gun",
+                 "total_assault_knife",              "total_assault_other",
+                 "total_assault_hand_feet",          "total_assault_2man_veh",
+                 "total_assault_1man_alone",         "total_assault_1man_assit",
+                 "total_assault_det_alone",          "total_assault_det_assit",
+                 "total_assault_oth_alone",          "total_assault_oth_assit",
+                 "total_assault_clear",            "time_of_assault_0001_to_0200",
+                 "time_of_assault_0201_to_0400",   "time_of_assault_0401_to_0600",
+                 "time_of_assault_0601_to_0800",   "time_of_assault_0801_to_1000",
+                 "time_of_assault_1001_to_1200",   "time_of_assault_1201_to_1400",
+                 "time_of_assault_1401_to_1600",   "time_of_assault_1601_to_1800",
+                 "time_of_assault_1801_to_2000",   "time_of_assault_2001_to_2200",
+                 "time_of_assault_2201_to_0000")
 
 injury_col_fix <- c("informt complete"      = "information complete",
                     "asslts not reptd"      = "assaults not reported",
@@ -244,11 +348,11 @@ covered_by <- c("^all others$"       = "no, agency not covered by another",
                 "^not covered$"      = "no, agency not covered by another",
                 "^covered$"          = "yes, agency is covered by another",
                 "^no, the agency is not covered by anoth$" = "no, agency not covered by another",
-                "the " = "")
+                "the "               = "")
 
 shift_data <- c("reported,no data" = "reported, no data",
-                "09" = NA,
-                "^n$" = NA)
+                "09"               = NA,
+                "^n$"              = NA)
 
 remove_blanks <- function(x) {
   x <- tolower(x)
@@ -272,6 +376,10 @@ clean_leoka_cols <- function(data, cols) {
   data$GEOGRAPHIC_DIVISION <- str_replace_all(data$GEOGRAPHIC_DIVISION,
                                               division)
   data$GROUP <- str_replace_all(data$GROUP, group_number)
+  if (any(grepl("SUB_GROUP", names(data)))) {
+    data$SUB_GROUP <- str_replace_all(data$SUB_GROUP, sub_group)
+    data$SUB_GROUP <- str_replace_all(data$SUB_GROUP, group_number)
+  }
   data$YEAR <- str_replace_all(data$YEAR, years)
   data$MONTH_INCLUDED <- str_replace_all(data$MONTH_INCLUDED,
                                          month_included)
@@ -285,6 +393,8 @@ clean_leoka_cols <- function(data, cols) {
     data$SHIFT_DATA <- str_replace_all(data$SHIFT_DATA, shift_data)
   }
 
+  data$YEAR <- as.numeric(data$YEAR)
+  data$POPULATION <- as.numeric(data$POPULATION)
   return(data)
 }
 
@@ -298,14 +408,55 @@ name_fixer <- function(col_names) {
 
 # Fixes officers/employees per 1k pop. columns
 fix_persons_per_1k <- function(data) {
-  data$TOT_OFFICERS <- data$MALE_EMPLOYEES_OFFICERS + data$FEMALE_EMPLOYEES_OFFICERS
-  data$TOT_CIVILIANS <- data$MALE_EMPLOYEES_CIVILIANS + data$FEMALE_EMPLOYEES_CIVILIANS
-  data$EMPLOYEES_PER_1K_POP <- data$TOT_EMPLOYEES / data$POPULATION * 1000
-  data$OFFICERS_PER_1K_POP <- data$TOT_OFFICERS / data$POPULATION * 1000
-  data$CIVILIANS_PER_1K_POP <- data$TOT_CIVILIANS / data$POPULATION * 1000
+  data$TOTAL_OFFICERS <- data$MALE_EMPLOYEES_OFFICERS + data$FEMALE_EMPLOYEES_OFFICERS
+  data$TOTAL_CIVILIANS <- data$MALE_EMPLOYEES_CIVILIANS + data$FEMALE_EMPLOYEES_CIVILIANS
+  data$EMPLOYEES_PER_1K_POP <- data$TOTAL_EMPLOYEES / data$POPULATION * 1000
+  data$OFFICERS_PER_1K_POP <- data$TOTAL_OFFICERS / data$POPULATION * 1000
+  data$CIVILIANS_PER_1K_POP <- data$TOTAL_CIVILIANS / data$POPULATION * 1000
 
-  data$EMPLOYEES_PER_1K_POP[is.nan(data$EMPLOYEES_PER_1K_POP)] <- NA
-  data$OFFICERS_PER_1K_POP[is.nan(data$OFFICERS_PER_1K_POP)] <- NA
-  data$CIVILIANS_PER_1K_POP[is.nan(data$CIVILIANS_PER_1K_POP)] <- NA
+  data$EMPLOYEES_PER_1K_POP[is.nan(data$EMPLOYEES_PER_1K_POP) |
+                              is.infinite(data$EMPLOYEES_PER_1K_POP)] <- NA
+  data$OFFICERS_PER_1K_POP[is.nan(data$OFFICERS_PER_1K_POP) |
+                             is.infinite(data$OFFICERS_PER_1K_POP) ] <- NA
+  data$CIVILIANS_PER_1K_POP[is.nan(data$CIVILIANS_PER_1K_POP) |
+                              is.infinite(data$CIVILIANS_PER_1K_POP)] <- NA
   return(data)
 }
+
+
+
+words_in_num_cols <- c("^$"      = "",
+                       "blank"   = NA,
+                       "missing" = NA)
+
+
+# These columns should be first in the final monthly/yearly data
+starting_cols <- c("ori",
+                   "officers_killed_felony",
+                   "officers_killed_accident",
+                   "covered_by_oth_agency",
+                   "year",
+                   "state",
+                   "state_abb",
+                   "group",
+                   "sub_group",
+                   "geographic_division",
+                   "city_sequence",
+                   "msa",
+                   "population",
+                   "agency_name",
+                   "total_officers",
+                   "officers_per_1k_pop",
+                   "male_employees_officers",
+                   "female_employees_officers",
+                   "total_civilians",
+                   "civilians_per_1k_pop",
+                   "male_employees_civilians",
+                   "female_employees_civilians",
+                   "total_employees",
+                   "employees_per_1k_pop",
+                   "male_employees_total",
+                   "female_employees_total",
+                   "month_included",
+                   "shift_data",
+                   "no_male_female_breakdown")

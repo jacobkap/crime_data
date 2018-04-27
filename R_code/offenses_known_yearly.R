@@ -1,4 +1,3 @@
-
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/offenses_known_utils.R')
 
 # Making UCR Offenses Known and Clearances By Arrest into Yearly ----------
@@ -28,6 +27,7 @@ for (year in 1960:2016) {
   temp <- make_agg_assault(temp)
   temp <- reorganize_cols(temp)
 
+  temp$POPULATION_2[temp$POPULATION_2 == "Inap"] <- 0
   temp$POPULATION_1 <- as.numeric(as.character(temp$POPULATION_1))
   temp$POPULATION_2 <- as.numeric(as.character(temp$POPULATION_2))
   temp$POPULATION_3 <- as.numeric(as.character(temp$POPULATION_3))

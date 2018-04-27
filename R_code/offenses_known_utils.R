@@ -71,14 +71,14 @@ col_names <- c(
   "_ASLT"            =          "_ASSLT",
   "_HND"             =          "_HAND",
   "UF_"              =          "UNFOUND_",
-  "BURG_"          =          "BURGLARY_",
+  "BURG_"            =          "BURGLARY_",
   "FRC_"             =          "FORCE_",
   "ROB$"             =          "ROBB",
   "_P_T"             =          "_PT",
   "FE$"              =          "FEL",
   "AC$"              =          "ACC",
   "ALL_OFFNCS"       =          "ALL_FIELDS",
-  "THFT$"             =          "THEFT",
+  "THFT$"            =          "THEFT",
   "ENTY"             =          "ENTRY",
   "SIMPL_"           =          "SIMPLE_",
   "_FT_"             =          "_FEET_",
@@ -177,12 +177,12 @@ col_names <- c(
   "_KNIFEL"          =          "_KNIFE",
   "_TOTAL_TOTAL"     =          "_TOTAL",
   "GRAND_OF_ALL_FIELDS_TOTAL" = "ALL_FIELDS",
-  "_KILLED_ACCIDENTALLY"     = "_KILL_BY_ACC",
-  "_KILLED_FELONIOUSLY"     =  "_KILL_BY_FEL",
-  "_ASSAULT_WITH_KNIFE" =      "_KNIFE_ASSAULT",
-  "_ASSAULT_WITH_GUN" =         "_GUN_ASSAULT",
-  "_ASSAULT_OTHER_WEAPON" =    "_OTH_WEAP_ASSAULT",
-  "_ASSAULT_HAND_FEET" =       "_HAND_FEET_ASSAULT",
+  "_KILLED_ACCIDENTALLY"      = "_KILL_BY_ACC",
+  "_KILLED_FELONIOUSLY"       =  "_KILL_BY_FEL",
+  "_ASSAULT_WITH_KNIFE"       =      "_KNIFE_ASSAULT",
+  "_ASSAULT_WITH_GUN"         =         "_GUN_ASSAULT",
+  "_ASSAULT_OTHER_WEAPON"     =    "_OTH_WEAP_ASSAULT",
+  "_ASSAULT_HAND_FEET"        =       "_HAND_FEET_ASSAULT",
   "_THEFT_THEFT"    =          "_THEFT",
   "_DATE_OF_"        =         "_",
   "ORI_CODE"        =          "ORI",
@@ -435,7 +435,7 @@ group_number <- c("msa co. 100,000 +"                    =   "MSA county 100,000
                   "cities 2,500 thru 9,999"              =   "cities between 2,500 and 9,999",
                   "cities 100,000 thru 249,999"          =   "cities between 100,000 and 249,999",
                   "7b"                                   = NA,
-                  "\\+\\+"                                   = "\\+"
+                  "\\+\\+"                               = "\\+"
 )
 
 agency_count <- c("all oth agencies"                      = "all other agencies",
@@ -534,7 +534,7 @@ make_yearly_cols <- function(dataset, types, crimes) {
     }
   }
 
-  if (any(grepl("OFFICERS", names(temp)))) {
+  if (any(grepl("OFFICERS", names(dataset)))) {
     for (officer in officers) {
       dataset[, officer] <- rowSums(dataset[, grep(officer, names(dataset), value = TRUE)])
     }
@@ -563,15 +563,15 @@ remove_monthly_cols <- function(dataset, months) {
 }
 
 reorganize_cols <- function(dataset) {
-  acts <- grep("ACT", names(dataset))
-  clr <- grep("CLR_[^0-9]", names(dataset))
-  clr_18 <- grep("CLR_18", names(dataset))
-  unfound <- grep("UNFOUND", names(dataset))
+  acts     <- grep("ACT", names(dataset))
+  clr      <- grep("CLR_[^0-9]", names(dataset))
+  clr_18   <- grep("CLR_18", names(dataset))
+  unfound  <- grep("UNFOUND", names(dataset))
   officers <- grep("OFFICER", names(dataset))
-  other <- 1:ncol(dataset)
-  other <- other[!other %in% c(acts, clr, clr_18, unfound, officers)]
+  other    <- 1:ncol(dataset)
+  other    <- other[!other %in% c(acts, clr, clr_18, unfound, officers)]
 
-  dataset <- dataset[, c(other, officers, acts, clr, clr_18, unfound)]
+  dataset  <- dataset[, c(other, officers, acts, clr, clr_18, unfound)]
   return(dataset)
 }
 
