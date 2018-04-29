@@ -1,4 +1,3 @@
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/crosswalk")
 library(dplyr)
 library(asciiSetupReader)
 library(stringr)
@@ -11,7 +10,6 @@ name_fixes <- c("^UCR_ORIGINATING_AGENCY_IDENTIFIER$"         = "ORI",
                 "^AGENCY_SUB_TYPE_1$"    = "AGENCY_SUBTYPE_1",
                 "^AGENCY_SUB_TYPE_2$"    = "AGENCY_SUBTYPE_2",
                 "^TYPE_OF_AGENCY$"       = "AGENCY_TYPE",
-                "^GOVERNMENT_ID_CENSUS$" = "CENSUS_16_CHARACTER_ID_STRING",
                 "^SPECFUNC$"               = "AGENCY_SUBTYPE_1",
                 "^FIPS_STATE_COUNTY_CODE_ALPHANUMERIC$" = "FIPS_STATE_COUNTY_CODE"
                 )
@@ -23,9 +21,7 @@ cols_to_keep <- c("ORI",
                   "AGENCY_SUBTYPE_2",
                   "FIPS_STATE_CODE",
                   "FIPS_COUNTY_CODE",
-                  "FIPS_PLACE_CODE",
-                  "FIPS_STATE_COUNTY_CODE",
-                  "CENSUS_16_CHARACTER_ID_STRING"
+                  "FIPS_PLACE_CODE"
                   )
 
 agency_type2005 <- c("^1$"  = 'Sheriffs office',              # Sheriff
@@ -42,6 +38,7 @@ agency_type2005 <- c("^1$"  = 'Sheriffs office',              # Sheriff
 # for 2012 or 2005. The crosswalk for 1996 has 36 unique ORIs not in 2012
 # or 2005
 read_merge_crosswalks <- function() {
+  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/crosswalk")
   crosswalk1996 <- spss_ascii_reader("crosswalk1996.txt",
                                      "crosswalk1996.sps",
                                      value_label_fix = FALSE)
@@ -88,13 +85,33 @@ read_merge_crosswalks <- function() {
 
   names(crosswalk) <- tolower(names(crosswalk))
 
+  # Pads FIPS codes so state FIPS are all 2 characters
+  # and county FIPS are all 3 characters
+  crosswalk$fips_state_code <- str_pad(crosswalk$fips_state_code,
+                                       width = 2,
+                                       side = "left",
+                                       pad = "0")
+  crosswalk$fips_county_code <- str_pad(crosswalk$fips_county_code,
+                                       width = 3,
+                                       side = "left",
+                                       pad = "0")
+  crosswalk$fips_place_code <- str_pad(crosswalk$fips_place_code,
+                                        width = 5,
+                                        side = "left",
+                                        pad = "0")
+
+  crosswalk$fips_state_county_code <- paste0(crosswalk$fips_state_code,
+                                             crosswalk$fips_county_code)
+  crosswalk$fips_state_place_code <- paste0(crosswalk$fips_state_code,
+                                             crosswalk$fips_place_code)
+
   crosswalk <- crosswalk[, c("ori",
                              "ori9",
-                             "census_16_character_id_string",
                              "fips_state_code",
                              "fips_county_code",
-                             "fips_place_code",
                              "fips_state_county_code",
+                             "fips_place_code",
+                             "fips_state_place_code",
                              "agency_type",
                              "agency_subtype_1",
                              "agency_subtype_2")]

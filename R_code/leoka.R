@@ -1,16 +1,15 @@
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/leoka_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
 save_LEOKA_monthly()
 
-
+crosswalk <- read_merge_crosswalks()
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
 save_as_zip("LEOKA_monthly_1975_2015_")
 # setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/LEOKA")
 # save_raw_as_zip("LEOKA_monthly_1975_2015_ascii_sps")
-leoka <- leoka_yearly()
-leoka_yearly_1975_2015 <- leoka
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA_yearly")
-save_files(data = data,
+leoka_yearly_1975_2015 <- leoka_yearly()
+save_files(data = leoka_yearly_1975_2015,
            year = year,
            file_name = "leoka_yearly_1975_2015_",
            save_name = "leoka_yearly_1975_2015_")
@@ -136,6 +135,5 @@ make_yearly <- function(data) {
   return(data)
 }
 
-summary(leoka)
-names(leoka)
-leoka$V1[1]
+summary(leoka_yearly_1975_2015)
+names(leoka_yearly_1975_2015)
