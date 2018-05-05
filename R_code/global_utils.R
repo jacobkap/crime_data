@@ -3,7 +3,7 @@
 save_files <- function(data, year, file_name, save_name) {
   assign(paste0(file_name, year), data) # Change name
   Write(codebook(data),
-        file = paste0(file_name, "codebook_", year, ".txt"))
+       file = paste0(file_name, "codebook_", year, ".txt"))
 
   save( list = paste0(file_name, year),
         file = paste0(save_name, year, ".rda"))

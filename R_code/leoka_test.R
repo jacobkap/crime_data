@@ -60,4 +60,3 @@ leoka_yearly_check <- function() {
     print(summary(col_check))
   }
 }
-

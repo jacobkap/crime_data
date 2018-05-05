@@ -519,7 +519,8 @@ fix_negatives <- function(column) {
 
 make_agg_assault <- function(dataset) {
   dataset$act_aggravated_assault <- rowSums(dataset[, grep("ACT_(OTH|GUN|KNIFE|HAND).*ASSA",
-                                                    names(dataset))])
+                                                    names(dataset),
+                                                    ignore.case = TRUE)])
   dataset$clr_aggravated_assault <- rowSums(dataset[,
                                              grep("CLR_(OTH|GUN|KNIFE|HAND).*ASSA",
                                                     names(dataset),
@@ -533,7 +534,7 @@ make_agg_assault <- function(dataset) {
   return(dataset)
 }
 
-make_yearly_cols <- function(dataset, types, crimes) {
+make_yearly_cols <- function(dataset, types, crimes, officers) {
   for (crime in crimes) {
     for (type in types) {
       dataset[, paste(type, crime, sep = "_")] <- rowSums(dataset[,

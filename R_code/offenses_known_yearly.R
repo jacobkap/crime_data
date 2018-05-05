@@ -42,7 +42,7 @@ make_ucr_yearly <- function() {
                           "OFFICERS_KILLED_BY_FELONY",
                           "OFFICERS_ASSAULTED"))
 
-    temp <- make_yearly_cols(temp, types, crimes)
+    temp <- make_yearly_cols(temp, types, crimes, officers)
     temp <- remove_monthly_cols(temp, months)
     temp <- make_agg_assault(temp)
     temp <- reorganize_cols(temp)

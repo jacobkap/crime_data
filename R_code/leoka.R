@@ -3,12 +3,10 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
 save_LEOKA_monthly()
 
-crosswalk <- read_merge_crosswalks()
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
-save_as_zip("LEOKA_monthly_1975_2015_")
 # setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/LEOKA")
 # save_raw_as_zip("LEOKA_monthly_1975_2015_ascii_sps")
 leoka_yearly_1975_2015 <- leoka_yearly()
+setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
 save_files(data = leoka_yearly_1975_2015,
            year = year,
            file_name = "leoka_yearly_1975_2015_",
@@ -45,6 +43,7 @@ save_LEOKA_monthly <- function() {
     num_cols <- c(num_cols, "POPULATION")
     num_cols <- num_cols[!grepl("^..._ASSLT_NO_INJURY$|^..._ASSLT_INJURY$|indicator",
                                 num_cols, ignore.case = TRUE)]
+    num_cols <- num_cols[!grepl("ASSAULT_INJURY$|ASSAULT_NO_INJURY$", num_cols)]
 
 
     data[, num_cols] <- data.frame(sapply(data[, num_cols], tolower))
@@ -73,16 +72,30 @@ save_LEOKA_monthly <- function() {
     data <- data[!is.na(data$STATE), ]
     data <- data[!is.na(data$ORI), ]
 
-    data <- fix_persons_per_1k(data)
+    data <- fix_persons_per_1k(data) # Now it DOESN'T make these rate variables.
+                                     # Just makes total officers/civilians
+                                     # variables and removes old rate variables.
     names(data) <- tolower(names(data))
+    data$city_sequence <- as.character(data$city_sequence)
+    data$msa <- as.character(data$msa)
+    factor_cols <- names(data)[sapply(data, is.factor)]
+    data[, factor_cols] <- sapply(data[, factor_cols], as.character)
 
     # Reorder columns
-    data <- data[, -grep("icpsr|state_name|identifier_code|blank", names(data))]
-    indicator_cols <- grep("asslt_(no_)?injury$|indicator", names(data))
-    starting_cols <- starting_cols[starting_cols %in% names(data)]
-    data <-
-      data %>%
-      dplyr::select(starting_cols, indicator_cols, dplyr::everything())
+    data           <- data[, -grep("icpsr|state_name|identifier_code|blank",
+                                   names(data))]
+    data <- order_columns(data)
+
+    if (year == 1979) {
+      data$aug_officers_killed_felony[data$ori == "NJ01210"] <- NA
+    }
+    if (year == 1978) {
+      data$jul_officers_killed_accident[data$ori == "PAPPD00"] <- NA
+    }
+    if (year == 1990) {
+      data$mar_officers_killed_accident[data$ori == "ME010SP"] <- NA
+    }
+
 
 
     # Save the data in various formats
@@ -101,24 +114,23 @@ leoka_yearly <- function() {
   leoka <- data.frame()
   setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
   for (year in 1975:2015) {
-    source('C:/Users/user/Dropbox/R_project/crime_data/R_code/leoka_utils.R')
+    suppressMessages(source('C:/Users/user/Dropbox/R_project/crime_data/R_code/leoka_utils.R'))
     load(paste0("leoka_monthly_", year, ".rda"))
     do.call(assign, list("data", as.name(paste0("leoka_monthly_", year))))
     do.call(rm, list(paste0("leoka_monthly_", year)))
-    data$city_sequence <- as.character(data$city_sequence)
-    data$msa <- as.character(data$msa)
+    injury_no_injury <- grep("assault_injury$|assault_no_injury$",
+                             names(data), ignore.case = TRUE,
+                             value = TRUE)
+    data[, injury_no_injury] <- sapply(data[, injury_no_injury], as.character)
+
+    print(year); gc()
     data <- make_yearly(data)
     leoka <- bind_rows(leoka, data)
-    message(year); gc()
+
   }
   leoka <- leoka[!is.na(leoka$ori), ]
+  leoka <- order_columns(leoka, monthly = FALSE)
 
-
-  indicator_cols <- grep("asslt_(no_)?injury$|indicator", names(data))
-  starting_cols <- starting_cols[starting_cols %in% names(data)]
-  leoka <-
-    leoka %>%
-    dplyr::select(starting_cols, indicator_cols, dplyr::everything())
 
   return(leoka)
 }
@@ -126,8 +138,12 @@ leoka_yearly <- function() {
 make_yearly <- function(data) {
   for (column in yearly_cols) {
     cols <- grep(column, names(data))
+    if (length(cols) != 12) {
+      message(paste(column, length(cols)))
+    }
     data[, column] <- rowSums(data[, cols])
     data <- data[, -cols]
+
   }
   if (any(grepl("blank", names(data)))) {
     data <- data[, -grep("blank", names(data))]
@@ -136,4 +152,6 @@ make_yearly <- function(data) {
 }
 
 summary(leoka_yearly_1975_2015)
+summary(leoka_yearly_1975_2015$officers_killed_accident)
+summary(leoka_yearly_1975_2015$officers_killed_felony)
 names(leoka_yearly_1975_2015)

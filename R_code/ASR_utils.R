@@ -3,6 +3,8 @@ library(asciiSetupReader)
 library(data.table)
 library(stringr)
 library(dplyr)
+library(tidyr)
+library(data.table)
 
 offense_codes <- c("^01A$" = "Murder and non-negligent manslaughter",
                    "^01B$" = "Manslaughter by negligence",

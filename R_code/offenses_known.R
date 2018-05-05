@@ -21,11 +21,16 @@ save_ucr_monthly <- function() {
                               sps_name =
                                 paste0(year, "_UCR_offenses_known.sps"))
     temp$ORI_CODE <- NULL
+    ori_col_to_keep = "ORI_CODE"
+    if (year == 2016) {
+      ori_col_to_keep = "ORI"
+      temp$ORI <- NULL
+    }
     ORIs <- spss_ascii_reader(dataset_name =
                                 paste0(year, "_UCR_offenses_known.txt"),
                               sps_name =
                                 paste0(year, "_UCR_offenses_known.sps"),
-                              keep_columns = "ORI_CODE",
+                              keep_columns = ori_col_to_keep,
                               value_label_fix = FALSE)
     temp <- bind_cols(ORIs, temp)
     rm(ORIs)
