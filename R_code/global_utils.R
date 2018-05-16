@@ -1,12 +1,25 @@
+devtools::install_github("jacobkap/asciisetupreader")
+library(asciiSetupReader)
+library(dplyr)
+library(stringr)
+library(data.table)
+library(memisc)
+library(haven)
+library(readr)
+options(warn = 2)
+
 # utils for UCR files
 
-save_files <- function(data, year, file_name, save_name) {
+save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
   assign(paste0(file_name, year), data) # Change name
+  save( list = paste0(file_name, year),
+        file = paste0(save_name, year, ".rda"))
+
+
+  if (rda_only == FALSE) {
   Write(codebook(data),
        file = paste0(file_name, "codebook_", year, ".txt"))
 
-  save( list = paste0(file_name, year),
-        file = paste0(save_name, year, ".rda"))
   do.call("write_dta", list(as.name(paste0(file_name, year)),
                             path = paste0(save_name,
                                           year, ".dta")))
@@ -17,6 +30,7 @@ save_files <- function(data, year, file_name, save_name) {
                             path = paste0(save_name,
                                           year, ".sav")))
   do.call("rm", list(as.name(paste0(file_name, year))))
+  }
 }
 
 save_as_zip <- function(file_name) {

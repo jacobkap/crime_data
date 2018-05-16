@@ -1,11 +1,3 @@
-devtools::install_github("jacobkap/asciisetupreader")
-library(asciiSetupReader)
-library(dplyr)
-library(stringr)
-library(data.table)
-library(memisc)
-library(haven)
-library(readr)
 
 injury_cols <- c("JAN_ASSAULT_INJURY", "FEB_ASSLT_INJURY",
                  "MAR_ASSAULT_INJURY", "APR_ASSLT_INJURY",

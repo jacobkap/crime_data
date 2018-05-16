@@ -8,10 +8,10 @@ save_LEOKA_monthly()
 leoka_yearly_1975_2015 <- leoka_yearly()
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
 save_files(data = leoka_yearly_1975_2015,
-           year = year,
-           file_name = "leoka_yearly_1975_2015_",
-           save_name = "leoka_yearly_1975_2015_")
-save_as_zip("leoka_yearly_1975_2015_")
+           year = "",
+           file_name = "leoka_yearly_1975_2015",
+           save_name = "leoka_yearly_1975_2015")
+save_as_zip("leoka_1975_2015_")
 
 # Save the individual files - still monthly
 save_LEOKA_monthly <- function() {

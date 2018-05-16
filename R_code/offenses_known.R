@@ -63,6 +63,14 @@ save_ucr_monthly <- function() {
     temp$ori9 <- toupper(temp$ori9)
     temp$state_abb <- state.abb[match(toupper(temp$state),
                                       toupper(state.name))]
+    temp$state_abb[tolower(temp$state) == "canal zone"]           <- "CZ"
+    temp$state_abb[tolower(temp$state) == "district of columbia"] <- "DC"
+    temp$state_abb[tolower(temp$state) == "guam"]                 <- "GU"
+    temp$state_abb[tolower(temp$state) == "puerto rico"]          <- "PR"
+    temp$state_abb[tolower(temp$state) == "virgin islands"]       <- "VI"
+
+
+
     starting_cols <- c("ori", "ori9", "year", "state",
                        "state_abb", "months_reported")
     temp <-
