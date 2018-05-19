@@ -53,6 +53,16 @@ save_raw_as_zip <- function(file_name) {
            files = all_files)
 }
 
+make_state_abb <- function(state) {
+  state_abb <- state.abb[match(tolower(state), tolower(state.name))]
+  state_abb[tolower(state) == "canal zone"]           <- "CZ"
+  state_abb[tolower(state) == "district of columbia"] <- "DC"
+  state_abb[tolower(state) == "guam"]                 <- "GU"
+  state_abb[tolower(state) == "puerto rico"]          <- "PR"
+  return(state_abb)
+}
+
+
 years <- years <- c("^76$"         = "1976",
                     "^99$"         = "1999",
                     "^16$"         = "2016",
@@ -160,7 +170,7 @@ division <- c("e. south central"            = "east south central",
               "^wst nth cntl sttes$"        = "west north central",
               "^mddle atltc sttes$"         = "mid-atlantic")
 
-group_number <- c("^msa cts 100000/over$"   = "msa county 100,000+",
+group_number_fix <- c("^msa cts 100000/over$"   = "msa county 100,000+",
                   "^cts 25000-49999$"       = "city 25,000 thru 49,999",
                   "^cts 250000-499999$"     = "city 250,000 thru 499,999",
                   "^cts 10000-24999$"       = "city 10,000 thru 25,000",
