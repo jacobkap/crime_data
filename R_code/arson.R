@@ -49,7 +49,8 @@ get_arson <- function() {
                     -state_name,
                     -id_code,
                     -covered_by_group) %>%
-      dplyr::filter(months_reported != "no months reported")
+      dplyr::filter(months_reported != "no months reported",
+                    ori             != "NY03200")
     names(data) <- gsub("reported_known_", "reported_", names(data))
     names(data) <- gsub("industrial_manufacturing", "industry_manufacture",
                         names(data))
