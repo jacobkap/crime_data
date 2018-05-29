@@ -9,45 +9,40 @@ library(memisc)
 library(zip)
 # Clean column names and value labels -------------------------------------
 cleaning_UCR <- function(data) {
-  names(data) <- str_replace_all(names(data), col_names)
 
-
-  # Fix value label differences
-  data$CORE_CITY_INDICATION    <- tolower(data$CORE_CITY_INDICATION)
-  data$DIVISION                <- tolower(data$DIVISION)
-  data$AGENCY_COUNT            <- tolower(data$AGENCY_COUNT)
-  data$GROUP_NUMBER            <- tolower(data$GROUP_NUMBER)
-  data$MONTHS_REPORTED         <- tolower(data$MONTHS_REPORTED)
-  data$SPECIAL_MAILING_ADDRESS <- tolower(data$SPECIAL_MAILING_ADDRESS)
-  data$SPECIAL_MAILING_GROUP   <- tolower(data$SPECIAL_MAILING_GROUP)
-  data$STATE      <- tolower(data$STATE)
-  data$FOLLOWUP_INDICATION     <- tolower(data$FOLLOWUP_INDICATION)
-  data$YEAR                    <- as.character(data$YEAR)
-
-  data$CORE_CITY_INDICATION <- str_replace_all(data$CORE_CITY_INDICATION,
-                                               core_city_indication)
-  data$DIVISION <- str_replace_all(data$DIVISION,
-                                   division)
-  data$AGENCY_COUNT <- str_replace_all(data$AGENCY_COUNT,
-                                       agency_count)
-  data$FOLLOWUP_INDICATION <- str_replace_all(data$FOLLOWUP_INDICATION,
-                                              followup_indication)
-  data$GROUP_NUMBER <- str_replace_all(data$GROUP_NUMBER,
-                                       group_number)
-  data$MONTHS_REPORTED <- str_replace_all(data$MONTHS_REPORTED,
-                                          months_reported)
-  data$SPECIAL_MAILING_ADDRESS <- str_replace_all(data$SPECIAL_MAILING_ADDRESS,
-                                                  special_mailing_address)
-  data$SPECIAL_MAILING_GROUP <- str_replace_all(data$SPECIAL_MAILING_GROUP,
-                                                special_mailing_group)
-  data$STATE <- str_replace_all(data$STATE,
-                                             states)
-  data$YEAR <- str_replace_all(data$YEAR, years)
-
-  # Fix negative values
-  cols_to_fix <- grep("ACT|FOUND|CLR|KILL|ASS", names(data), value = TRUE)
-  cols_to_fix <- cols_to_fix[(sapply(data[, cols_to_fix], char_or_fac))]
-  data[, cols_to_fix] <- sapply(data[, cols_to_fix], fix_negatives)
+  data <-
+    data %>%
+    dplyr::select_all(str_replace_all, col_names) %>%
+    # To fix emojis/special characters
+    dplyr::mutate_at(vars(toupper(to_ascii_cols)), iconv, to = "ASCII//TRANSLIT") %>%
+    dplyr::mutate_if(is.factor, as.character) %>%
+    dplyr::mutate_if(is.character, tolower) %>%
+    dplyr::mutate(CORE_CITY_INDICATION = str_replace_all(CORE_CITY_INDICATION,
+                                                         core_city_indication),
+                  DIVISION = str_replace_all(DIVISION,
+                                             division),
+                  FOLLOWUP_INDICATION = str_replace_all(FOLLOWUP_INDICATION,
+                                                        followup_indication),
+                  GROUP_NUMBER = str_replace_all(GROUP_NUMBER,
+                                                 group_number),
+                  MONTHS_REPORTED = str_replace_all(MONTHS_REPORTED,
+                                                    months_reported),
+                  SPECIAL_MAILING_ADDRESS = str_replace_all(SPECIAL_MAILING_ADDRESS,
+                                                            special_mailing_address),
+                  SPECIAL_MAILING_GROUP = str_replace_all(SPECIAL_MAILING_GROUP,
+                                                          special_mailing_group),
+                  STATE = str_replace_all(STATE,
+                                          states),
+                  ORI = toupper(ORI))
+  crime_cols <- grep("ACT|FOUND|CLR|KILL|ASS", names(data))
+  crime_cols <- crime_cols[sapply(data[, crime_cols], is.character)]
+  if (length(crime_cols) > 0) {
+    data <- data %>%
+      dplyr::mutate_at(vars(crime_cols), tolower) %>%
+      dplyr::mutate_at(vars(crime_cols), str_replace_all, negatives) %>%
+      dplyr::mutate_at(vars(crime_cols), as.character) %>%
+      dplyr::mutate_at(vars(crime_cols), as.numeric)
+  }
 
   return(data)
 }
@@ -141,9 +136,9 @@ col_names <- c(
   "NUMER_OF_MONTHS"  =          "MONTHS",
   "^CORE_CITY$"      =          "CORE_CITY_INDICATION",
   "^AGENCY_STATE$"   =          "AGENCY_STATE_NAME",
-  "SPEC_MAILING_ADDRESS"=       "SPECIAL_MAILING_ADDRESS",
-  "^SPECIAL_MAILING$"=       "SPECIAL_MAILING_ADDRESS",
-  "^MAILING_GROUP$"=       "SPECIAL_MAILING_GROUP",
+  "SPEC_MAILING_ADDRESS" =       "SPECIAL_MAILING_ADDRESS",
+  "^SPECIAL_MAILING$" =       "SPECIAL_MAILING_ADDRESS",
+  "^MAILING_GROUP$" =       "SPECIAL_MAILING_GROUP",
   "_BURG_"           =          "_BURGLARY_",
   "TRUCK_AND_VAN$"   =          "TRUCK_BUS_THEFT",
   "_OTHER_VEHICLE"   =          "_OTH_VHC_THEFT",
@@ -224,7 +219,7 @@ col_names <- c(
   "ENTRY_NO_FORCE" =             "BURG_NO_FORCE_ENTRY",
   "KILL_BY_ACC"                 = "KILLED_BY_ACCIDENT",
   "KILL_BY_FEL"                  = "KILLED_BY_FELONY",
-#  "_BURG_"             =          "_BURGLARY_",
+  #  "_BURG_"             =          "_BURGLARY_",
   "_OTH_WEAP_"               =     "_OTHER_WEAPON_",
   "_ATT_"                 =    "_ATTEMPTED_",
   "_OTH_"                    = "_OTHER_",
@@ -360,7 +355,7 @@ division <- c("e. south central"                                   = "east south
 
 
 
-group_number <- c("msa co. 100,000 +"                    =   "MSA county 100,000+",
+group_number <- c("msa co. 100,000 +"                    =   "msa county 100,000+",
                   "cit 25,000-49,999"                    =   "cities between 25,000 and 49,999",
                   "cit 250,000-499,999"                  =   "cities 250,000 thru 499,999",
                   "cit 10,000-24,999"                    =   "cities between 10,000 and 24,999",
@@ -486,63 +481,53 @@ followup_indication <- c("^y$" = "yes, send a follow-up",
                          "^n$" = "no, do not send a follow-up",
                          "9"  = NA)
 
-years <- c("^76$" = "1976",
-           "^99$" = "1999",
-           "^16$" = "2016",
-           "^79$" = "1979",
-           "NOT REPORTED" = NA)
 
 negatives <- c("0+\\}"                = "0",
-               "0+J"                  = "-1",
-               "0+K"                  = "-2",
-               "0+L"                  = "-3",
-               "0+M"                  = "-4",
-               "0+N"                  = "-5",
-               "0+O"                  = "-6",
-               "0+P"                  = "-7",
-               "0+Q"                  = "-8",
-               "0+R"                  = "-9",
+               "0+j"                  = "-1",
+               "0+k"                  = "-2",
+               "0+l"                  = "-3",
+               "0+m"                  = "-4",
+               "0+n"                  = "-5",
+               "0+o"                  = "-6",
+               "0+p"                  = "-7",
+               "0+q"                  = "-8",
+               "0+r"                  = "-9",
                "0+1\\}"               = "-10",
-               "0+1J"                 = "-11",
-               "0+1K"                 = "-12",
-               "0+1L"                 = "-13",
-               "0+1M"                 = "-14",
-               "0+1N"                 = "-15",
-               "Zero or not reported" = "0")
+               "0+1j"                 = "-11",
+               "0+1k"                 = "-12",
+               "0+1l"                 = "-13",
+               "0+1m"                 = "-14",
+               "0+1n"                 = "-15",
+               "zero or not reported" = "0")
 
 fix_negatives <- function(column) {
   column <- str_replace_all(column, negatives)
-  column <- as.numeric(as.character(column))
   return(column)
 }
 
 
-make_agg_assault <- function(dataset) {
-  dataset$act_aggravated_assault <- rowSums(dataset[, grep("ACT_(OTH|GUN|KNIFE|HAND).*ASSA",
-                                                    names(dataset),
-                                                    ignore.case = TRUE)])
-  dataset$clr_aggravated_assault <- rowSums(dataset[,
-                                             grep("CLR_(OTH|GUN|KNIFE|HAND).*ASSA",
-                                                    names(dataset),
-                                                  ignore.case = TRUE)])
-  dataset$clr_18_aggravated_assault <- rowSums(dataset[, grep("CLR_18_(OTH|GUN|KNIFE|HAND).*ASSA",
-                                                       names(dataset),
-                                                       ignore.case = TRUE)])
-  dataset$unfound_aggravated_assault <- rowSums(dataset[, grep("UNFOUND_(OTH|GUN|KNIFE|HAND).*ASSA",
-                                                        names(dataset),
-                                                        ignore.case = TRUE)])
-  return(dataset)
+make_agg_assault <- function(data) {
+  crime_type <- c("_ACT", "_CLR_18", "_CLR", "_UNFOUND")
+  months <- toupper(month.abb)
+  for (month in months) {
+    for (type in crime_type) {
+      data[, paste0(month, type, "_aggravated_assault")] <-
+        rowSums(data[, grep(paste0(month, type, "_(OTH|GUN|KNIFE|HAND).*ASSA"),
+                            names(data))])
+    }
+  }
+  return(data)
 }
 
 make_yearly_cols <- function(dataset, types, crimes, officers) {
   for (crime in crimes) {
     for (type in types) {
-      dataset[, paste(type, crime, sep = "_")] <- rowSums(dataset[,
-                                                                  grep(paste(type,
-                                                                             crime,
-                                                                             sep = "_"),
-                                                                         names(dataset),
-                                                                       value = TRUE)])
+      dataset[, paste0(type, "_", crime)] <- rowSums(dataset[,
+                                                             grep(paste0(type,
+                                                                         "_",
+                                                                         crime),
+                                                                  names(dataset),
+                                                                  value = TRUE)])
     }
   }
 
@@ -555,38 +540,78 @@ make_yearly_cols <- function(dataset, types, crimes, officers) {
   return(dataset)
 }
 
-remove_monthly_cols <- function(dataset, months) {
-  types <- c("act", "clr", "unfound", "card")
-  if (any(grepl("officers", names(dataset)))) {
-    types <- c(types, "officer")
+
+
+fix_outliers <- function(data, year) {
+  if (year == 1972) {
+    data$ORI[data$NUMERIC_STATE_CODE == "virginia" &
+               data$POPULATION_1 == "446963"] <- "VA02901"
   }
-
-  dataset <- dataset[, -grep("LAST|ICPSR|OLD|NUMBER|SEQU|SOURCE|AGE|SUB|IDENT|FIELD|_MONTH",
-                             names(dataset), ignore.case = TRUE)]
-
-
-  for (month in months) {
-    for (type in types) {
-      dataset <- dataset[, -grep(paste(month, type, sep = "_"),
-                                 names(dataset))]
-    }
+  if (year == 1974) {
+    data$NOV_OFFICERS_KILLED_BY_ACCIDENT[data$ORI == "MA01301"] <- NA
   }
-  return(dataset)
+  if (year == 1978) {
+    data$MAR_OFFICERS_KILLED_BY_ACCIDENT[data$ORI == "PAPPD00"] <- NA
+
+    data$APR_OFFICERS_KILLED_BY_FELONY[data$ORI == "NY06240"] <- NA
+    data$JUN_OFFICERS_KILLED_BY_FELONY[data$ORI == "NY06240"] <- NA
+    data$APR_OFFICERS_KILLED_BY_ACCIDENT[data$ORI == "NY06240"] <- NA
+    data$JUN_OFFICERS_KILLED_BY_ACCIDENT[data$ORI == "NY06240"] <- NA
+
+    data$MAY_OFFICERS_KILLED_BY_ACCIDENT[data$ORI == "NY04040"] <- NA
+    data$MAY_OFFICERS_KILLED_BY_FELONY[data$ORI == "NY04040"] <- NA
+  }
+  if (year == 1996) {
+    data$SEP_OFFICERS_KILLED_BY_FELONY[data$ORI == "LA03102"] <- NA
+  }
+  if (year == 1997) {
+    data$MAR_OFFICERS_KILLED_BY_FELONY[data$ORI == "MO0950E"] <- NA
+  }
+  if (year %in% 2014:2016) {
+    data[data$ORI == "LANPD00", grep("UNFOUND_", names(data))] <- NA
+  }
+  return(data)
 }
 
-
-
-reorganize_cols <- function(dataset) {
-  acts     <- grep("act_", names(dataset), value = TRUE)
-  clr      <- grep("clr_[^0-9]", names(dataset), value = TRUE)
-  clr_18   <- grep("clr_18", names(dataset), value = TRUE)
-  unfound  <- grep("unfound", names(dataset), value = TRUE)
-  officers <- grep("officer", names(dataset), value = TRUE)
-  misc     <- c("ori", "ori9", "year", "months_reported")
-  other    <- names(dataset)
-  other    <- other[!other %in% c(misc, acts, clr, clr_18, unfound, officers)]
-
-  dataset  <- dataset[, c(misc, other, officers, acts, clr, clr_18, unfound)]
-  return(dataset)
-}
-
+to_ascii_cols <- c("jul_card_3_pt", "aug_card_3_pt", "mailing_address_line_4")
+starting_cols <- c("ori",
+                   "ori9",
+                   "year",
+                   "state",
+                   "state_abb",
+                   "months_reported")
+other_cols <- c("fips_state_code",
+                "fips_county_code",
+                "fips_state_county_code",
+                "fips_place_code",
+                "fips_state_place_code",
+                "agency_type",
+                "agency_subtype_1",
+                "agency_subtype_2",
+                "group_number",
+                "division",
+                "city_sequence_number",
+                "core_city_indication",
+                "covered_by_code",
+                "last_update",
+                "field_office",
+                "total_population",
+                "population_1",
+                "county_1",
+                "msa_1",
+                "population_2",
+                "county_2",
+                "msa_2",
+                "population_3",
+                "county_3",
+                "msa_3",
+                "followup_indication",
+                "special_mailing_group",
+                "special_mailing_address",
+                "agency_name",
+                "agency_state_name",
+                "mailing_address_line_1",
+                "mailing_address_line_2",
+                "mailing_address_line_3",
+                "mailing_address_line_4",
+                "zip_code")
