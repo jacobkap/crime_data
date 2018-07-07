@@ -16,6 +16,7 @@ name_fixes <- c("^UCR_ORIGINATING_AGENCY_IDENTIFIER$"         = "ORI",
 
 cols_to_keep <- c("ORI",
                   "ORI9",
+                  "AGENCY_NAME",
                   "AGENCY_TYPE",
                   "AGENCY_SUBTYPE_1",
                   "AGENCY_SUBTYPE_2",
@@ -115,6 +116,10 @@ read_merge_crosswalks <- function() {
                              "agency_type",
                              "agency_subtype_1",
                              "agency_subtype_2")]
+
+  # Fix issue where Philly has wrong county FIPS code
+  crosswalk$fips_county_code[crosswalk$ori == "PAPEP00"] <- "101"
+  crosswalk$fips_state_county_code[crosswalk$ori == "PAPEP00"] <- "42101"
 
   return(crosswalk)
 

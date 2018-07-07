@@ -7,8 +7,8 @@ crosswalk <- read_merge_crosswalks()
 cross_names <- names(crosswalk)
 cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
 save_ucr_monthly()
-yearly_offenses <- make_ucr_yearly()
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")
+yearly_offenses <- make_ucr_yearly()
 saving_yearly(yearly_offenses)
 save_as_zip("ucr_offenses_known_1960_2016_")
 
@@ -26,21 +26,34 @@ save_ucr_monthly <- function() {
       ori_col_to_keep = "ORI"
       data$ORI <- NULL
     }
+    if (year == 1972) {
+      ori_col_to_keep <- c(ori_col_to_keep, "NUMERIC_STATE_CODE")
+    }
     ORIs <- spss_ascii_reader(dataset_name =
                                 paste0(year, "_UCR_offenses_known.txt"),
                               sps_name =
                                 paste0(year, "_UCR_offenses_known.sps"),
                               keep_columns = ori_col_to_keep,
                               value_label_fix = FALSE)
+
+    # Fixes issue where ORI has VA02901 wrong state code
+    if (year == 1972) {
+      ORIs$ORI_CODE[ORIs$ORI_CODE == "SC02901" &
+                      ORIs$NUMERIC_STATE_CODE == 45] <- "VA02901"
+      ORIs$NUMERIC_STATE_CODE <- NULL
+    }
+
     data <- bind_cols(ORIs, data)
     rm(ORIs)
     data <- cleaning_UCR(data)
     data <- fix_outliers(data, year)
     data <- make_agg_assault(data)
     current_year = year
-
-
     population_cols <- c("population_1", "population_2", "population_3")
+
+
+
+
     data <-
       data %>%
       dplyr::rename_all(tolower) %>%
@@ -137,3 +150,4 @@ save_ucr_monthly <- function() {
     message(year)
   }
 }
+

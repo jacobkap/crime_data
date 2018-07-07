@@ -4,6 +4,7 @@ str_replace_all_lower <- function(string, pattern) {
 
 shr_names <- c("SUBC.*"                  = "SUBCIRCUMSTANCE",
                "ETHNC_ORIGN"             = "ETHNIC_ORIGIN",
+               "ETHNICITY"               = "ETHNIC_ORIGIN",
                "ORIGN|ORGIN"             = "ORIGIN",
                "ETHNC"                   = "ETHNIC",
                "ETHNIC$"                 = "ETHNIC_ORIGIN",
@@ -40,7 +41,11 @@ shr_names <- c("SUBC.*"                  = "SUBCIRCUMSTANCE",
                "^SUBCIRCUMSTANCE$"       = "SUBCIRCUMSTANCE_1",
                "^CIRCUMSTANCE_([0-9]+)"  = "OFFENDER_\\1_CIRCUMSTANCE",
                "^SUBCIRCUMSTANCE_([0-9]+)"   = "OFFENDER_\\1_SUBCIRCUMSTANCE",
-               "^ORI_CODE$"                = "ORI")
+               "^ORI_CODE$"              = "ORI",
+               "OFFENSE_MONTH"           = "MONTH_OF_OFFENSE",
+               "ACTION_TYPE"             = "TYPE_OF_ACTION",
+               "^DIVISION$"              = "GEOGRAPHIC_DIVISION",
+               "^HOMICIDE$"              = "HOMICIDE_TYPE")
 
 weapons <- c("^oth -type dk$"     = "other or type unknown",
              "^handgun -pistol,$" = "handgun",
@@ -324,7 +329,8 @@ year_fix <- c("^76$" = "1976",
               "^85$" = "1985",
               "^86$" = "1986",
               "^87$" = "1987",
-              "^88$" = "1988")
+              "^88$" = "1988",
+              "^16$" = "2016")
 
 homicide_type <- c("murder nonneglig" = "murder and non-negligent manslaughter",
                    "mansl by neglig" = "manslaughter by negligence",

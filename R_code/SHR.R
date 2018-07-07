@@ -7,24 +7,25 @@ library(haven)
 library(readr)
 library(memisc)
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 
 crosswalk <- read_merge_crosswalks()
 cross_names <- names(crosswalk)
 cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
-shr_1976_2015 <- agg_shr()
-shr_1976_2015 <- reorder_SHR_columns(shr_1976_2015)
+shr_1976_2016 <- agg_shr()
+shr_1976_2016 <- reorder_SHR_columns(shr_1976_2016)
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/SHR")
-save_files(data = shr_1976_2015,
-           year = "1976_2015",
+save_files(data = shr_1976_2016,
+           year = "1976_2016",
            file_name = "shr_",
            save_name = "shr_")
-save_as_zip("shr_1976_2015_")
+save_as_zip("shr_1976_2016_")
 
 agg_shr <- function() {
   shr <- data.table()
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/SHR")
   source('C:/Users/user/Dropbox/R_project/crime_data/R_code/SHR_utils.R')
-  for (year in 1976:2015) {
+  for (year in 1976:2016) {
     data <- spss_ascii_reader(dataset_name = paste0(year, "_SHR.txt"),
                               sps_name = paste0(year, "_SHR.sps"))
     names(data) <- str_replace_all(names(data), shr_names)
@@ -105,7 +106,8 @@ clean_shr <- function(data) {
                                                         homicide_type)
   data$SITUATION               <- str_replace_all_lower(data$SITUATION,
                                                         situation)
-  data$GROUP                   <- str_replace_all(data$GROUP, group_number)
+  data$GROUP                   <- str_replace_all_lower(data$GROUP,
+                                                  group_number_fix)
   if ("SUB_GROUP" %in% names(data)) {
   data$SUB_GROUP               <- str_replace_all_lower(data$SUB_GROUP,
                                                         sub_group)
@@ -184,7 +186,8 @@ reorder_SHR_columns <- function(data) {
                   vic_race,
                   vic_ethnic,
                   vic_relation,
-                  offenders)
+                  offenders) %>%
+    dplyr::arrange(desc(year), ori)
   return(data)
 
 }

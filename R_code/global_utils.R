@@ -6,7 +6,6 @@ library(data.table)
 library(memisc)
 library(haven)
 library(readr)
-options(warn = 2)
 
 # utils for UCR files
 
@@ -18,7 +17,7 @@ save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
 
   if (rda_only == FALSE) {
   Write(codebook(data),
-       file = paste0(file_name, "codebook_", year, ".txt"))
+       file = paste0(file_name, "_codebook", year, ".txt"))
 
   do.call("write_dta", list(as.name(paste0(file_name, year)),
                             path = paste0(save_name,
@@ -37,9 +36,11 @@ save_as_zip <- function(file_name) {
   file_ext <- c("rda", "dta", "csv", "sav")
   all_files <- list.files()
   codebooks <- all_files[grep("codebook", all_files)]
+  pdfs <- all_files[grep(".pdf", all_files)]
   for (i in seq_along(file_ext)) {
     zip_files <- all_files[grep(file_ext[i], all_files)]
-    zip_files <- c(zip_files, codebooks)
+    zip_files <- c(zip_files, codebooks, pdfs)
+    zip_files <- sort(zip_files)
 
     zip::zip(zipfile = paste0(file_name,
                               file_ext[i], ".zip"),
@@ -315,7 +316,79 @@ group_number_fix <- c("^msa cts 100000/over$"   = "msa county 100,000+",
                   "^msa counties 100,000\\+$" = "msa county 100,000+",
                   "^7b$" = NA,
                   "^non-msa counties 100,000\\+$" = "non-msa county 100,000+",
-                  " through " = " thru "
+                  " through " = " thru ",
+
+
+                  # SHR
+                  "^smsa counties"                        = "msa county",
+                  "^citie bet 25-49k$"                    = "city 25,000 thru 49,999",
+                  "^all cities 250k\\+$"                  = "city 250,000+",
+                  "^citie bet 10-24k$"                    = "city 10,000 thru 24,999",
+                  "^cit bet 2.5-9.9k$"                    = "city 2,500 thru 9,999",
+                  "^cit bet 100-249k$"                    = "city 100,000 thru 249,999",
+                  "^non-smsa countie$"                    = "non-msa county",
+                  "^citie under 2.5k$"                    = "city under 2,500",
+                  "^citie bet 50-99k$"                    = "city 50,000 thru 99,999",
+                  "^msa counties 100,000 or over$"        = "msa county 100,000+",
+                  "^cities 25,000 thru 49,999$"           = "city 25,000 thru 49,999",
+                  "^cities 250,000 thru 499,999$"         = "city 250,000 thru 499,999",
+                  "^cities 10,000 thru 24,999$"           = "city 10,000 thru 24,999",
+                  "^cities 2,500 thru 9,999$"             = "city 2,500 thru 9,999",
+                  "^msa counties 25,000 thru 99,999$"     = "msa county 25,000 thru 99,999",
+                  "^cities 100,000 thru 249,999$"         = "city 100,000 thru 249,999",
+                  "^msa counties 10,000 thru 24,999$"     = "msa county 10,000 thru 24,999",
+                  "^cities under 2,500$"                  = "city under 2,500",
+                  "^non-msa counties 10,000 thru 24,999$" = "non-msa county 10,000 thru 24,999",
+                  "^non-msa counties 25,000 thru 99,999$" = "non-msa county 25,000 thru 99,999",
+                  "^non-msa counties under 10,000$"       = "non-msa county under 10,000",
+                  "^cities 50,000 thru 99,999$"           = "city 50,000 thru 99,999",
+                  "^cities 500,000 thru 999,999$"         = "city 500,000 thru 999,999",
+                  "^msa counties under 10,000$"           = "msa county under 10,000",
+                  "^all cities 1,000,000 or over$"        = "city 1,000,000+",
+                  "^non-msa counties 100,000 or over$"    = "non-msa county 100,000+",
+                  "^msa co. 100,000 \\+$"                   = "msa county 100,000+",
+                  "^cit 25,000-49,999$"                   = "city 25,000 thru 49,999",
+                  "^cit 250,000-499,999$"                 = "city 250,000 thru 499,999",
+                  "^cit 2,500-9,999$"                     = "city 2,500 thru 9,999",
+                  "^cit 10,000-24,999$"                   = "city 10,000 thru 24,999",
+                  "^msa co. 25,000-99,999$"               = "msa county 25,000 thru 99,999",
+                  "^cit 100,000-249,999$"                 = "city 100,000 thru 249,999",
+                  "^msa co. 10,000-24,999$"               = "msa county 10,000 thru 24,999",
+                  "^non-msa co. 10,000-24,999$"           = "non-msa county 10,000 thru 24,999",
+                  "^non-msa co. < 10,000$"                = "non-msa county under 10,000",
+                  "^cit < 2,500$"                         = "city under 2,500",
+                  "^non-msa co. 25,000-99,999$"           = "non-msa county 25,000 thru 99,999",
+                  "^cit 50,000-99,999$"                   = "city 50,000 thru 99,999",
+                  "^cit 500,000-999,999$"                 = "city 500,000 thru 999,999",
+                  "^cit 1,000,000 \\+$"                     = "city 1,000,000+",
+                  "^msa co. < 10,000$"                    = "msa county under 10,000",
+                  "^non-msa co. 100,000 \\+$"               = "non-msa county 100,000+",
+                  "^msa counties$"                        = "msa county",
+                  "^cits bet 25k-50k$"                    = "city 25,000, 49,999",
+                  "^cit bt 2.5k-9.9k$"                    = "city 2,500 thru 9,999",
+                  "^citi bet 10k-25k$"                    = "city 10,000 thru 24,999",
+                  "^cit bt 100k-250k$"                    = "city 100,000 thru 249,999",
+                  "^non-msa cnties$"                      = "non-msa county",
+                  "^citi bet 50k-99k$"                    = "city 50,000 thru 99,999",
+                  "^msa cts 100000/over$"                 = "msa county 100,000+",
+                  "^cts 25000-49999$"                     = "city 25,000 thru 49,999",
+                  "^cts 250000-499999$"                   = "city 250,000 thru 499,999",
+                  "^cts 10000-24999$"                     = "city 10,000 thru 24,999",
+                  "^cits 2500-9999$"                      = "city 2,500 thru 9,999",
+                  "^cts undr 2,500$"                      = "city under 2,500",
+                  "^cts 100000-249999$"                   = "city 100,000 thru 249,999",
+                  "^msa cts 10000-24999$"                 = "msa county 10,000 thru 24,999",
+                  "^n-ms cts udr 10,000$"                 = "non-msa county under 10,000",
+                  "^msa cts 25000-99999$"                 = "msa county 25,000 thru 99,999",
+                  "^n-ms cts 10000-24999$"                = "non-msa county 10,000 thru 24,999",
+                  "^n-ms cts 25000-99999$"                = "non-msa county 25,000 thru 99,999",
+                  "^cts 50000-99999$"                     = "city 50,000 thru 999,999",
+                  "^al cts mlln ovr$"                     = "city 1,000,000+",
+                  "^cts 500000-999999$"                   = "city 500,000 thru 999,999",
+                  "^ms cts udr 10000$"                    = "msa county under 10,000",
+                  "^n-msa cots 10000$"                    = "non-msa county under 10,000",
+                  "^non-msa st police$"                   = "non-msa state police",
+                  "^msa st police$"                       = "msa state police"
                   )
 
 sub_group <- c("^smsa 100k\\+$"     = "msa county 100,000+",
