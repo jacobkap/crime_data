@@ -6,16 +6,16 @@ hate_crimes <- agg_hate_crimes()
 hate_crimes <- clean_hate_crimes(hate_crimes)
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/hate_crimes")
 save_files(data = hate_crimes,
-           year = "1992_2015",
+           year = "1992_2016",
            file_name = "ucr_hate_crimes_",
            save_name = "ucr_hate_crimes_")
-zip::zip(zipfile = "ucr_hate_crimes_1992_2015.zip",
+zip::zip(zipfile = "ucr_hate_crimes_1992_2016.zip",
          files = list.files())
 
 agg_hate_crimes <- function() {
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/hate_crimes")
   hate_crimes <- data.frame()
-  for (year in 1992:2015) {
+  for (year in 1992:2016) {
     message(year)
     data <- spss_ascii_reader(paste0("ucr_hate_crimes_incident_record_",
                                      year, ".txt"),
@@ -30,7 +30,9 @@ agg_hate_crimes <- function() {
                              keep_columns = "ORIGINATING_AGENCY_IDENTIFIER",
                              value_label_fix = FALSE)
     data <- bind_cols(ori, data)
+    data$INCIDENT_DATE <- lubridate::ymd(data$INCIDENT_DATE)
 
+    data$INCIDENT_DATE              <- as.character(data$INCIDENT_DATE)
     data$COVERED_BY_ORI             <- as.character(data$COVERED_BY_ORI)
     data$UCR_OFFENSE_CODE_5         <- as.character(data$UCR_OFFENSE_CODE_5)
     data$LOCATION_CODE_OFFENSE_5    <- as.character(data$LOCATION_CODE_OFFENSE_5)
@@ -116,6 +118,7 @@ clean_hate_crimes <- function(data) {
                      bias_motivation) %>%
     dplyr::mutate_at(vars(matches("^location")), stringr::str_replace_all,
                      location) %>%
+    dplyr::arrange(desc(year), ori) %>%
     dplyr::select(ori,
                   ori9,
                   state,

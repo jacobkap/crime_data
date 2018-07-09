@@ -17,7 +17,7 @@ save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
 
   if (rda_only == FALSE) {
   Write(codebook(data),
-       file = paste0(file_name, "_codebook", year, ".txt"))
+       file = paste0(file_name, "codebook_", year, ".txt"))
 
   do.call("write_dta", list(as.name(paste0(file_name, year)),
                             path = paste0(save_name,

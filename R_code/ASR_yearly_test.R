@@ -9,9 +9,9 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R_code/ASR_utils.R')
 for (year in 1980:2014) {
   message(year)
 
-  ASR <- spss_ascii_reader(paste0("UCR_arrests_by_age_sex_race_",
+  ASR <- spss_ascii_reader(paste0("ucr_arrests_by_age_sex_race_",
                                   year, ".txt"),
-                           paste0("UCR_arrests_by_age_sex_race_",
+                           paste0("ucr_arrests_by_age_sex_race_",
                                   year, ".sps"),
                            keep_columns = arrest_cols,
                            value_label_fix = FALSE)
@@ -23,9 +23,9 @@ for (year in 1980:2014) {
     summarise_all(funs(sum(., na.rm = TRUE)))
   ASR <- ASR[!is.na(ASR$OFFENSE_CODE), ]
 
-  ASR_year <- spss_ascii_reader(paste0("UCR_arrests_by_age_sex_race_yearly_",
+  ASR_year <- spss_ascii_reader(paste0("ucr_arrests_by_age_sex_race_yearly_",
                                        year, ".txt"),
-                                paste0("UCR_arrests_by_age_sex_race_yearly_",
+                                paste0("ucr_arrests_by_age_sex_race_yearly_",
                                        year, ".sps"),
                                 keep_columns = arrest_cols,
                                 value_label_fix = FALSE)

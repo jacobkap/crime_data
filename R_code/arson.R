@@ -8,15 +8,15 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 arson <- get_arson()
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arson")
 save_files(data = arson,
-           year = "2001_2015",
+           year = "2001_2016",
            file_name = "ucr_arson_",
            save_name = "ucr_arson_")
-zip::zip(zipfile = "ucr_arson_2001_2015.zip",
+zip::zip(zipfile = "ucr_arson_2001_2016.zip",
          files = list.files())
 
 get_arson <- function() {
   arson <- data.frame()
-  for (year in c(2001:2005, 2007:2015)) {
+  for (year in c(2001:2005, 2007:2016)) {
     setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/arson")
     message(year)
     data <- spss_ascii_reader(paste0("ucr_arson_", year, ".txt"),
@@ -52,19 +52,30 @@ get_arson <- function() {
       dplyr::filter(months_reported != "no months reported",
                     ori             != "NY03200")
     names(data) <- gsub("reported_known_", "reported_", names(data))
-    names(data) <- gsub("industrial_manufacturing", "industry_manufacture",
+    names(data) <- gsub("industrial_manufacturing",
+                        "industry_manufacture",
                         names(data))
     data  <- make_arson_yearly(data, arson_monthly_columns)
+
+    if (year == 2016) {
+      data <-
+        data %>%
+        dplyr::filter(
+          ori             != "GA06059")
+    }
+
     arson <- bind_rows(arson, data)
 
   }
   source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
   crosswalk <- read_merge_crosswalks()
   crosswalk_cols <- names(crosswalk)
-  crosswalk_cols <- crosswalk_cols[!crosswalk_cols %in% c("ori", "ori9")]
+  crosswalk_cols <- crosswalk_cols[!crosswalk_cols %in%
+                                     c("ori", "ori9")]
   arson <-
     arson %>%
     dplyr::left_join(crosswalk, by = "ori") %>%
+    dplyr::arrange(desc(year), ori) %>%
     dplyr::select(ori,
            ori9,
            state,

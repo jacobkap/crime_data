@@ -463,10 +463,10 @@ clean_leoka_cols <- function(data, cols) {
   data$STATE <- str_replace_all(data$STATE, states)
   data$GEOGRAPHIC_DIVISION <- str_replace_all(data$GEOGRAPHIC_DIVISION,
                                               division)
-  data$GROUP <- str_replace_all(data$GROUP, group_number)
+  data$GROUP <- str_replace_all(data$GROUP, group_number_fix)
   if (any(grepl("SUB_GROUP", names(data)))) {
     data$SUB_GROUP <- str_replace_all(data$SUB_GROUP, sub_group)
-    data$SUB_GROUP <- str_replace_all(data$SUB_GROUP, group_number)
+    data$SUB_GROUP <- str_replace_all(data$SUB_GROUP, group_number_fix)
   }
   data$YEAR <- str_replace_all(data$YEAR, years)
   data$MONTH_INCLUDED <- str_replace_all(data$MONTH_INCLUDED,
@@ -606,6 +606,7 @@ order_columns <- function(data, monthly = TRUE) {
   }
   data <-
     data %>%
+    dplyr::arrange(desc(year), ori) %>%
     dplyr::select(crosswalk_cols,
                   starting_cols,
                   indicator_cols,

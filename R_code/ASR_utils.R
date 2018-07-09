@@ -400,6 +400,7 @@ order_arrest_cols <- function(data) {
 
   data <-
     data %>%
+    dplyr::arrange(desc(year), ori) %>%
     dplyr::select(starting_cols,
                   murder_cols,
                   rape_cols,

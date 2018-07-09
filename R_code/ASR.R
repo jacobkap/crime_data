@@ -4,14 +4,14 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R_code/ASR_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 system.time(get_ASR_yearly())
 system.time(combine_years())
-save_as_zip("asr_1980_2015_")
+save_as_zip("asr_1980_2016_")
 
 combine_years <- function(crimes, file_name) {
 
   for (i in 1:length(combined_names)) {
     message(combined_names[i])
     data <- data.frame()
-    for (year in 1980:2015) {
+    for (year in 1980:2016) {
       setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR_temp")
       file_name_temp <- paste0("arrests_", names(combined_crimes)[i], "_", year)
       load(paste0(file_name_temp, ".rda"))
@@ -24,7 +24,7 @@ combine_years <- function(crimes, file_name) {
     data <- order_arrest_cols(data)
     setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR")
     save_files(data = data,
-               year = "1980_2015",
+               year = "1980_2016",
                file_name = combined_names[i],
                save_name = combined_names[i])
     rm(data); gc(); Sys.sleep(3)
@@ -35,7 +35,7 @@ combine_years <- function(crimes, file_name) {
 
 
 get_ASR_yearly <- function() {
-  for (year in 1980:2015) {
+  for (year in 1980:2016) {
     ASR     <- load_arrest_data(year)
     ASR     <- make_simple_columns(ASR)
     agency  <- get_agency_data(year = year)
@@ -65,20 +65,20 @@ get_ASR_yearly <- function() {
 
 load_arrest_data <- function(year) {
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/ASR")
-  ASR <- spss_ascii_reader(paste0("UCR_arrests_by_age_sex_race_",
+  ASR <- spss_ascii_reader(paste0("ucr_arrests_by_age_sex_race_",
                                   year, ".txt"),
-                           paste0("UCR_arrests_by_age_sex_race_",
+                           paste0("ucr_arrests_by_age_sex_race_",
                                   year, ".sps"),
                            keep_columns = arrest_cols)
-  ORI <- spss_ascii_reader(paste0("UCR_arrests_by_age_sex_race_",
+  ORI <- spss_ascii_reader(paste0("ucr_arrests_by_age_sex_race_",
                                   year, ".txt"),
-                           paste0("UCR_arrests_by_age_sex_race_",
+                           paste0("ucr_arrests_by_age_sex_race_",
                                   year, ".sps"),
                            keep_columns = "ORI",
                            value_label_fix = FALSE)
-  OFFENSES <- spss_ascii_reader(paste0("UCR_arrests_by_age_sex_race_",
+  OFFENSES <- spss_ascii_reader(paste0("ucr_arrests_by_age_sex_race_",
                                        year, ".txt"),
-                                paste0("UCR_arrests_by_age_sex_race_",
+                                paste0("ucr_arrests_by_age_sex_race_",
                                        year, ".sps"),
                                 keep_columns = "OFFENSE",
                                 value_label_fix = FALSE)
@@ -144,14 +144,14 @@ get_agency_data <- function(year) {
                       crosswalk_cols)
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/ASR")
 
-  ASR <- spss_ascii_reader(paste0("UCR_arrests_by_age_sex_race_",
+  ASR <- spss_ascii_reader(paste0("ucr_arrests_by_age_sex_race_",
                                   year, ".txt"),
-                           paste0("UCR_arrests_by_age_sex_race_",
+                           paste0("ucr_arrests_by_age_sex_race_",
                                   year, ".sps"),
                            keep_columns = other_cols)
-  ORI <- spss_ascii_reader(paste0("UCR_arrests_by_age_sex_race_",
+  ORI <- spss_ascii_reader(paste0("ucr_arrests_by_age_sex_race_",
                                   year, ".txt"),
-                           paste0("UCR_arrests_by_age_sex_race_",
+                           paste0("ucr_arrests_by_age_sex_race_",
                                   year, ".sps"),
                            keep_columns = "ORI",
                            value_label_fix = FALSE)

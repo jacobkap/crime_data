@@ -2,26 +2,25 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R_code/leoka_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
 save_LEOKA_monthly()
-
-# setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/LEOKA")
-# save_raw_as_zip("LEOKA_monthly_1975_2015_ascii_sps")
-leoka_yearly_1975_2015 <- leoka_yearly()
+leoka_yearly_1975_2016 <- leoka_yearly()
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
-save_files(data = leoka_yearly_1975_2015,
+save_files(data = leoka_yearly_1975_2016,
            year = "",
-           file_name = "leoka_yearly_1975_2015",
-           save_name = "leoka_yearly_1975_2015")
-save_as_zip("leoka_1975_2015_")
+           file_name = "leoka_yearly_1975_2016",
+           save_name = "leoka_yearly_1975_2016")
+save_as_zip("leoka_1975_2016_")
 
 # Save the individual files - still monthly
 save_LEOKA_monthly <- function() {
 
-  for (year in 1975:2015) {
+  for (year in 1975:2016) {
     source('C:/Users/user/Dropbox/R_project/crime_data/R_code/leoka_utils.R')
     setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/LEOKA")
     message(year)
-    data <- spss_ascii_reader(dataset_name = paste0(year, "_leoka.txt"),
-                              sps_name = paste0(year, "_leoka.sps"))
+    data <- spss_ascii_reader(dataset_name =
+                                paste0("ucr_leoka_", year, ".txt"),
+                              sps_name =
+                                paste0("ucr_leoka_", year, ".sps"))
 
     names(data) <- name_fixer(names(data))
     cols_to_fix <- c(misc_cols, injury_cols, indicator_cols)
@@ -63,15 +62,15 @@ save_LEOKA_monthly <- function() {
 
     # A few years have value labels for ORIS (for some weird reason)
     # so this makes sure ORIs stay as ORIs
-    ORI <- spss_ascii_reader(dataset_name = paste0(year, "_leoka.txt"),
-                             sps_name = paste0(year, "_leoka.sps"),
+    ORI <- spss_ascii_reader(dataset_name = paste0("ucr_leoka_", year, ".txt"),
+                             sps_name = paste0("ucr_leoka_", year, ".sps"),
                              keep_columns = "ORI_CODE",
                              value_label_fix = FALSE)
     names(ORI) <- "ORI"
     data <- bind_cols(data, ORI)
     data <- data[!is.na(data$STATE), ]
     data <- data[!is.na(data$ORI), ]
-
+sm
     data <- fix_persons_per_1k(data) # Now it DOESN'T make these rate variables.
                                      # Just makes total officers/civilians
                                      # variables and removes old rate variables.
@@ -113,7 +112,7 @@ save_LEOKA_monthly <- function() {
 leoka_yearly <- function() {
   leoka <- data.frame()
   setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
-  for (year in 1975:2015) {
+  for (year in 1975:2016) {
     suppressMessages(source('C:/Users/user/Dropbox/R_project/crime_data/R_code/leoka_utils.R'))
     load(paste0("leoka_monthly_", year, ".rda"))
     do.call(assign, list("data", as.name(paste0("leoka_monthly_", year))))
@@ -151,7 +150,7 @@ make_yearly <- function(data) {
   return(data)
 }
 
-summary(leoka_yearly_1975_2015)
-summary(leoka_yearly_1975_2015$officers_killed_accident)
-summary(leoka_yearly_1975_2015$officers_killed_felony)
-names(leoka_yearly_1975_2015)
+summary(leoka_yearly_1975_2016[leoka_yearly_1975_2016$year == 2016,])
+summary(leoka_yearly_1975_2016$officers_killed_accident)
+summary(leoka_yearly_1975_2016$officers_killed_felony)
+names(leoka_yearly_1975_2016)
