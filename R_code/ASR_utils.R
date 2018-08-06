@@ -206,18 +206,18 @@ index_crimes <- c("murder",
 
 drug_liquor_crimes <- c("total_drug",
                         "sale_drug",
-                        "sale_coke",
+                        "sale_heroin_coke",
                         "poss_drug",
                         "poss_cannabis",
                         "dui",
                         "liquor",
                         "drunkenness",
                         "sale_cannabis",
-                        "poss_coke",
+                        "poss_heroin_coke",
                         "poss_oth_drug",
                         "sale_oth_drug",
-                        "poss_narcotic",
-                        "sale_narcotic")
+                        "poss_synth_narc",
+                        "sale_synth_narc")
 
 financial_crimes <- c("forgery",
                       "fraud",
@@ -281,7 +281,7 @@ offenses <- c("^murder and non-negligent manslaughter" = "murder",
               "^weapons-carry, posses, etc."           = "weapons",
               "^total drug abuse violations"           = "total_drug",
               "^sale/manufacture \\(subtotal\\)"       = "sale_drug",
-              "^sale: opium, coke, and their derivatives" = "sale_coke",
+              "^sale: opium, coke, and their derivatives" = "sale_heroin_coke",
               "^possession \\(subtotal\\)"             = "poss_drug",
               "^possession: marijuana"                 = "poss_cannabis",
               "^offenses against family and children"  = "family_offenses",
@@ -294,19 +294,19 @@ offenses <- c("^murder and non-negligent manslaughter" = "murder",
               "^stolen property-buy, receive, poss."   = "stolen_property",
               "^prostitution and commercialized vice"  = "prostitution",
               "^sale: marijuana"                       = "sale_cannabis",
-              "^possession: opium, coke, and their derivatives" = "poss_coke",
+              "^possession: opium, coke, and their derivatives" = "poss_heroin_coke",
               "^sex offenses \\(not rape or prostitution\\)"   = "oth_sex_off",
               "^possession: other dangerous non-narc drugs" = "poss_oth_drug",
               "^arson"                                  = "arson",
               "^sale: other dangerous non-narc drugs"   = "sale_oth_drug",
               "^vagrancy"                               = "vagrancy",
-              "^possession: truly addicting synthetic narcotics" = "poss_narcotic",
+              "^possession: truly addicting synthetic narcotics" = "poss_synth_narc",
               "^runaways"                               = "runaway",
               "^manslaughter by negligence"             = "manslaught_neg",
               "^gambling \\(total\\)"                   = "total_gambling",
               "^bookmaking \\(horse and sports\\)"      = "bookmaking",
               "^all other gambling"                     = "oth_gambling",
-              "^sale: truly addicting synthetic narcotics" = "sale_narcotic",
+              "^sale: truly addicting synthetic narcotics" = "sale_synth_narc",
               "^number and lottery"                     = "number_lottery",
               "^suspicion"                              = "suspicion"
 )
@@ -354,7 +354,7 @@ order_arrest_cols <- function(data) {
   weapons_cols          <- grep("^weapons", names(data), value = TRUE)
   total_drug_cols       <- grep("^total_drug", names(data), value = TRUE)
   sale_drug_cols        <- grep("^sale_drug", names(data), value = TRUE)
-  sale_coke_cols        <- grep("^sale_coke", names(data), value = TRUE)
+  sale_heroin_coke_cols  <- grep("^sale_heroin_coke", names(data), value = TRUE)
   possess_drug_cols     <- grep("^poss_drug", names(data), value = TRUE)
   possess_cannabis_cols <- grep("^poss_cannabis", names(data), value = TRUE)
   family_offenses_cols  <- grep("^family_offenses", names(data), value = TRUE)
@@ -367,19 +367,19 @@ order_arrest_cols <- function(data) {
   stolen_property_cols  <- grep("^stolen_property", names(data), value = TRUE)
   prostitution_cols     <- grep("^prostitution", names(data), value = TRUE)
   sale_cannabis_cols    <- grep("^sale_cannabis", names(data), value = TRUE)
-  possess_coke_cols     <- grep("^poss_coke", names(data), value = TRUE)
+  possess_coke_cols     <- grep("^poss_heroin_coke", names(data), value = TRUE)
   oth_sex_off_cols      <- grep("^oth_sex", names(data), value = TRUE)
   possess_oth_drug_cols <- grep("^poss_oth_drug", names(data), value = TRUE)
   arson_cols            <- grep("^arson", names(data), value = TRUE)
   sale_oth_drug_cols    <- grep("^sale_oth_drug", names(data), value = TRUE)
   vagrancy_cols         <- grep("^vagrancy", names(data), value = TRUE)
-  possess_narcotic_cols <- grep("^poss_narcotic", names(data), value = TRUE)
+  possess_narcotic_cols <- grep("^poss_synth_narc", names(data), value = TRUE)
   runaway_cols          <- grep("^runaway", names(data), value = TRUE)
   manslaughter_neg_cols <- grep("^manslaught", names(data), value = TRUE)
   total_gambling_cols   <- grep("^total_gambling", names(data), value = TRUE)
   bookmaking_cols       <- grep("^bookmaking", names(data), value = TRUE)
   oth_gambling_cols     <- grep("^oth_gambling", names(data), value = TRUE)
-  sale_narcotic_cols    <- grep("^sale_narcotic", names(data), value = TRUE)
+  sale_synth_narc_cols    <- grep("^sale_synth_narc", names(data), value = TRUE)
   number_lottery_cols   <- grep("^number_lottery", names(data), value = TRUE)
   suspicion_cols        <- grep("^suspicion", names(data), value = TRUE)
 
@@ -429,9 +429,9 @@ order_arrest_cols <- function(data) {
                   possess_cannabis_cols,
                   sale_cannabis_cols,
                   possess_coke_cols,
-                  sale_coke_cols,
+                  sale_heroin_coke_cols,
                   possess_narcotic_cols,
-                  sale_narcotic_cols,
+                  sale_synth_narc_cols,
                   possess_oth_drug_cols,
                   sale_oth_drug_cols,
                   liquor_cols,

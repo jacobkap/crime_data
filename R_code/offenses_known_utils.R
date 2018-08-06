@@ -7,6 +7,33 @@ library(feather)
 library(haven)
 library(memisc)
 library(zip)
+library(lubridate)
+
+
+month_wide_to_long <- function(data) {
+crime_cols <- grep("act|clr|unfound|officer", names(data),
+                   value = TRUE,
+                   ignore.case = TRUE)
+
+crime_only_data <- data[, crime_cols]
+data <- data %>% dplyr::select(-one_of(crime_cols))
+
+final <- data.frame()
+for (month in tolower(month.abb)) {
+  temp        <- crime_only_data[, grep(paste0("^", month, "_"), crime_cols)]
+  names(temp) <- gsub("^....", "", names(temp))
+  temp        <- dplyr::bind_cols(data, temp)
+  temp$month  <- tolower(month.name)[tolower(month.abb) == month]
+  temp$date   <- lubridate::ymd(paste(temp$year, temp$month, "1"))
+
+  final       <- dplyr::bind_rows(final, temp)
+  message(paste(month, ncol(final)))
+}
+return(final)
+}
+
+
+
 # Clean column names and value labels -------------------------------------
 cleaning_UCR <- function(data) {
 
@@ -14,7 +41,9 @@ cleaning_UCR <- function(data) {
     data %>%
     dplyr::select_all(str_replace_all, col_names) %>%
     # To fix emojis/special characters
-    dplyr::mutate_at(vars(toupper(to_ascii_cols)), iconv, to = "ASCII//TRANSLIT") %>%
+    dplyr::mutate_at(vars(toupper(to_ascii_cols)),
+                     iconv,
+                     to = "ASCII//TRANSLIT") %>%
     dplyr::mutate_if(is.factor, as.character) %>%
     dplyr::mutate_if(is.character, tolower) %>%
     dplyr::mutate(CORE_CITY_INDICATION = str_replace_all(CORE_CITY_INDICATION,
@@ -24,7 +53,7 @@ cleaning_UCR <- function(data) {
                   FOLLOWUP_INDICATION = str_replace_all(FOLLOWUP_INDICATION,
                                                         followup_indication),
                   GROUP_NUMBER = str_replace_all(GROUP_NUMBER,
-                                                 group_number),
+                                                 group_number_fix),
                   MONTHS_REPORTED = str_replace_all(MONTHS_REPORTED,
                                                     months_reported),
                   SPECIAL_MAILING_ADDRESS = str_replace_all(SPECIAL_MAILING_ADDRESS,
@@ -249,23 +278,23 @@ core_city_indication <- c("no$"                      = "no, not location in core
                           "yes, core city of msa"    = "yes, located in core city of msa",
                           "not ascertained"          = NA,
                           "location"                 = "located",
-                          "^core city$"                = "yes, located in core city of msa")
+                          "^core city$"              = "yes, located in core city of msa")
 
-months_reported <- c("^0$"                = "no months reported",
-                     "0 months reported" = "no months reported",
-                     "0 mth reported" = "no months reported",
-                     "no mth reported"   = "no months reported",
-                     "last r"            = "is the last month r",
-                     "dec "              = "december ",
-                     "nov "              = "november ",
-                     "oct "              = "october ",
-                     "feb "              = "february ",
-                     "jan "              = "january ",
-                     "sep "              = "september ",
-                     "^0"                = "",
-                     "last mth rep"      = "is the last month reported",
-                     "^1$"                = "january is the last month reported",
-                     "^2$"                = "february is the last month reported",
+months_reported <- c("^0$"                 = "no months reported",
+                     "0 months reported"   = "no months reported",
+                     "0 mth reported"      = "no months reported",
+                     "no mth reported"     = "no months reported",
+                     "last r"              = "is the last month r",
+                     "dec "                = "december ",
+                     "nov "                = "november ",
+                     "oct "                = "october ",
+                     "feb "                = "february ",
+                     "jan "                = "january ",
+                     "sep "                = "september ",
+                     "^0"                  = "",
+                     "last mth rep"        = "is the last month reported",
+                     "^1$"                 = "january is the last month reported",
+                     "^2$"                 = "february is the last month reported",
                      "^3$"                 = "march is the last month reported",
                      "^4$"                 = "april is the last month reported",
                      "^5$"                 = "may is the last month reported",
@@ -285,160 +314,6 @@ special_mailing_address <- c(
   "n$"      = "not a special mailing address",
   "missing" = NA)
 
-division <- c("e. south central"                                   = "east south central",
-              "east st south ceast tral"                           = "east south central",
-              "west ast t south ceast tral"                        = "west south central,",
-              "east st north central"                              = "east north central",
-              "west ast t north central"                           = "west north central",
-              "east st north ceast tral"                           = "east north central",
-              "west ast t north ceast tral"                        = "west north central",
-              "w. south central"                                   = "west south central",
-              "e. north central"                                   = "east north central",
-              "east st north central"                              = "east north central",
-              "w. north central"                                   = "west north central",
-              "east st south central"                              = "east south central",
-              "west ast t south central"                           = "west south central",
-              "east north ceast tral"                              = "east north central",
-              "west nceast "                                       = "west north central",
-              "neast  east land"                                   = "west north central",
-              "u. s. posseast sion"                                = "possessions",
-              "u.s. possessions"                                   = "possessions",
-              "u. s. posessions"                                   = "possessions",
-              " states"                                            = "",
-              "eng1and"                                            = "england",
-              "al,ky,ms,tn"                                        = "east south central",
-              "az,co,id,mt,nv,n"                                   = "mountain",
-              "ar,la,ok, texas"                                    = "west south central",
-              "ak,ca,hi,or,wa"                                     = "pacific",
-              "ct,me,ma,nh"                                        = "new england",
-              "de,fl,ga,md,nort"                                   = "south atlantic",
-              "il,in,mi,oh,wi"                                     = "east north central",
-              "ia,ks,mn,mo,ne,n"                                   = "west north central",
-              "nj ny pa"                                           = "mid-atlantic",
-              "w ncen states"                                      = "west north central",
-              "s atlantic sts"                                     = "south atlantic",
-              "1$"                                                 = "new england",
-              "2"                                                  = "mid-atlantic",
-              "3"                                                  = "east north central",
-              "4"                                                  = "west north central",
-              "5"                                                  = "south atlantic",
-              "6"                                                  = "east south central",
-              "7"                                                  = "west south central",
-              "8"                                                  = "mountain",
-              "9"                                                  = "pacific",
-              "alabama, kentucky, mississippi, tennessee"          = "east south central",
-              "arizona, colorado, idaho, montana, nevada, new"     = "mountain",
-              "arkansas, louisiana, oklahoma, texas"               = "west south central",
-              "alaska, california, hawaii, oregon, washington"     = "pacific",
-              "connecticut, maine, massachusetts, new hampshire,"  = "new enland",
-              "delaware, florida, georgia, maryland, north"        = "south atlantic",
-              "illinois, indiana, michigan, ohio, wisconsin"       = "east north central",
-              "iowa, kansas, minnesota, missouri, nebraska, north" = "west north central",
-              "new jersey, new york, pennsylvania"                 = "mid-atlantic",
-              "midd1east atlantic"                                 = "mid-atlantic",
-              "midast atlantic"                                    = "mid-atlantic",
-              "^u$"                                                = NA,
-              "e\\."                                                 = "east ",
-              "w\\."                                                 = "west ",
-              "cntrl"                                              = "central",
-              "middle"                                             = "mid",
-              "east st south ceast tral"                           = "east south central",
-              "west ast t south ceast tral"                        = "west south central",
-              "posseast sions"                                     = "possessions",
-              "west nceast "                                       = "west north central",
-              "east st north ceast tral"                           = "east north central",
-              "new enland"                                         = "new england",
-              "w ncen"                                             = "west north central",
-              "midd1e atlantic"                                    = "mid-atlantic",
-              "mid "                                               = "mid-",
-              "u. s. possession"                                   = "possessions")
-
-
-
-group_number <- c("msa co. 100,000 +"                    =   "msa county 100,000+",
-                  "cit 25,000-49,999"                    =   "cities between 25,000 and 49,999",
-                  "cit 250,000-499,999"                  =   "cities 250,000 thru 499,999",
-                  "cit 10,000-24,999"                    =   "cities between 10,000 and 24,999",
-                  "cit 2,500-9,999"                      =   "cities between 2,500 and 9,999",
-                  "msa co. 25,000-99,999"                =   "msa counties 25,000 thru 99,999",
-                  "cit 100,000-249,999"                  =   "cities between 100,000 and 249,999",
-                  "non-msa co. 10,000-24,999"            =   "non-msa counties 10,000 thru 24,999",
-                  "non-msa co. 25,000-99,999"            =   "non-msa counties 25,000 thru 99,999",
-                  "non-msa co. < 10,000"                 =   "non-msa counties under 10,000",
-                  "cit 50,000-99,999"                    =   "cities between 50,000 and 99,999",
-                  "cit < 2,500"                          =   "cities under 2,500",
-                  "msa co. 10,000-24,999"                =   "msa counties 10,000 thru 24,999",
-                  "msa co. < 10,000"                     =   "msa counties under 10,000",
-                  "cit 1,000,000 +"                      =   "cities 1,000,000 or over",
-                  "cit 500,000-999,999"                  =   "cities 500,000 thru 999,999",
-                  "non-msa co. 100,000 +"                =   "non-msa counties 100,000 or over",
-                  "msa st police"                        =   "msa state police",
-                  "non-msa st police"                    =   "non-msa state policy",
-                  "non-smsa cntys"                       =   "non-msa counties",
-                  "cities < 2,500"                       =   "cities under 2,500",
-                  "smsa counties"                        =   "msa counties",
-                  "cities 25k-49999"                     =   "cities between 25,000 and 49,999",
-                  "cities >250k"                         =   "cities 250,000 or over",
-                  "cities 20k-24999"                     =   "cities between 10,000 and 24,999",
-                  "cities 2500-9999"                     =   "cities between 2,500 and 9,999",
-                  "cities 100k-249k"                     =   "cities between 100,000 and 249,999",
-                  "cities 50k-99999"                     =   "cities between 50,000 and 99,999",
-                  "under 2,500"                          =   "cities under 2,500",
-                  "5,000-49,999"                         =   "cities between 25,000 and 49,999",
-                  "all city>249,999"                     =   "cities 250,000 or over",
-                  "1,000-24,999"                         =   "cities between 10,000 and 24,999",
-                  "2,500-9,999"                          =   "cities between 2,500 and 9,999",
-                  "100,000-249,000"                      =   "cities between 100,000 and 249,999",
-                  "50,000-99,999"                        =   "cities between 50,000 and 99,999",
-                  "nonsmsa counties"                     =   "non-smsa counties",
-                  "cities, 0<2.5k"                       =   "cities under 2,500",
-                  "cities,25k<50k"                       =   "cities between 25,000 and 49,999",
-                  "cities 250k+"                         =   "cities 250,000 or over",
-                  "cities, 10k<25k"                      =   "cities between 10,000 and 24,999",
-                  "cities, 2.5k<10k"                     =   "cities between 2,500 and 9,999",
-                  "cities,100k<250k"                     =   "cities between 100,000 and 249,999",
-                  "cities,50k<100k"                      =   "cities between 50,000 and 99,999",
-                  "non-smsa countie"                     =   "non-msa counties",
-                  "cities lt 2500"                       =   "cities under 2,500",
-                  "cities25th-49999"                     =   "cities between 25,000 and 49,999",
-                  "cities 250th +"                       =   "cities 250,000 or over",
-                  "cities10th-24999"                     =   "cities between 10,000 and 24,999",
-                  "cities2500-9999"                      =   "cities between 2,500 and 9,999",
-                  "city100th-249999"                     =   "cities between 100,000 and 249,999",
-                  "cities50th-99999"                     =   "cities between 50,000 and 99,999",
-                  "non-smsa counties"                    =   "non-msa counties",
-                  "cities under 2,500"                   =   "cities under 2,500",
-                  "cities between 25,000 and 49,999"     =   "cities between 25,000 and 49,999",
-                  "cities 250,000 or over"               =   "cities 250,000 or over",
-                  "cities between 10,000 and 24,999"     =   "cities between 10,000 and 24,999",
-                  "cities between 2,500 and 9,999"       =   "cities between 2,500 and 9,999",
-                  "cities between 100,000 and 249,999"   =   "cities between 100,000 and 249,999",
-                  "cities between 50,000 and 99,999"     =   "cities between 50,000 and 99,999",
-                  "non-smsa countys"                     =   "non-msa counties",
-                  "cities <2500"                         =   "cities under 2,500",
-                  "cities 25k-50k"                       =   "cities between 25,000 and 49,999",
-                  "cities 250k up"                       =   "cities 250,000 or over",
-                  "cities 10k-25k"                       =   "cities between 10,000 and 24,999",
-                  "cities 100k-250k"                     =   "cities between 100,000 and 249,999",
-                  "cities 50k-100k"                      =   "cities between 50,000 and 99,999",
-                  "msa counties"                         =   "cities between 25,000 and 49,999",
-                  "cities 25-50"                         =   "cities between 25,000 and 49,999",
-                  "cities 250+"                          =   "cities 250,000 or over",
-                  "cities 10-25"                         =   "cities between 10,000 and 24,999",
-                  "cities 2.5-10"                        =   "cities between 2,500 and 9,999",
-                  "cities under 2.5"                     =   "cities under 2,500",
-                  "cities 100-250"                       =   "cities between 100,000 and 249,999",
-                  "cities 50-100"                        =   "cities between 50,000 and 99,999",
-                  "non-msa counties under 10,000"        =   "non-msa counties under 10,000",
-                  "msa counties 100,000 or over"         =   "msa counties 100,000 or over",
-                  "cities 25,000 thru 49,999"            =   "cities between 25,000 and 49,999",
-                  "cities 250,000 thru 499,999"          =   "cities 250,000 thru 499,999",
-                  "cities 10,000 thru 24,999"            =   "cities between 10,000 and 24,999",
-                  "cities 2,500 thru 9,999"              =   "cities between 2,500 and 9,999",
-                  "cities 100,000 thru 249,999"          =   "cities between 100,000 and 249,999",
-                  "7b"                                   = NA,
-                  "\\+\\+"                               = "\\+"
-)
 
 agency_count <- c("all oth agencies"                      = "all other agencies",
                   "u.s. park police"                      = "us park & state police",
@@ -454,27 +329,27 @@ agency_count <- c("all oth agencies"                      = "all other agencies"
 
 
 special_mailing_group <- c(
-  "agency not on ls"                          = "agency-contributor, not on mail list",
-  "inap.$"                                    = "not special mail group agency",
-  "agcy not snt frm"                          = "agency-non-contributor, not sent form",
-  "retrn sent elsew"                          = "return sent to another agency",
-  "agency contribut"                          = "agency-contributor, not on mail list",
-  "agency non-cont"                           = "agency-non-contributor, not sent form",
-  "return sent out$"                          = "return sent to another agency",
-  "mail lst- no frm"                          = "agency-contributor, not on mail list",
-  "no form- non con"                          = "agency-non-contributor, not sent form",
-  "rtrn snt to othr"                          = "return sent to another agency",
-  "agency is a contributor but not on the mailing list"= "agency-contributor, not on mail list",
-  "agency is a"                               = "agency-contributor, not on mail list",
-  "^inap$"                                    = "not special mail group agency",
-  "cntrib no mail"                            = "agency-contributor, not on mail list",
-  "^non-contributor$"                         = "agency-non-contributor, not sent form",
-  "^another agency$"                          = "return sent to another agency",
-  "not on list"                               = "agency-contributor, not on mail list",
-  "sent to other"                             = "return sent to another agency",
-  "inap, not special mail group agency"       = "not special mail group agency",
-  "not special mail"                          = "not special mail group agency",
-  "otr agency"                                = "return sent to another agency"
+  "^agency not on ls$"                          = "agency-contributor, not on mail list",
+  "^inap.$"                                     = "not special mail group agency",
+  "^agcy not snt frm$"                          = "agency-non-contributor, not sent form",
+  "^retrn sent elsew$"                          = "return sent to another agency",
+  "^agency contribut$"                          = "agency-contributor, not on mail list",
+  "^agency non-cont$"                           = "agency-non-contributor, not sent form",
+  "^return sent out$$"                          = "return sent to another agency",
+  "^mail lst- no frm$"                          = "agency-contributor, not on mail list",
+  "^no form- non con$"                          = "agency-non-contributor, not sent form",
+  "^rtrn snt to othr$"                          = "return sent to another agency",
+  "^agency is a contributor but not on the mailing list$" = "agency-contributor, not on mail list",
+  "^agency is a$"                               = "agency-contributor, not on mail list",
+  "^inap$"                                      = "not special mail group agency",
+  "^cntrib no mail$"                            = "agency-contributor, not on mail list",
+  "^non-contributor$"                           = "agency-non-contributor, not sent form",
+  "^another agency$"                            = "return sent to another agency",
+  "^not on list$"                               = "agency-contributor, not on mail list",
+  "^sent to other$"                             = "return sent to another agency",
+  "^inap, not special mail group agency$"       = "not special mail group agency",
+  "^not special mail$"                          = "not special mail group agency",
+  "^otr agency$"                                = "return sent to another agency"
 )
 
 followup_indication <- c("^y$" = "yes, send a follow-up",
@@ -512,33 +387,15 @@ make_agg_assault <- function(data) {
   for (month in months) {
     for (type in crime_type) {
       data[, paste0(month, type, "_aggravated_assault")] <-
-        rowSums(data[, grep(paste0(month, type, "_(OTH|GUN|KNIFE|HAND).*ASSA"),
-                            names(data))])
+        data[, paste0(month, type, "_ASSAULT_TOTAL")]  -
+        data[, paste0(month, type, "_SIMPLE_ASSAULT")]
+        # rowSums(data[, grep(paste0(month, type, "_(OTH|GUN|KNIFE|HAND).*ASSA"),
+        #                     names(data))])
     }
   }
   return(data)
 }
 
-make_yearly_cols <- function(dataset, types, crimes, officers) {
-  for (crime in crimes) {
-    for (type in types) {
-      dataset[, paste0(type, "_", crime)] <- rowSums(dataset[,
-                                                             grep(paste0(type,
-                                                                         "_",
-                                                                         crime),
-                                                                  names(dataset),
-                                                                  value = TRUE)])
-    }
-  }
-
-  if (any(grepl("officers", names(dataset)))) {
-    for (officer in officers) {
-      dataset[, officer] <- rowSums(dataset[, grep(officer, names(dataset), value = TRUE)])
-    }
-  }
-
-  return(dataset)
-}
 
 
 
@@ -577,6 +434,8 @@ to_ascii_cols <- c("jul_card_3_pt", "aug_card_3_pt", "mailing_address_line_4")
 starting_cols <- c("ori",
                    "ori9",
                    "year",
+                   "month",
+                   "date",
                    "state",
                    "state_abb",
                    "months_reported")
@@ -593,7 +452,6 @@ other_cols <- c("fips_state_code",
                 "city_sequence_number",
                 "core_city_indication",
                 "covered_by_code",
-                "last_update",
                 "field_office",
                 "total_population",
                 "population_1",
@@ -605,11 +463,9 @@ other_cols <- c("fips_state_code",
                 "population_3",
                 "county_3",
                 "msa_3",
-                "followup_indication",
                 "special_mailing_group",
                 "special_mailing_address",
                 "agency_name",
-                "agency_state_name",
                 "mailing_address_line_1",
                 "mailing_address_line_2",
                 "mailing_address_line_3",

@@ -19,10 +19,12 @@ combine_years <- function(crimes, file_name) {
       data <- bind_rows(data, temp)
       message(paste0(year, "     ", ncol(data)))
       do.call("rm", list(as.name(file_name_temp))); gc()
-
     }
     data <- order_arrest_cols(data)
     setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR")
+    names(data) <- gsub("heroin_coke_tot_female_adult",
+                        "heroin_coke_tot_female_adul",
+                        names(data))
     save_files(data = data,
                year = "1980_2016",
                file_name = combined_names[i],

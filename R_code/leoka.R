@@ -70,8 +70,8 @@ save_LEOKA_monthly <- function() {
     data <- bind_cols(data, ORI)
     data <- data[!is.na(data$STATE), ]
     data <- data[!is.na(data$ORI), ]
-sm
-    data <- fix_persons_per_1k(data) # Now it DOESN'T make these rate variables.
+
+        data <- fix_persons_per_1k(data) # Now it DOESN'T make these rate variables.
                                      # Just makes total officers/civilians
                                      # variables and removes old rate variables.
     names(data) <- tolower(names(data))
