@@ -8,7 +8,8 @@ save_files(data = leoka_yearly_1975_2016,
            year = "",
            file_name = "leoka_yearly_1975_2016",
            save_name = "leoka_yearly_1975_2016")
-save_as_zip("leoka_1975_2016_")
+save_as_zip("leoka_monthly_1975_2016_", "monthly")
+save_as_zip("leoka_yearly_1975_2016_", "yearly")
 
 # Save the individual files - still monthly
 save_LEOKA_monthly <- function() {

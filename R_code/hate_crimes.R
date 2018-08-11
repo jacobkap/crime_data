@@ -1,6 +1,3 @@
-devtools::install_github("jacobkap/asciisetupreader")
-library(asciiSetupReader)
-library(tidyverse)
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 hate_crimes <- agg_hate_crimes()
 hate_crimes <- clean_hate_crimes(hate_crimes)

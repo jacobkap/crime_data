@@ -6,22 +6,6 @@ library(dplyr)
 library(tidyr)
 library(data.table)
 
-
-file_names = c("ASR_index_crimes_",
-               "ASR_drug_liquor_crimes_",
-               "ASR_financial_crimes_",
-               "ASR_violent_or_sex_crimes_",
-               "ASR_other_crimes_",
-               "ASR_simple_")
-combined_names <- c("asr_index_crimes_",
-                    "asr_drug_liquor_crimes_",
-                    "asr_financial_crimes_",
-                    "asr_violent_or_sex_crimes_",
-                    "asr_other_crimes_",
-                    "asr_simple_")
-
-
-
 offense_codes <- c("^01A$" = "Murder and non-negligent manslaughter",
                    "^01B$" = "Manslaughter by negligence",
                    "^02$"  = "Forcible rape",
@@ -169,6 +153,7 @@ other_cols <- c("NUMERIC_STATE_CODE_FBI_CODE",
                 "GROUP",
                 "GEOGRAPHIC_DIVISION_OF_STATE",
                 "YEAR",
+                "MONTH",
                 "SUBURBAN_AGENCY",
                 "CORE_CITY",
                 "COVERED_BY_ANOTHER_AGENCY",
@@ -184,7 +169,9 @@ remove_missing <- function(column) {
 }
 
 remove_not_reported <- function(x) {
-  x[x == "None/not reported"] <- 0
+  x <- tolower(x)
+  x[x == "none/not reported"] <- 0
+  x[x == "not applicable"] <- NA
   x <- as.numeric(x)
   return(x)
 }
@@ -204,111 +191,125 @@ index_crimes <- c("murder",
                   "mtr_veh_theft",
                   "arson")
 
-drug_liquor_crimes <- c("total_drug",
-                        "sale_drug",
-                        "sale_heroin_coke",
-                        "poss_drug",
-                        "poss_cannabis",
-                        "dui",
-                        "liquor",
-                        "drunkenness",
-                        "sale_cannabis",
-                        "poss_heroin_coke",
-                        "poss_oth_drug",
-                        "sale_oth_drug",
-                        "poss_synth_narc",
-                        "sale_synth_narc")
-
-financial_crimes <- c("forgery",
-                      "fraud",
-                      "embezzlement",
+financial_crimes <- c("embezzlement",
                       "total_gambling",
                       "oth_gambling",
                       "bookmaking",
                       "number_lottery")
 
-violent_or_sex_crimes <- c("murder",
-                           "rape",
-                           "robbery",
-                           "agg_assault",
-                           "oth_assault",
-                           "weapons",
-                           "prostitution",
-                           "oth_sex_off",
-                           "manslaught_neg")
+grey_collar_and_property_crimes <- c("forgery",
+                                     "fraud",
+                                     "stolen_property")
+
+violent_crimes <- c("murder",
+                    "robbery",
+                    "agg_assault",
+                    "oth_assault",
+                    "weapons",
+                    "manslaught_neg")
+
+sex_or_dv_crimes <- c("prostitution",
+                      "oth_sex_off",
+                      "rape",
+                      "family_offenses")
+
+alcohol_crimes <- c("dui",
+                    "liquor",
+                    "drunkenness")
+
+drug_crimes <- c("total_drug",
+                 "sale_drug",
+                 "poss_drug",
+                 "poss_cannabis",
+                 "sale_cannabis",
+                 "poss_heroin_coke",
+                 "sale_heroin_coke",
+                 "poss_oth_drug",
+                 "sale_oth_drug",
+                 "poss_synth_narc",
+                 "sale_synth_narc")
 
 other_crimes <- c("vandalism",
-                  "family_offenses",
                   "disorder_cond",
                   "oth_non_traffic",
                   "curfew",
-                  "stolen_property",
                   "vagrancy",
-                  "runaway",
+                  # "runaway",
                   "suspicion")
 
 simple_crimes <- c(index_crimes,
-                   drug_liquor_crimes,
                    financial_crimes,
-                   violent_or_sex_crimes,
+                   grey_collar_and_property_crimes,
+                   violent_crimes,
+                   sex_or_dv_crimes,
+                   drug_crimes,
+                   alcohol_crimes,
                    other_crimes)
+simple_crimes <- unique(simple_crimes)
 
 combined_crimes <- list(index_crimes,
-                        drug_liquor_crimes,
                         financial_crimes,
-                        violent_or_sex_crimes,
+                        grey_collar_and_property_crimes,
+                        violent_crimes,
+                        sex_or_dv_crimes,
+                        drug_crimes,
+                        alcohol_crimes,
                         other_crimes,
                         simple_crimes)
 names(combined_crimes) <- c("index_crimes",
-                            "drug_liquor_crimes",
                             "financial_crimes",
-                            "violent_or_sex_crimes",
+                            "grey_collar_and_property_crimes",
+                            "violent_crimes",
+                            "sex_or_dv_crimes",
+                            "drug_crimes",
+                            "alcohol_crimes",
                             "other_crimes",
                             "simple_crimes")
 
-offenses <- c("^murder and non-negligent manslaughter" = "murder",
-              "^forcible rape"                         = "rape",
-              "^robbery"                               = "robbery",
-              "^aggravated assault"                    = "agg_assault",
-              "^burglary-breaking or entering"         = "burglary",
+
+offenses <- c("^murder and non-negligent manslaughter$" = "murder",
+              "^forcible rape$"                         = "rape",
+              "^robbery$"                               = "robbery",
+              "^aggravated assault$"                    = "agg_assault",
+              "^burglary-breaking or entering$"         = "burglary",
               "^larceny-theft \\(not motor.*"          = "theft",
-              "^motor vehicle theft"                   = "mtr_veh_theft",
-              "^other assaults"                        = "oth_assault",
-              "^forgery and counterfeiting"            = "forgery",
-              "^fraud"                                 = "fraud",
-              "^embezzlement"                          = "embezzlement",
-              "^vandalism"                             = "vandalism",
-              "^weapons-carry, posses, etc."           = "weapons",
+              "^motor vehicle theft$"                   = "mtr_veh_theft",
+              "^other assaults$"                        = "oth_assault",
+              "^forgery and counterfeiting$"            = "forgery",
+              "^fraud$"                                 = "fraud",
+              "^embezzlement$"                          = "embezzlement",
+              "^vandalism$"                             = "vandalism",
+              "^weapons-carry, posses, etc.$"           = "weapons",
               "^total drug abuse violations"           = "total_drug",
-              "^sale/manufacture \\(subtotal\\)"       = "sale_drug",
-              "^sale: opium, coke, and their derivatives" = "sale_heroin_coke",
-              "^possession \\(subtotal\\)"             = "poss_drug",
-              "^possession: marijuana"                 = "poss_cannabis",
-              "^offenses against family and children"  = "family_offenses",
-              "^driving under the influence"           = "dui",
-              "^liquor laws"                           = "liquor",
-              "^drunkenness"                           = "drunkenness",
-              "^disorderly conduct"                    = "disorder_cond",
-              "^all other offenses \\(not traffic\\)"  = "oth_non_traffic",
-              "^curfew and loitering violations"       = "curfew",
+              "^sale/manufacture \\(subtotal\\)$"       = "sale_drug",
+              "^sale: opium, coke, and their derivatives$" = "sale_heroin_coke",
+              "^possession \\(subtotal\\)$"             = "poss_drug",
+              "^possession: marijuana$"                 = "poss_cannabis",
+              "^offenses against family and children$"  = "family_offenses",
+              "^driving under the influence$"           = "dui",
+              "^liquor laws$"                           = "liquor",
+              "^drunkenness$"                           = "drunkenness",
+              "^disorderly conduct$"                    = "disorder_cond",
+              "^all other offenses \\(not traffic\\)$"  = "oth_non_traffic",
+              "^curfew and loitering violations$"       = "curfew",
               "^stolen property-buy, receive, poss."   = "stolen_property",
-              "^prostitution and commercialized vice"  = "prostitution",
-              "^sale: marijuana"                       = "sale_cannabis",
-              "^possession: opium, coke, and their derivatives" = "poss_heroin_coke",
-              "^sex offenses \\(not rape or prostitution\\)"   = "oth_sex_off",
-              "^possession: other dangerous non-narc drugs" = "poss_oth_drug",
-              "^arson"                                  = "arson",
-              "^sale: other dangerous non-narc drugs"   = "sale_oth_drug",
-              "^vagrancy"                               = "vagrancy",
-              "^possession: truly addicting synthetic narcotics" = "poss_synth_narc",
-              "^runaways"                               = "runaway",
-              "^manslaughter by negligence"             = "manslaught_neg",
-              "^gambling \\(total\\)"                   = "total_gambling",
-              "^bookmaking \\(horse and sports\\)"      = "bookmaking",
-              "^all other gambling"                     = "oth_gambling",
-              "^sale: truly addicting synthetic narcotics" = "sale_synth_narc",
-              "^number and lottery"                     = "number_lottery",
-              "^suspicion"                              = "suspicion"
+              "^prostitution and commercialized vice$"  = "prostitution",
+              "^sale: marijuana$"                       = "sale_cannabis",
+              "^possession: opium, coke, and their derivatives$" = "poss_heroin_coke",
+              "^sex offenses \\(not rape or prostitution\\)$"   = "oth_sex_off",
+              "^possession: other dangerous non-narc drugs$" = "poss_oth_drug",
+              "^arson$"                                  = "arson",
+              "^sale: other dangerous non-narc drugs$"   = "sale_oth_drug",
+              "^vagrancy$"                               = "vagrancy",
+              "^possession: truly addicting synthetic narcotics$" = "poss_synth_narc",
+              "^runaways$"                               = "runaway",
+              "^manslaughter by negligence$"             = "manslaught_neg",
+              "^gambling \\(total\\)$"                   = "total_gambling",
+              "^bookmaking \\(horse and sports\\)$"      = "bookmaking",
+              "^all other gambling$"                     = "oth_gambling",
+              "^sale: truly addicting synthetic narcotics$" = "sale_synth_narc",
+              "^number and lottery$"                     = "number_lottery",
+              "^suspicion$"                              = "suspicion"
 )
 
 fix_cols_names <- c("JUVENILE"                                  = "JUV",
@@ -320,6 +321,7 @@ fix_cols_names <- c("JUVENILE"                                  = "JUV",
 starting_cols <- c("ori",
                    "year",
                    "ori9",
+                   "last_month_reported",
                    "agency_name",
                    "state",
                    "state_abb",
@@ -379,7 +381,7 @@ order_arrest_cols <- function(data) {
   total_gambling_cols   <- grep("^total_gambling", names(data), value = TRUE)
   bookmaking_cols       <- grep("^bookmaking", names(data), value = TRUE)
   oth_gambling_cols     <- grep("^oth_gambling", names(data), value = TRUE)
-  sale_synth_narc_cols    <- grep("^sale_synth_narc", names(data), value = TRUE)
+  sale_synth_narc_cols  <- grep("^sale_synth_narc", names(data), value = TRUE)
   number_lottery_cols   <- grep("^number_lottery", names(data), value = TRUE)
   suspicion_cols        <- grep("^suspicion", names(data), value = TRUE)
 

@@ -1,6 +1,3 @@
-devtools::install_github("jacobkap/asciisetupreader")
-library(asciiSetupReader)
-library(tidyverse)
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/arson_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 

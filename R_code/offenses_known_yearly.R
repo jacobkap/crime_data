@@ -70,7 +70,8 @@ make_ucr_yearly <- function() {
                   other_cols,
                   starts_with("officer"),
                   starts_with("act_"),
-                  starts_with("clr_"),
+                  starts_with("tot_clr_"),
+                  starts_with("clr_18_"),
                   starts_with("unfound")) %>%
     dplyr::mutate_at(vars(other_cols), as.character) %>%
     dplyr::mutate_at(vars(pop_cols), as.numeric)

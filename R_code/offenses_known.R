@@ -10,6 +10,7 @@ save_ucr_monthly()
 save_as_zip("ucr_offenses_known_monthly_1960_2016_", "monthly")
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")
 yearly_offenses <- make_ucr_yearly()
+summary(yearly_offenses)
 saving_yearly(yearly_offenses)
 save_as_zip("ucr_offenses_known_yearly_1960_2016_", "yearly")
 
@@ -75,24 +76,34 @@ save_ucr_monthly <- function() {
                                                        "population_3"),
                                                na.rm = TRUE)) %>%
       dplyr::select(-matches("icpsr|part_number|agency_count|edition_number"),
-                    -matches("^sequence_number$|^sequence$|last_update|card_[0-9]|follow"),
+                    -matches("^sequence_number$|^sequence$|card_[0-9]|follow"),
                     -agency_state_name)
     data$population_2[is.na(data$population_2)] <- 0
 
-    crime_cols <- sort(grep("^act|^clr|unfound",
+    names(data) <- gsub("larceny", "theft", names(data))
+    names(data) <- gsub("clr_", "tot_clr_", names(data))
+    names(data) <- gsub("tot_clr_18", "clr_18", names(data))
+
+    crime_cols <- sort(grep("^act|^tot_clr|^clr|unfound",
                             names(data),
                             value = TRUE))
     crime_cols <- c(sort(grep("officer",
                               names(data),
                               value = TRUE)),
                     crime_cols)
+    crime_cols <- c(grep("officer", crime_cols, value = TRUE),
+                    grep("^act", crime_cols, value = TRUE),
+                    grep("^tot_clr", crime_cols, value = TRUE),
+                    grep("^clr_18", crime_cols, value = TRUE),
+                    grep("unfound", crime_cols, value = TRUE))
     data <-
       data %>%
       dplyr::select(starting_cols,
                     cross_names,
                     other_cols,
+                    matches("included|last"),
                     one_of(crime_cols))
-    names(data) <- gsub("larceny", "theft", names(data))
+
 
     setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")
     save_files(data = data,

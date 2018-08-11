@@ -11,6 +11,10 @@ nacjd_county_2012 <- da35019.0004
 ucr_offenses_known_yearly_1960_2016$population_2[is.na(ucr_offenses_known_yearly_1960_2016$population_2)] <- 0
 
 county_crime_2010_2016 <- get_county_crime(2010:2016)
+summary(county_crime_2010_2016)
+setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data")
+readr::write_csv(county_crime_2010_2016,
+                 path = "county_crime_2010_2016.csv")
 get_county_crime <- function(years) {
 
   ucr <-

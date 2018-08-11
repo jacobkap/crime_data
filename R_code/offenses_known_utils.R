@@ -11,25 +11,24 @@ library(lubridate)
 
 
 month_wide_to_long <- function(data) {
-crime_cols <- grep("act|clr|unfound|officer", names(data),
-                   value = TRUE,
-                   ignore.case = TRUE)
+  crime_cols <- grep("act|clr|unfound|officer", names(data),
+                     value = TRUE,
+                     ignore.case = TRUE)
 
-crime_only_data <- data[, crime_cols]
-data <- data %>% dplyr::select(-one_of(crime_cols))
+  crime_only_data <- data[, crime_cols]
+  data <- data %>% dplyr::select(-one_of(crime_cols))
 
-final <- data.frame()
-for (month in tolower(month.abb)) {
-  temp        <- crime_only_data[, grep(paste0("^", month, "_"), crime_cols)]
-  names(temp) <- gsub("^....", "", names(temp))
-  temp        <- dplyr::bind_cols(data, temp)
-  temp$month  <- tolower(month.name)[tolower(month.abb) == month]
-  temp$date   <- lubridate::ymd(paste(temp$year, temp$month, "1"))
+  final <- data.frame()
+  for (month in tolower(month.abb)) {
+    temp        <- crime_only_data[, grep(paste0("^", month, "_"), crime_cols)]
+    names(temp) <- gsub("^....", "", names(temp))
+    temp        <- dplyr::bind_cols(data, temp)
+    temp$month  <- tolower(month.name)[tolower(month.abb) == month]
+    temp$date   <- lubridate::ymd(paste(temp$year, temp$month, "1"))
 
-  final       <- dplyr::bind_rows(final, temp)
-  message(paste(month, ncol(final)))
-}
-return(final)
+    final       <- dplyr::bind_rows(final, temp)
+  }
+  return(final)
 }
 
 
@@ -167,7 +166,7 @@ col_names <- c(
   "^AGENCY_STATE$"   =          "AGENCY_STATE_NAME",
   "SPEC_MAILING_ADDRESS" =       "SPECIAL_MAILING_ADDRESS",
   "^SPECIAL_MAILING$" =       "SPECIAL_MAILING_ADDRESS",
-  "^MAILING_GROUP$" =       "SPECIAL_MAILING_GROUP",
+  "^MAILING_GROUP$"  =       "SPECIAL_MAILING_GROUP",
   "_BURG_"           =          "_BURGLARY_",
   "TRUCK_AND_VAN$"   =          "TRUCK_BUS_THEFT",
   "_OTHER_VEHICLE"   =          "_OTH_VHC_THEFT",
@@ -189,7 +188,7 @@ col_names <- c(
   "_VAN_"            =          "_BUS_",
   "_ALL_OFFENSE.*"   =          "_ALL_FIELDS",
   "OFFICRS"          =          "OFFICERS",
-  "THEFTS$"           =          "THEFT",
+  "THEFTS$"          =          "THEFT",
   "_ATMPT_FORCE_ENT" =          "_ATT_BURGLARY",
   "_ALL_VEHIC_THEFT" =          "_MTR_VHC_THEFT",
   "GROUP_NUMER"      =          "GROUP_NUMBER",
@@ -208,11 +207,11 @@ col_names <- c(
   "_ASSAULT_OTHER_WEAPON"     =    "_OTH_WEAP_ASSAULT",
   "_ASSAULT_HAND_FEET"        =       "_HAND_FEET_ASSAULT",
   "_THEFT_THEFT"    =          "_THEFT",
-  "_DATE_OF_"        =         "_",
+  "_DATE_OF_"       =         "_",
   "ORI_CODE"        =          "ORI",
   "_THFT_"          =          "_THEFT_",
   "CLR_MTR_VHC_THEFT"    =     "CLR_VHC_THEFT_TOTAL",
-  "CLR_18_MTR_VHC_THEFT"    =     "CLR_18_VHC_THEFT_TOTAL",
+  "CLR_18_MTR_VHC_THEFT" =     "CLR_18_VHC_THEFT_TOTAL",
   "_TOTAL_CLR_"    =           "_CLR_",
   "_CLR_TOT_"      =           "_CLR_",
   "_BURGLARY_NO_FORCIBLE_ENTRY" = "_ENTRY_NO_FORCE",
@@ -224,34 +223,34 @@ col_names <- c(
   "_ROBBERY_WITH_GUN"   =       "_GUN_ROBBERY",
   "_ROBBERY_OTHER_WEAPON" =     "_OTH_WEAP_ROBBERY",
   "ROBR$"                 =     "ROBBERY",
-  "ROBER$"         =            "ROBBERY",
-  "_MTR_VHC_THEFT" =             "_MTR_VHC_THEFT_TOTAL",
+  "ROBER$"          =            "ROBBERY",
+  "_MTR_VHC_THEFT"  =             "_MTR_VHC_THEFT_TOTAL",
   "_MOTOR_VEHICLE_" =           "_MTR_VHC_",
-  "18_VHC_"        =            "18_MTR_VHC_",
-  "CLR_VHC"        =            "CLR_MTR_VHC",
-  "RO$"            =            "ROBBERY",
-  "ROBBR"          =            "ROBBERY",
-  "ROBERY"         =            "ROBBERY",
-  "_TOTAL_BURG$"   =            "_BURGLARY_TOTAL",
+  "18_VHC_"         =            "18_MTR_VHC_",
+  "CLR_VHC"         =            "CLR_MTR_VHC",
+  "RO$"             =            "ROBBERY",
+  "ROBBR"           =            "ROBBERY",
+  "ROBERY"          =            "ROBBERY",
+  "_TOTAL_BURG$"    =            "_BURGLARY_TOTAL",
   "_TOTAL_ASSAULT$" =           "_ASSAULT_TOTAL",
   "_TOTAL_LARCENY$" =            "_LARCENY_TOTAL",
   "_TOTAL_RAPE$"    =           "_RAPE_TOTAL",
   "_TOTAL_MOTOR$"   =            "_MTR_VHC_THEFT_TOTAL",
   "_TOTAL_ROBBERY"  =            "_ROBBERY",
-  "_MTR_MTR"       =             "_MTR_",
-  "ID_CODE"        =             "ICPSR_PART_NUMBER",
-  "ACT_ROBBERY"    =             "ACT_ROBBERY_TOTAL",
-  "CLR_ROBBERY"    =             "CLR_ROBBERY_TOTAL",
-  "CLR_18_ROBBERY"    =          "CLR_18_ROBBERY_TOTAL",
-  "UNFOUND_ROBBERY"    =        "UNFOUND_ROBBERY_TOTAL",
-  "FORCE_ENTRY"    =             "BURG_FORCE_ENTRY",
-  "ENTRY_NO_FORCE" =             "BURG_NO_FORCE_ENTRY",
-  "KILL_BY_ACC"                 = "KILLED_BY_ACCIDENT",
-  "KILL_BY_FEL"                  = "KILLED_BY_FELONY",
+  "_MTR_MTR"        =             "_MTR_",
+  "ID_CODE"         =             "ICPSR_PART_NUMBER",
+  "ACT_ROBBERY"     =             "ACT_ROBBERY_TOTAL",
+  "CLR_ROBBERY"     =             "CLR_ROBBERY_TOTAL",
+  "CLR_18_ROBBERY"  =          "CLR_18_ROBBERY_TOTAL",
+  "UNFOUND_ROBBERY" =        "UNFOUND_ROBBERY_TOTAL",
+  "FORCE_ENTRY"     =             "BURG_FORCE_ENTRY",
+  "ENTRY_NO_FORCE"  =             "BURG_NO_FORCE_ENTRY",
+  "KILL_BY_ACC"     = "KILLED_BY_ACCIDENT",
+  "KILL_BY_FEL"     = "KILLED_BY_FELONY",
   #  "_BURG_"             =          "_BURGLARY_",
-  "_OTH_WEAP_"               =     "_OTHER_WEAPON_",
-  "_ATT_"                 =    "_ATTEMPTED_",
-  "_OTH_"                    = "_OTHER_",
+  "_OTH_WEAP_"      =     "_OTHER_WEAPON_",
+  "_ATT_"           =    "_ATTEMPTED_",
+  "_OTH_"           = "_OTHER_",
   "NUMERIC_STATE_CODE"      = "STATE"
 )
 
@@ -386,11 +385,19 @@ make_agg_assault <- function(data) {
   months <- toupper(month.abb)
   for (month in months) {
     for (type in crime_type) {
-      data[, paste0(month, type, "_aggravated_assault")] <-
-        data[, paste0(month, type, "_ASSAULT_TOTAL")]  -
-        data[, paste0(month, type, "_SIMPLE_ASSAULT")]
-        # rowSums(data[, grep(paste0(month, type, "_(OTH|GUN|KNIFE|HAND).*ASSA"),
-        #                     names(data))])
+
+      total_assault  <- data[, paste0(month, type, "_ASSAULT_TOTAL")]
+      simple_assault <- data[, paste0(month, type, "_SIMPLE_ASSAULT")]
+
+
+      if (data$YEAR[1] %in% 1964:1973) {
+        total_assault <- total_assault + simple_assault
+        data[, paste0(month, type, "_ASSAULT_TOTAL")] <- total_assault
+      }
+
+      agg_value <- total_assault - simple_assault
+      agg_value[agg_value < -25] <- 0
+      data[, paste0(month, type, "_aggravated_assault")] <- agg_value
     }
   }
   return(data)

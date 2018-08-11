@@ -1,11 +1,3 @@
-devtools::install_github("jacobkap/asciisetupreader")
-library(asciiSetupReader)
-library(data.table)
-library(stringr)
-library(dplyr)
-library(haven)
-library(readr)
-library(memisc)
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 
@@ -26,8 +18,8 @@ agg_shr <- function() {
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/SHR")
   source('C:/Users/user/Dropbox/R_project/crime_data/R_code/SHR_utils.R')
   for (year in 1976:2016) {
-    data <- spss_ascii_reader(dataset_name = paste0(year, "_SHR.txt"),
-                              sps_name = paste0(year, "_SHR.sps"))
+    data <- spss_ascii_reader(dataset_name = paste0("ucr_shr_", year, ".txt"),
+                              sps_name = paste0("ucr_shr_", year, ".sps"))
     names(data) <- str_replace_all(names(data), shr_names)
     data$ORI <- NULL
     data$STATE_NAME <- NULL
@@ -36,8 +28,8 @@ agg_shr <- function() {
     ori_col <- "ORI_CODE"
     if (year %in% c(1976:1979, 1984:1988)) ori_col <- "AGENCY_CODE"
 
-    ORIs <- spss_ascii_reader(dataset_name = paste0(year, "_SHR.txt"),
-                              sps_name = paste0(year, "_SHR.sps"),
+    ORIs <- spss_ascii_reader(dataset_name = paste0("ucr_shr_", year, ".txt"),
+                              sps_name = paste0("ucr_shr_", year, ".sps"),
                               keep_columns = ori_col,
                               value_label_fix = FALSE)
     names(ORIs) <- "ORI"
