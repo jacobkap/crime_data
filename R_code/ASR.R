@@ -128,34 +128,44 @@ load_arrest_data <- function(year) {
 make_simple_columns <- function(data) {
 
   data$tot_male_juv     <- rowSums(data[, grep("^MALE_(10|13|15|16|17)",
-                                               names(data))])
+                                               names(data))],
+                                   na.rm = TRUE)
   data$tot_male_adult   <- rowSums(data[, grep("^MALE_(18|19|[2-6].|OVER)",
-                                               names(data))])
+                                               names(data))],
+                                   na.rm = TRUE)
   data$tot_female_juv   <- rowSums(data[, grep("^MALE_(10|13|15|16|17)",
-                                               names(data))])
+                                               names(data))],
+                                   na.rm = TRUE)
   data$tot_female_adult <- rowSums(data[, grep("^FEMALE_(18|19|[2-6].|OVER)",
-                                               names(data))])
-  data$tot_male         <- rowSums(data[, grep("^MALE", names(data))])
-  data$tot_female       <- rowSums(data[, grep("^FEMALE", names(data))])
-  data$tot_juv          <- rowSums(data[, grep("10|13|15|16|17", names(data))])
+                                               names(data))],
+                                   na.rm = TRUE)
+  data$tot_male         <- rowSums(data[, grep("^MALE", names(data))],
+                                   na.rm = TRUE)
+  data$tot_female       <- rowSums(data[, grep("^FEMALE", names(data))],
+                                   na.rm = TRUE)
+  data$tot_juv          <- rowSums(data[, grep("10|13|15|16|17", names(data))],
+                                   na.rm = TRUE)
   data$tot_adult        <- rowSums(data[, grep("MALE_(18|19|[2-6].|OVER)",
-                                               names(data))])
-  data$tot_arrests      <- rowSums(data[, grep("MALE", names(data))])
+                                               names(data))],
+                                   na.rm = TRUE)
+  data$tot_arrests      <- rowSums(data[, grep("MALE", names(data))],
+                                   na.rm = TRUE)
   return(data)
 }
 
 get_arrest_data <- function(ASR, arrest_categories) {
+  sum2 <- function(x) { sum(x, na.rm=TRUE) }
   ASR <- data.table(ASR)
   ASR <- melt(ASR, id.vars = c("OFFENSE_CODE", "ORI"),
               measure.vars = arrest_categories)
   ASR$value <- as.numeric(ASR$value)
   ASR$value <- remove_missing(ASR$value)
   ASR$variable <- paste(ASR$OFFENSE_CODE,  ASR$variable, sep = "_")
-  ASR <- dcast(ASR, ORI ~ variable, value.var = "value", fun.aggregate = sum)
+  ASR <- dcast(ASR, ORI ~ variable, value.var = "value", fun.aggregate = sum2)
   ASR <-
     ASR %>%
     group_by(ORI) %>%
-    summarise_all(sum)
+    summarise_all(sum, na.rm = TRUE)
   names(ASR) <- str_replace_all(names(ASR), fix_cols_names)
   names(ASR) <- tolower(names(ASR))
   ASR <- data.frame(ASR)
@@ -185,35 +195,23 @@ get_agency_data <- function(year) {
                            value_label_fix = FALSE)
   ASR <- bind_cols(ORI, ASR)
 
-  ASR$MONTH <- tolower(ASR$MONTH)
-  ASR$MONTH[!ASR$MONTH %in% 1:12] <- 0
-  ASR$MONTH <- as.numeric(ASR$MONTH)
-  month_name <- c("^0$"  = "no months reported",
-                  "^1$"  = "january",
-                  "^2$"  = "february",
-                  "^3$"  = "march",
-                  "^4$"  = "april",
-                  "^5$"  = "may",
-                  "^6$"  = "june",
-                  "^7$"  = "july",
-                  "^8$"  = "august",
-                  "^9$"  = "september",
-                  "^10$" = "october",
-                  "^11$" = "november",
-                  "^12$" = "december")
 
-  max_month <-
+  number_months_reported <-
     ASR %>%
-    dplyr::group_by(ORIGINATING_AGENCY_IDENTIFIER_CODE) %>%
-    dplyr::summarize(last_month_reported = max(MONTH)) %>%
-    dplyr::mutate(last_month_reported = stringr::str_replace_all(last_month_reported,
-                                                                 month_name)) %>%
+    dplyr::mutate(temp = paste(ORIGINATING_AGENCY_IDENTIFIER_CODE,
+                               MONTH)) %>%
+    dplyr::distinct(temp, .keep_all = TRUE) %>%
     dplyr::select(ORIGINATING_AGENCY_IDENTIFIER_CODE,
-                  last_month_reported)
+                  MONTH) %>%
+    dplyr::group_by(ORIGINATING_AGENCY_IDENTIFIER_CODE) %>%
+    dplyr::mutate(MONTH = paste0(MONTH, collapse = " ")) %>%
+    dplyr::distinct(ORIGINATING_AGENCY_IDENTIFIER_CODE, .keep_all = TRUE) %>%
+    dplyr::mutate(number_of_months_reported = str_count(MONTH, "[0-9] |[0-9]$")) %>%
+    dplyr::select(-MONTH)
 
 
   ASR <- ASR[!duplicated(ASR$ORIGINATING_AGENCY_IDENTIFIER_CODE), ]
-  ASR <- left_join(ASR, max_month)
+  ASR <- left_join(ASR, number_months_reported)
 
 
   names(ASR) <- str_replace_all(names(ASR), fix_cols_names)
@@ -231,7 +229,10 @@ get_agency_data <- function(year) {
   ASR$ori          <- toupper(ASR$ori)
   ASR$ori9         <- toupper(ASR$ori9)
   ASR$state_abb    <- toupper(ASR$state_abb)
+  ASR$month        <- NULL
 
   return(ASR)
 }
+
+
 

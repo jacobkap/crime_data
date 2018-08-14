@@ -1,4 +1,5 @@
-load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known/ucr_offenses_known_yearly_1960_2016.rda")
+
+
 setwd("C:/Users/user/Dropbox/R_project/aspep/data")
 # To get real county name
 aspep_county <- read_csv("aspep_counties_1993_2016.csv")
@@ -8,54 +9,33 @@ library(tidyverse)
 load("C:/Users/user/Desktop/35019-0004-Data.rda")
 nacjd_county_2012 <- da35019.0004
 
+load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known/ucr_offenses_known_yearly_1960_2016.rda")
 ucr_offenses_known_yearly_1960_2016$population_2[is.na(ucr_offenses_known_yearly_1960_2016$population_2)] <- 0
-
-county_crime_2010_2016 <- get_county_crime(2010:2016)
+county_crime_2010_2016 <- get_county_crime(ucr_offenses_known_yearly_1960_2016,
+                                           2010:2016,
+                                           type = "crimes")
 summary(county_crime_2010_2016)
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data")
 readr::write_csv(county_crime_2010_2016,
                  path = "county_crime_2010_2016.csv")
-get_county_crime <- function(years) {
+rm(ucr_offenses_known_yearly_1960_2016)
 
-  ucr <-
-    ucr_offenses_known_yearly_1960_2016 %>%
-    dplyr::filter(year %in% years,
-                  months_reported != "no months reported",
-                  group_number != "possessions") %>%
-    dplyr::select(-matches("clr|found|^county_|population_"),
-                  -ori9,
-                  -date,
-                  -fips_place_code,
-                  -fips_state_place_code,
-                  -agency_type,
-                  -agency_subtype_1,
-                  -agency_subtype_2,
-                  -covered_by_code,
-                  -field_office,
-                  -city_sequence_number,
-                  -msa_1,
-                  -msa_2,
-                  -msa_3,
-                  -special_mailing_group,
-                  -mailing_address_line_1,
-                  -mailing_address_line_2,
-                  -mailing_address_line_3,
-                  -mailing_address_line_4,
-                  -special_mailing_address,
-                  -division,
-                  -core_city_indication,
-                  -fips_state_county_code,
-                  -month,
-                  -zip_code) %>%
-    dplyr::mutate(months_reported_num = stringr::str_replace_all(months_reported,
-                                                                 month_to_number),
-                  months_reported_num = as.numeric(months_reported_num),
-                  group_number        = stringr::str_replace_all(group_number,
-                                                                 new_groups)
-    ) %>%
-    dplyr::filter((!(total_population == 0 & months_reported_num < 3)))
+load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR/asr_simple_crimes_1980_2016.rda")
+county_arrests_2010_2016 <- get_county_crime(asr_simple_crimes_1980_2016,
+                                           2010:2016,
+                                           type = "arrests")
+summary(county_arrests_2010_2016)
+setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data")
+readr::write_csv(county_arrests_2010_2016,
+                 path = "county_arrests_2010_2016.csv")
+rm(asr_simple_crimes_1980_2016)
+get_county_crime <- function(data, years, type) {
 
-  crime_cols <- grep("act_|officers", names(ucr), value = TRUE)
+
+  ucr <- subset_data(data, years, type = type)
+
+
+  crime_cols <- grep("act_|officers|_tot_", names(ucr), value = TRUE)
   for (col in crime_cols) {
     # If only reported 1 or 2 months, zeroes out crime count
     # to be imputed later
@@ -83,11 +63,12 @@ get_county_crime <- function(years) {
                   months_reported_num,
                   state,
                   state_abb,
-                  months_reported,
                   fips_state_code,
                   year,
                   group_number) %>%
     dplyr::left_join(full_year_reporters)
+
+  if (type == "crimes") data$months_reported <- NULL
 
   ucr <-
     ucr %>%
@@ -95,17 +76,14 @@ get_county_crime <- function(years) {
     bind_rows(ucr_under_3_months) %>%
     dplyr::select(-ori,
                   -group_number,
-                  -months_reported,
                   -months_reported_num,
-                  -agency_name
-    ) %>%
+                  -months_reported) %>%
     dplyr::group_by(year,
                     fips_state_code,
                     fips_county_code,
                     state,
-                    state_abb
-    ) %>%
-    dplyr::summarize_all(sum) %>%
+                    state_abb) %>%
+    dplyr::summarize_all(sum, na.rm = TRUE) %>%
     dplyr::mutate(fips_state_county = paste0(fips_state_code, fips_county_code)) %>%
     dplyr::left_join(aspep_county) %>%
     dplyr::select(year,
@@ -116,7 +94,8 @@ get_county_crime <- function(years) {
                   fips_county_code,
                   fips_state_county,
                   everything()) %>%
-    dplyr::arrange(fips_state_county)
+    dplyr::arrange(fips_state_county,
+                   year)
 
   return(ucr)
 }
@@ -136,6 +115,21 @@ month_to_number <- c(
   "december is the last month reported"  = "12"
 )
 
+asr_month_to_number <- c(
+  "january"   = "1",
+  "february"  = "2",
+  "march"     = "3",
+  "april"     = "4",
+  "may"       = "5",
+  "june"      = "6",
+  "july"      = "7",
+  "august"    = "8",
+  "september" = "9",
+  "october"   = "10",
+  "november"  = "11",
+  "december"  = "12"
+)
+
 new_groups <- c(
   "^city 250,000 thru 499,999$"           = "cities 250,000 and over",
   "^non-msa county 100,000\\+$"           = "nsa-msa counties and msa state police",
@@ -147,7 +141,98 @@ new_groups <- c(
   "^non-msa county under 10,000$"         = "nsa-msa counties and msa state police",
   "^non-msa county 10,000 thru 24,999$"   = "nsa-msa counties and msa state police",
   "^non-msa county 25,000 thru 99,999$"   = "nsa-msa counties and msa state police",
+
+  "^non-msa cnty 10,000-24,999$"          = "nsa-msa counties and msa state police",
+  "^non-msa cnty under 10,000$"           = "nsa-msa counties and msa state police",
+  "^non-msa cnty 25,000-99,999$"          = "nsa-msa counties and msa state police",
+  "^non-msa state police$"                = "nsa-msa counties and msa state police",
+  "^non-msa cnty 100,000 or over$"        = "nsa-msa counties and msa state police",
+
+  "^msa cnty 25,000-99,999$"              = "msa counties and msa state police",
+  "^msa cnty 10,000-24,999$"              = "msa counties and msa state police",
+  "^msa cnty under 10,000$"               = "msa counties and msa state police",
+  "^msa state police$"                    = "msa counties and msa state police",
+  "^msa cnty 100,000 or over$"            = "msa counties and msa state police",
+
+  "^cities 1,000,000 or over$"            = "cities 250,000 and over",
   "^city 1,000,000\\+$"                   = "cities 250,000 and over",
   "^city 500,000 thru 999,999$"           = "cities 250,000 and over",
+  "^cities 250,000-499,999$"              = "cities 250,000 and over",
+  "^cities 500,000-999,999$"              = "cities 250,000 and over",
   "^non-msa state police$"                = "nsa-msa counties and msa state police"
 )
+
+
+subset_data <- function(data, years, type) {
+  if (type == "crimes") {
+    ucr <-
+      data %>%
+      dplyr::filter(year %in% years,
+                    months_reported != "no months reported",
+                    group_number != "possessions") %>%
+      dplyr::select(-matches("clr|found|^county_|population_"),
+                    -ori9,
+                    -date,
+                    -fips_place_code,
+                    -fips_state_place_code,
+                    -agency_type,
+                    -agency_name,
+                    -agency_subtype_1,
+                    -agency_subtype_2,
+                    -covered_by_code,
+                    -field_office,
+                    -city_sequence_number,
+                    -msa_1,
+                    -msa_2,
+                    -msa_3,
+                    -special_mailing_group,
+                    -mailing_address_line_1,
+                    -mailing_address_line_2,
+                    -mailing_address_line_3,
+                    -mailing_address_line_4,
+                    -special_mailing_address,
+                    -division,
+                    -core_city_indication,
+                    -fips_state_county_code,
+                    -month,
+                    -zip_code) %>%
+      dplyr::mutate(months_reported_num = stringr::str_replace_all(months_reported,
+                                                                   month_to_number),
+                    months_reported_num = as.numeric(months_reported_num),
+                    group_number        = stringr::str_replace_all(group_number,
+                                                                   new_groups)
+      ) %>%
+      dplyr::filter((!(total_population == 0 & months_reported_num < 3)))
+  } else {
+    ucr <-
+      data %>%
+      dplyr::rename(group_number     = group,
+                    total_population = population,
+                    months_reported  = last_month_reported) %>%
+      dplyr::filter(year %in% years,
+                    months_reported != "no months reported",
+                    group_number != "possessions",
+                    group_number != "7b") %>%
+      dplyr::select(-ori9,
+                    -fips_place_code,
+                    -fips_state_place_code,
+                    -agency_type,
+                    -agency_subtype_1,
+                    -agency_subtype_2,
+                    -covered_by_another_agency,
+                    -agency_name,
+                    -geographic_division,
+                    -core_city,
+                    -suburban_agency,
+                    -fips_state_county_code) %>%
+      dplyr::mutate(months_reported_num = stringr::str_replace_all(months_reported,
+                                                                   asr_month_to_number),
+                    months_reported_num = as.numeric(months_reported_num),
+                    group_number        = stringr::str_replace_all(group_number,
+                                                                   new_groups)
+      ) %>%
+      dplyr::filter((!(total_population == 0 & months_reported_num < 3)))
+  }
+
+  return(ucr)
+}
