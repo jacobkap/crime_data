@@ -1,16 +1,4 @@
-
-
-setwd("C:/Users/user/Dropbox/R_project/aspep/data")
-# To get real county name
-aspep_county <- read_csv("aspep_counties_1993_2016.csv")
-aspep_county <- aspep_county[, c("fips_state_county", "county_name")]
-aspep_county <- aspep_county[!duplicated(aspep_county$fips_state_county), ]
-library(tidyverse)
-load("C:/Users/user/Desktop/35019-0004-Data.rda")
-nacjd_county_2012 <- da35019.0004
-
 load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known/ucr_offenses_known_yearly_1960_2016.rda")
-ucr_offenses_known_yearly_1960_2016$population_2[is.na(ucr_offenses_known_yearly_1960_2016$population_2)] <- 0
 county_crime_2010_2016 <- get_county_crime(ucr_offenses_known_yearly_1960_2016,
                                            2010:2016,
                                            type = "crimes")
@@ -22,18 +10,22 @@ rm(ucr_offenses_known_yearly_1960_2016)
 
 load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR/asr_simple_crimes_1980_2016.rda")
 county_arrests_2010_2016 <- get_county_crime(asr_simple_crimes_1980_2016,
-                                           2010:2016,
-                                           type = "arrests")
+                                             2010:2016,
+                                             type = "arrests")
 summary(county_arrests_2010_2016)
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data")
 readr::write_csv(county_arrests_2010_2016,
                  path = "county_arrests_2010_2016.csv")
 rm(asr_simple_crimes_1980_2016)
+
 get_county_crime <- function(data, years, type) {
-
-
+  setwd("C:/Users/user/Dropbox/R_project/aspep/data")
+  # To get real county name
+  aspep_county <- read_csv("aspep_counties_1993_2016.csv")
+  aspep_county <- aspep_county[, c("fips_state_county", "county_name")]
+  aspep_county <- aspep_county[!duplicated(aspep_county$fips_state_county), ]
+  library(tidyverse)
   ucr <- subset_data(data, years, type = type)
-
 
   crime_cols <- grep("act_|officers|_tot_", names(ucr), value = TRUE)
   for (col in crime_cols) {
@@ -167,12 +159,13 @@ subset_data <- function(data, years, type) {
   if (type == "crimes") {
     ucr <-
       data %>%
+      dplyr::rename(group_number     = group,
+                    months_reported  = last_month_reported) %>%
       dplyr::filter(year %in% years,
                     months_reported != "no months reported",
-                    group_number != "possessions") %>%
+                    group_number    != "possessions") %>%
       dplyr::select(-matches("clr|found|^county_|population_"),
                     -ori9,
-                    -date,
                     -fips_place_code,
                     -fips_state_place_code,
                     -agency_type,
@@ -185,16 +178,11 @@ subset_data <- function(data, years, type) {
                     -msa_1,
                     -msa_2,
                     -msa_3,
-                    -special_mailing_group,
-                    -mailing_address_line_1,
-                    -mailing_address_line_2,
-                    -mailing_address_line_3,
-                    -mailing_address_line_4,
-                    -special_mailing_address,
                     -division,
                     -core_city_indication,
                     -fips_state_county_code,
-                    -month,
+                    -crosswalk_agency_name,
+                    -census_name,
                     -zip_code) %>%
       dplyr::mutate(months_reported_num = stringr::str_replace_all(months_reported,
                                                                    month_to_number),
@@ -208,11 +196,11 @@ subset_data <- function(data, years, type) {
       data %>%
       dplyr::rename(group_number     = group,
                     total_population = population,
-                    months_reported  = last_month_reported) %>%
+                    months_reported  = number_of_months_reported) %>%
       dplyr::filter(year %in% years,
                     months_reported != "no months reported",
-                    group_number != "possessions",
-                    group_number != "7b") %>%
+                    group_number    != "possessions",
+                    group_number    != "7b") %>%
       dplyr::select(-ori9,
                     -fips_place_code,
                     -fips_state_place_code,
@@ -224,10 +212,10 @@ subset_data <- function(data, years, type) {
                     -geographic_division,
                     -core_city,
                     -suburban_agency,
+                    -crosswalk_agency_name,
+                    -census_name,
                     -fips_state_county_code) %>%
-      dplyr::mutate(months_reported_num = stringr::str_replace_all(months_reported,
-                                                                   asr_month_to_number),
-                    months_reported_num = as.numeric(months_reported_num),
+      dplyr::mutate(months_reported_num = months_reported ,
                     group_number        = stringr::str_replace_all(group_number,
                                                                    new_groups)
       ) %>%

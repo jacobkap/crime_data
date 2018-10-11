@@ -5,15 +5,15 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 arson <- get_arson()
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arson")
 save_files(data = arson,
-           year = "2001_2016",
+           year = "2001_2017",
            file_name = "ucr_arson_",
            save_name = "ucr_arson_")
-zip::zip(zipfile = "ucr_arson_2001_2016.zip",
+zip::zip(zipfile = "ucr_arson_2001_2017.zip",
          files = list.files())
 
 get_arson <- function() {
   arson <- data.frame()
-  for (year in c(2001:2005, 2007:2016)) {
+  for (year in c(2001:2005, 2007:2017)) {
     setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/arson")
     message(year)
     data <- spss_ascii_reader(paste0("ucr_arson_", year, ".txt"),
@@ -57,8 +57,7 @@ get_arson <- function() {
     if (year == 2016) {
       data <-
         data %>%
-        dplyr::filter(
-          ori             != "GA06059")
+        dplyr::filter(ori != "GA06059")
     }
 
     arson <- bind_rows(arson, data)

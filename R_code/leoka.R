@@ -2,19 +2,19 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R_code/leoka_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
 save_LEOKA_monthly()
-leoka_yearly_1975_2016 <- leoka_yearly()
+leoka_yearly_1975_2017 <- leoka_yearly()
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
-save_files(data = leoka_yearly_1975_2016,
+save_files(data = leoka_yearly_1975_2017,
            year = "",
-           file_name = "leoka_yearly_1975_2016",
-           save_name = "leoka_yearly_1975_2016")
-save_as_zip("leoka_monthly_1975_2016_", "monthly")
-save_as_zip("leoka_yearly_1975_2016_", "yearly")
+           file_name = "leoka_yearly_1975_2017",
+           save_name = "leoka_yearly_1975_2017")
+save_as_zip("leoka_monthly_1975_2017_", "monthly")
+save_as_zip("leoka_yearly_1975_2017_", "yearly")
 
 # Save the individual files - still monthly
 save_LEOKA_monthly <- function() {
 
-  for (year in 1975:2016) {
+  for (year in 1975:2017) {
     source('C:/Users/user/Dropbox/R_project/crime_data/R_code/leoka_utils.R')
     setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/LEOKA")
     message(year)
@@ -72,7 +72,7 @@ save_LEOKA_monthly <- function() {
     data <- data[!is.na(data$STATE), ]
     data <- data[!is.na(data$ORI), ]
 
-        data <- fix_persons_per_1k(data) # Now it DOESN'T make these rate variables.
+    data <- fix_persons_per_1k(data) # Now it DOESN'T make these rate variables.
                                      # Just makes total officers/civilians
                                      # variables and removes old rate variables.
     names(data) <- tolower(names(data))
@@ -113,7 +113,7 @@ save_LEOKA_monthly <- function() {
 leoka_yearly <- function() {
   leoka <- data.frame()
   setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
-  for (year in 1975:2016) {
+  for (year in 1975:2017) {
     suppressMessages(source('C:/Users/user/Dropbox/R_project/crime_data/R_code/leoka_utils.R'))
     load(paste0("leoka_monthly_", year, ".rda"))
     do.call(assign, list("data", as.name(paste0("leoka_monthly_", year))))
@@ -151,7 +151,7 @@ make_yearly <- function(data) {
   return(data)
 }
 
-summary(leoka_yearly_1975_2016[leoka_yearly_1975_2016$year == 2016,])
-summary(leoka_yearly_1975_2016$officers_killed_accident)
-summary(leoka_yearly_1975_2016$officers_killed_felony)
-names(leoka_yearly_1975_2016)
+summary(leoka_yearly_1975_2017[leoka_yearly_1975_2017$year == 2017,])
+summary(leoka_yearly_1975_2017$officers_killed_accident)
+summary(leoka_yearly_1975_2017$officers_killed_felony)
+names(leoka_yearly_1975_2017)

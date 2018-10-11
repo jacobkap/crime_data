@@ -3,16 +3,16 @@ hate_crimes <- agg_hate_crimes()
 hate_crimes <- clean_hate_crimes(hate_crimes)
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/hate_crimes")
 save_files(data = hate_crimes,
-           year = "1992_2016",
+           year = "1992_2017",
            file_name = "ucr_hate_crimes_",
            save_name = "ucr_hate_crimes_")
-zip::zip(zipfile = "ucr_hate_crimes_1992_2016.zip",
+zip::zip(zipfile = "ucr_hate_crimes_1992_2017.zip",
          files = list.files())
 
 agg_hate_crimes <- function() {
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/hate_crimes")
   hate_crimes <- data.frame()
-  for (year in 1992:2016) {
+  for (year in 1992:2017) {
     message(year)
     data <- spss_ascii_reader(paste0("ucr_hate_crimes_incident_record_",
                                      year, ".txt"),

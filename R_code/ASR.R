@@ -2,26 +2,26 @@
 # the FBI's UCR.
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/ASR_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
-# get_ASR_yearly()
+# system.time(get_ASR_yearly())
 combine_years(arrest_groups = c("index_crimes",
                                 "financial_crimes",
                                 "grey_collar_and_property_crimes",
-                                "violent_crimes",
-                                "sex_or_dv_crimes",
+                                "violent_crimes"))
+combine_years(arrest_groups = c("sex_or_family_crimes",
                                 "alcohol_crimes"))
 combine_years(arrest_groups = "other_crimes")
 combine_years(arrest_groups = "simple_crimes")
 combine_years(arrest_groups = "drug_crimes")
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR")
-save_as_zip("asr_index_crimes_1980_2016_", pattern = "index")
-save_as_zip("asr_financial_1980_2016_", pattern = "financial")
-save_as_zip("asr_grey_collar_property_crimes_1980_2016_", pattern = "grey_collar")
-save_as_zip("asr_violent_crimes_1980_2016_", pattern = "violent")
-save_as_zip("asr_sex_or_dv_crimes_1980_2016_", pattern = "sex_or_dv")
-save_as_zip("asr_alcohol_crimes_1980_2016_", pattern = "alcohol")
-save_as_zip("asr_other_crimes1980_2016_", pattern = "other")
-save_as_zip("asr_simple_1980_2016_", pattern = "simple")
-save_as_zip("asr_drug_crimes_1980_2016_", pattern = "drug")
+save_as_zip("asr_index_crimes_1980_2017_", pattern = "index")
+save_as_zip("asr_financial_1980_2017_", pattern = "financial")
+save_as_zip("asr_grey_collar_property_crimes_1980_2017_", pattern = "grey_collar")
+save_as_zip("asr_violent_crimes_1980_2017_", pattern = "violent")
+save_as_zip("asr_sex_or_family_crimes_1980_2017_", pattern = "sex_or_family")
+save_as_zip("asr_alcohol_crimes_1980_2017_", pattern = "alcohol")
+save_as_zip("asr_other_crimes_1980_2017_", pattern = "other")
+save_as_zip("asr_simple_1980_2017_", pattern = "simple")
+save_as_zip("asr_drug_crimes_1980_2017_", pattern = "drug")
 
 combine_years <- function(arrest_groups) {
 
@@ -29,7 +29,7 @@ combine_years <- function(arrest_groups) {
     message(arrest_group)
     name_to_save <- paste0("asr_", arrest_group, "_")
     data <- data.table::data.table()
-    for (year in 1980:2016) {
+    for (year in 1980:2017) {
       setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR_temp")
       file_name_temp <- paste0("arrests_",
                                names(combined_crimes[arrest_group]),
@@ -40,7 +40,7 @@ combine_years <- function(arrest_groups) {
                                     use.names = TRUE,
                                     fill = TRUE)
       message(year)
-      do.call("rm", list(as.name(file_name_temp))); gc(); Sys.sleep(1.5)
+      do.call("rm", list(as.name(file_name_temp))); gc(); Sys.sleep(3)
     }
     data <- order_arrest_cols(data)
     data <- data.frame(data)
@@ -49,16 +49,16 @@ combine_years <- function(arrest_groups) {
                         "heroin_coke_tot_female_adul",
                         names(data))
     save_files(data = data,
-               year = "1980_2016",
+               year = "1980_2017",
                file_name = name_to_save,
                save_name = name_to_save)
-    rm(data); gc(); Sys.sleep(10)
+    rm(data); gc(); Sys.sleep(15)
   }
 }
 
 
 get_ASR_yearly <- function() {
-  for (year in 1980:2016) {
+  for (year in 1980:2017) {
     ASR     <- load_arrest_data(year)
     ASR     <- make_simple_columns(ASR)
     agency  <- get_agency_data(year = year)
@@ -82,7 +82,7 @@ get_ASR_yearly <- function() {
                  file_name = paste0("arrests_", names(combined_crimes)[i], "_"),
                  save_name = paste0("arrests_", names(combined_crimes)[i], "_"),
                  rda_only = TRUE)
-      rm(data); gc(); Sys.sleep(2)
+      rm(data); gc();
     }
 
     message(year); rm(ASR); gc(); Sys.sleep(5)
@@ -110,6 +110,7 @@ load_arrest_data <- function(year) {
                                 value_label_fix = FALSE)
   ASR <- bind_cols(ORI, ASR, OFFENSES)
   rm(ORI); rm(OFFENSES); gc()
+
   names(ASR) <- gsub("ORIGINATING_AGENCY_IDENTIFIER_CODE", "ORI", names(ASR))
   ASR$OFFENSE_CODE <- str_replace_all(ASR$OFFENSE_CODE, offense_codes)
   ASR$OFFENSE_CODE <- tolower(ASR$OFFENSE_CODE)
@@ -154,7 +155,6 @@ make_simple_columns <- function(data) {
 }
 
 get_arrest_data <- function(ASR, arrest_categories) {
-  sum2 <- function(x) { sum(x, na.rm=TRUE) }
   ASR <- data.table(ASR)
   ASR <- melt(ASR, id.vars = c("OFFENSE_CODE", "ORI"),
               measure.vars = arrest_categories)
@@ -195,6 +195,9 @@ get_agency_data <- function(year) {
                            value_label_fix = FALSE)
   ASR <- bind_cols(ORI, ASR)
 
+  ASR$MONTH[ASR$ZERO_DATA_INDICATOR == "Reported no data"] <- "Not applicable"
+  ASR$ZERO_DATA_INDICATOR <- NULL
+
 
   number_months_reported <-
     ASR %>%
@@ -214,14 +217,14 @@ get_agency_data <- function(year) {
   ASR <- left_join(ASR, number_months_reported)
 
 
-  names(ASR) <- str_replace_all(names(ASR), fix_cols_names)
-  ASR$state_abb <- state.abb[match(ASR$STATE, state.name)]
+  names(ASR)       <- str_replace_all(names(ASR), fix_cols_names)
+  ASR$state_abb    <- state.abb[match(ASR$STATE, state.name)]
   ASR$state_abb[ASR$STATE == "canal zone"]           <- "CZ"
   ASR$state_abb[ASR$STATE == "district of columbia"] <- "DC"
   ASR$state_abb[ASR$STATE == "guam"]                 <- "GU"
   ASR$state_abb[ASR$STATE == "puerto rico"]          <- "PR"
   ASR$state_abb[ASR$STATE == "virgin islands"]       <- "VI"
-  names(ASR) <- tolower(names(ASR))
+  names(ASR)       <- tolower(names(ASR))
 
   ASR              <- left_join(ASR, crosswalk)
   char_cols        <- sapply(ASR, is.character)
@@ -233,6 +236,4 @@ get_agency_data <- function(year) {
 
   return(ASR)
 }
-
-
 

@@ -4,20 +4,26 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 crosswalk <- read_merge_crosswalks()
 cross_names <- names(crosswalk)
 cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
-shr_1976_2016 <- agg_shr()
-shr_1976_2016 <- reorder_SHR_columns(shr_1976_2016)
+shr_1976_2017 <- agg_shr()
+shr_1976_2017 <- reorder_SHR_columns(shr_1976_2017)
+summary(shr_1976_2017)
+table(shr_1976_2017$state)
+table(shr_1976_2017$group)
+table(shr_1976_2017$geographic_division)
+table(is.na(shr_1976_2017$ori))
+table(shr_1976_2017$year)
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/SHR")
-save_files(data = shr_1976_2016,
-           year = "1976_2016",
+save_files(data = shr_1976_2017,
+           year = "1976_2017",
            file_name = "shr_",
            save_name = "shr_")
-save_as_zip("shr_1976_2016_")
+save_as_zip("shr_1976_2017_")
 
 agg_shr <- function() {
   shr <- data.table()
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/SHR")
   source('C:/Users/user/Dropbox/R_project/crime_data/R_code/SHR_utils.R')
-  for (year in 1976:2016) {
+  for (year in 1976:2017) {
     data <- spss_ascii_reader(dataset_name = paste0("ucr_shr_", year, ".txt"),
                               sps_name = paste0("ucr_shr_", year, ".sps"))
     names(data) <- str_replace_all(names(data), shr_names)
@@ -179,7 +185,8 @@ reorder_SHR_columns <- function(data) {
                   vic_ethnic,
                   vic_relation,
                   offenders) %>%
-    dplyr::arrange(desc(year), ori)
+    dplyr::arrange(desc(year),
+                   ori)
   return(data)
 
 }

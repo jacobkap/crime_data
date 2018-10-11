@@ -6,6 +6,8 @@ library(dplyr)
 library(tidyr)
 library(data.table)
 
+sum2 <- function(x) { sum(x, na.rm = TRUE) }
+
 offense_codes <- c("^01A$" = "Murder and non-negligent manslaughter",
                    "^01B$" = "Manslaughter by negligence",
                    "^02$"  = "Forcible rape",
@@ -158,7 +160,8 @@ other_cols <- c("NUMERIC_STATE_CODE_FBI_CODE",
                 "CORE_CITY",
                 "COVERED_BY_ANOTHER_AGENCY",
                 "POPULATION",
-                "AGENCY_NAME")
+                "AGENCY_NAME",
+                "ZERO_DATA_INDICATOR")
 
 remove_missing <- function(column) {
   column[column %in% c(99999, 99998, 10000, 20000,
@@ -281,7 +284,7 @@ offenses <- c("^murder and non-negligent manslaughter$" = "murder",
               "^embezzlement$"                          = "embezzlement",
               "^vandalism$"                             = "vandalism",
               "^weapons-carry, posses, etc.$"           = "weapons",
-              "^total drug abuse violations"           = "total_drug",
+              "^total drug abuse violations"            = "total_drug",
               "^sale/manufacture \\(subtotal\\)$"       = "sale_drug",
               "^sale: opium, coke, and their derivatives$" = "sale_heroin_coke",
               "^possession \\(subtotal\\)$"             = "poss_drug",
@@ -293,7 +296,7 @@ offenses <- c("^murder and non-negligent manslaughter$" = "murder",
               "^disorderly conduct$"                    = "disorder_cond",
               "^all other offenses \\(not traffic\\)$"  = "oth_non_traffic",
               "^curfew and loitering violations$"       = "curfew",
-              "^stolen property-buy, receive, poss."   = "stolen_property",
+              "^stolen property-buy, receive, poss."    = "stolen_property",
               "^prostitution and commercialized vice$"  = "prostitution",
               "^sale: marijuana$"                       = "sale_cannabis",
               "^possession: opium, coke, and their derivatives$" = "poss_heroin_coke",
@@ -313,10 +316,11 @@ offenses <- c("^murder and non-negligent manslaughter$" = "murder",
               "^suspicion$"                              = "suspicion"
 )
 
-fix_cols_names <- c("JUVENILE"                                  = "JUV",
-                    "ORIGINATING_AGENCY_IDENTIFIER_CODE"        = "ORI",
-                    "NUMERIC_STATE_CODE_FBI_CODE"               = "STATE",
-                    "GEOGRAPHIC_DIVISION_OF_STATE"              = "GEOGRAPHIC_DIVISION"
+fix_cols_names <- c("JUVENILE"                            = "JUV",
+                    "ORIGINATING_AGENCY_IDENTIFIER_CODE"  = "ORI",
+                    "NUMERIC_STATE_CODE_FBI_CODE"         = "STATE",
+                    "GEOGRAPHIC_DIVISION_OF_STATE"        = "GEOGRAPHIC_DIVISION",
+                    "INDIAN"                              = "AMER_INDIAN"
 )
 
 starting_cols <- c("ori",
@@ -324,6 +328,8 @@ starting_cols <- c("ori",
                    "ori9",
                    "number_of_months_reported",
                    "agency_name",
+                   "crosswalk_agency_name",
+                   "census_name",
                    "state",
                    "state_abb",
                    "fips_state_code",
@@ -342,49 +348,135 @@ starting_cols <- c("ori",
                    "population")
 
 order_arrest_cols <- function(data) {
-  murder_cols           <- grep("^murder", names(data), value = TRUE)
-  rape_cols             <- grep("^rape", names(data), value = TRUE)
-  robbery_cols          <- grep("^robbery", names(data), value = TRUE)
-  agg_assault_cols      <- grep("^agg_assault", names(data), value = TRUE)
-  burglary_cols         <- grep("^burglary", names(data), value = TRUE)
-  theft_cols            <- grep("^theft", names(data), value = TRUE)
-  mtr_veh_theft_cols    <- grep("^mtr_veh_theft", names(data), value = TRUE)
-  oth_assault_cols      <- grep("^oth_assault", names(data), value = TRUE)
-  forgery_cols          <- grep("^forgery", names(data), value = TRUE)
-  fraud_cols            <- grep("^fraud", names(data), value = TRUE)
-  embezzlement_cols     <- grep("^embezzlement", names(data), value = TRUE)
-  vandalism_cols        <- grep("^vandalism", names(data), value = TRUE)
-  weapons_cols          <- grep("^weapons", names(data), value = TRUE)
-  total_drug_cols       <- grep("^total_drug", names(data), value = TRUE)
-  sale_drug_cols        <- grep("^sale_drug", names(data), value = TRUE)
-  sale_heroin_coke_cols  <- grep("^sale_heroin_coke", names(data), value = TRUE)
-  possess_drug_cols     <- grep("^poss_drug", names(data), value = TRUE)
-  possess_cannabis_cols <- grep("^poss_cannabis", names(data), value = TRUE)
-  family_offenses_cols  <- grep("^family_offenses", names(data), value = TRUE)
-  dui_cols              <- grep("^dui", names(data), value = TRUE)
-  liquor_cols           <- grep("^liquor", names(data), value = TRUE)
-  drunkenness_cols      <- grep("^drunkenness", names(data), value = TRUE)
-  disorder_conduct_cols <- grep("^disorder_cond", names(data), value = TRUE)
-  oth_non_traffic_cols  <- grep("^oth_non_traffic", names(data), value = TRUE)
-  curfew_cols           <- grep("^curfew", names(data), value = TRUE)
-  stolen_property_cols  <- grep("^stolen_property", names(data), value = TRUE)
-  prostitution_cols     <- grep("^prostitution", names(data), value = TRUE)
-  sale_cannabis_cols    <- grep("^sale_cannabis", names(data), value = TRUE)
-  possess_coke_cols     <- grep("^poss_heroin_coke", names(data), value = TRUE)
-  oth_sex_off_cols      <- grep("^oth_sex", names(data), value = TRUE)
-  possess_oth_drug_cols <- grep("^poss_oth_drug", names(data), value = TRUE)
-  arson_cols            <- grep("^arson", names(data), value = TRUE)
-  sale_oth_drug_cols    <- grep("^sale_oth_drug", names(data), value = TRUE)
-  vagrancy_cols         <- grep("^vagrancy", names(data), value = TRUE)
-  possess_narcotic_cols <- grep("^poss_synth_narc", names(data), value = TRUE)
-  runaway_cols          <- grep("^runaway", names(data), value = TRUE)
-  manslaughter_neg_cols <- grep("^manslaught", names(data), value = TRUE)
-  total_gambling_cols   <- grep("^total_gambling", names(data), value = TRUE)
-  bookmaking_cols       <- grep("^bookmaking", names(data), value = TRUE)
-  oth_gambling_cols     <- grep("^oth_gambling", names(data), value = TRUE)
-  sale_synth_narc_cols  <- grep("^sale_synth_narc", names(data), value = TRUE)
-  number_lottery_cols   <- grep("^number_lottery", names(data), value = TRUE)
-  suspicion_cols        <- grep("^suspicion", names(data), value = TRUE)
+  murder_cols           <- grep("^murder",
+                                names(data),
+                                value = TRUE)
+  rape_cols             <- grep("^rape",
+                                names(data),
+                                value = TRUE)
+  robbery_cols          <- grep("^robbery",
+                                names(data),
+                                value = TRUE)
+  agg_assault_cols      <- grep("^agg_assault",
+                                names(data),
+                                value = TRUE)
+  burglary_cols         <- grep("^burglary",
+                                names(data),
+                                value = TRUE)
+  theft_cols            <- grep("^theft",
+                                names(data),
+                                value = TRUE)
+  mtr_veh_theft_cols    <- grep("^mtr_veh_theft",
+                                names(data),
+                                value = TRUE)
+  oth_assault_cols      <- grep("^oth_assault",
+                                names(data),
+                                value = TRUE)
+  forgery_cols          <- grep("^forgery",
+                                names(data),
+                                value = TRUE)
+  fraud_cols            <- grep("^fraud",
+                                names(data),
+                                value = TRUE)
+  embezzlement_cols     <- grep("^embezzlement",
+                                names(data),
+                                value = TRUE)
+  vandalism_cols        <- grep("^vandalism",
+                                names(data),
+                                value = TRUE)
+  weapons_cols          <- grep("^weapons",
+                                names(data),
+                                value = TRUE)
+  total_drug_cols       <- grep("^total_drug",
+                                names(data),
+                                value = TRUE)
+  sale_drug_cols        <- grep("^sale_drug",
+                                names(data),
+                                value = TRUE)
+  sale_heroin_coke_cols <- grep("^sale_heroin_coke",
+                                names(data),
+                                value = TRUE)
+  possess_drug_cols     <- grep("^poss_drug",
+                                names(data),
+                                value = TRUE)
+  possess_cannabis_cols <- grep("^poss_cannabis",
+                                names(data),
+                                value = TRUE)
+  family_offenses_cols  <- grep("^family_offenses",
+                                names(data),
+                                value = TRUE)
+  dui_cols              <- grep("^dui",
+                                names(data),
+                                value = TRUE)
+  liquor_cols           <- grep("^liquor",
+                                names(data),
+                                value = TRUE)
+  drunkenness_cols      <- grep("^drunkenness",
+                                names(data),
+                                value = TRUE)
+  disorder_conduct_cols <- grep("^disorder_cond",
+                                names(data),
+                                value = TRUE)
+  oth_non_traffic_cols  <- grep("^oth_non_traffic",
+                                names(data),
+                                value = TRUE)
+  curfew_cols           <- grep("^curfew",
+                                names(data),
+                                value = TRUE)
+  stolen_property_cols  <- grep("^stolen_property",
+                                names(data),
+                                value = TRUE)
+  prostitution_cols     <- grep("^prostitution",
+                                names(data),
+                                value = TRUE)
+  sale_cannabis_cols    <- grep("^sale_cannabis",
+                                names(data),
+                                value = TRUE)
+  possess_heroin_coke_cols <- grep("^poss_heroin_coke",
+                                names(data),
+                                value = TRUE)
+  oth_sex_off_cols      <- grep("^oth_sex",
+                                names(data),
+                                value = TRUE)
+  possess_oth_drug_cols <- grep("^poss_oth_drug",
+                                names(data),
+                                value = TRUE)
+  arson_cols            <- grep("^arson",
+                                names(data),
+                                value = TRUE)
+  sale_oth_drug_cols    <- grep("^sale_oth_drug",
+                                names(data),
+                                value = TRUE)
+  vagrancy_cols         <- grep("^vagrancy",
+                                names(data),
+                                value = TRUE)
+  possess_synth_narc_cols <- grep("^poss_synth_narc",
+                                names(data),
+                                value = TRUE)
+  runaway_cols          <- grep("^runaway",
+                                names(data),
+                                value = TRUE)
+  manslaughter_neg_cols <- grep("^manslaught",
+                                names(data),
+                                value = TRUE)
+  total_gambling_cols   <- grep("^total_gambling",
+                                names(data),
+                                value = TRUE)
+  bookmaking_cols       <- grep("^bookmaking",
+                                names(data),
+                                value = TRUE)
+  oth_gambling_cols     <- grep("^oth_gambling",
+                                names(data),
+                                value = TRUE)
+  sale_synth_narc_cols  <- grep("^sale_synth_narc",
+                                names(data),
+                                value = TRUE)
+  number_lottery_cols   <- grep("^number_lottery",
+                                names(data),
+                                value = TRUE)
+  suspicion_cols        <- grep("^suspicion",
+                                names(data),
+                                value = TRUE)
 
   crime_cols <- grep("_cols$", ls(), value = TRUE)
   crime_cols <- crime_cols[!crime_cols %in% c("arrest_cols",
@@ -405,49 +497,51 @@ order_arrest_cols <- function(data) {
     data %>%
     dplyr::arrange(desc(year), ori) %>%
     dplyr::select(starting_cols,
-                  murder_cols,
-                  rape_cols,
-                  robbery_cols,
+
                   agg_assault_cols,
-                  burglary_cols,
-                  theft_cols,
-                  mtr_veh_theft_cols,
                   arson_cols,
-                  oth_assault_cols,
-                  weapons_cols,
-                  prostitution_cols,
-                  oth_sex_off_cols,
-                  manslaughter_neg_cols,
+                  bookmaking_cols,
+                  burglary_cols,
+                  curfew_cols,
+                  disorder_conduct_cols,
+                  drunkenness_cols,
+                  dui_cols,
+                  embezzlement_cols,
+                  family_offenses_cols,
                   forgery_cols,
                   fraud_cols,
-                  embezzlement_cols,
-                  total_gambling_cols,
-                  oth_gambling_cols,
-                  bookmaking_cols,
+                  liquor_cols,
+                  manslaughter_neg_cols,
+                  mtr_veh_theft_cols,
+                  murder_cols,
                   number_lottery_cols,
-                  dui_cols,
+                  oth_assault_cols,
+                  oth_gambling_cols,
+                  oth_non_traffic_cols,
+                  oth_sex_off_cols,
+                  prostitution_cols,
                   total_drug_cols,
                   possess_drug_cols,
-                  sale_drug_cols,
                   possess_cannabis_cols,
-                  sale_cannabis_cols,
-                  possess_coke_cols,
-                  sale_heroin_coke_cols,
-                  possess_narcotic_cols,
-                  sale_synth_narc_cols,
+                  possess_heroin_coke_cols,
+                  possess_synth_narc_cols,
                   possess_oth_drug_cols,
+                  rape_cols,
+                  robbery_cols,
+                  runaway_cols,
+                  sale_drug_cols,
+                  sale_cannabis_cols,
+                  sale_heroin_coke_cols,
+                  sale_synth_narc_cols,
                   sale_oth_drug_cols,
-                  liquor_cols,
-                  drunkenness_cols,
-                  family_offenses_cols,
-                  disorder_conduct_cols,
-                  vandalism_cols,
+                  theft_cols,
+                  total_gambling_cols,
                   stolen_property_cols,
                   suspicion_cols,
                   vagrancy_cols,
-                  curfew_cols,
-                  runaway_cols,
-                  oth_non_traffic_cols)
+                  vandalism_cols,
+                  weapons_cols
+)
 
 
   return(data)
@@ -473,6 +567,14 @@ within_col_order <- c("tot_arrests",
                       "tot_male_juv",
                       "tot_female_adult",
                       "tot_female_juv",
+                      "adult_white",
+                      "adult_black",
+                      "adult_asian",
+                      "adult_amer_indian",
+                      "juv_white",
+                      "juv_black",
+                      "juv_asian",
+                      "juv_amer_indian",
                       "male_under_10",
                       "male_10_12",
                       "male_13_14",
@@ -516,15 +618,7 @@ within_col_order <- c("tot_arrests",
                       "female_50_54",
                       "female_55_59",
                       "female_60_64",
-                      "female_over_64",
-                      "adult_white",
-                      "adult_black",
-                      "adult_asian",
-                      "adult_indian",
-                      "juv_white",
-                      "juv_black",
-                      "juv_asian",
-                      "juv_indian")
+                      "female_over_64")
 
 simple_arrest_categories <- c("tot_male_juv",
                               "tot_male_adult",
@@ -572,3 +666,5 @@ all_arrest_categories <- c("tot_male_juv",
                            "ADULT_ASIAN",        "JUVENILE_WHITE",
                            "JUVENILE_BLACK",     "JUVENILE_INDIAN",
                            "JUVENILE_ASIAN")
+
+

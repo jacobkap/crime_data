@@ -16,7 +16,8 @@ month_wide_to_long <- function(data) {
                      ignore.case = TRUE)
 
   crime_only_data <- data[, crime_cols]
-  data <- data %>% dplyr::select(-one_of(crime_cols))
+  data <-
+    data %>% dplyr::select(-one_of(crime_cols))
 
   final <- data.frame()
   for (month in tolower(month.abb)) {
@@ -445,7 +446,7 @@ starting_cols <- c("ori",
                    "date",
                    "state",
                    "state_abb",
-                   "months_reported")
+                   "last_month_reported")
 other_cols <- c("fips_state_code",
                 "fips_county_code",
                 "fips_state_county_code",
@@ -454,7 +455,7 @@ other_cols <- c("fips_state_code",
                 "agency_type",
                 "agency_subtype_1",
                 "agency_subtype_2",
-                "group_number",
+                "group",
                 "division",
                 "city_sequence_number",
                 "core_city_indication",
@@ -470,11 +471,5 @@ other_cols <- c("fips_state_code",
                 "population_3",
                 "county_3",
                 "msa_3",
-                "special_mailing_group",
-                "special_mailing_address",
                 "agency_name",
-                "mailing_address_line_1",
-                "mailing_address_line_2",
-                "mailing_address_line_3",
-                "mailing_address_line_4",
                 "zip_code")

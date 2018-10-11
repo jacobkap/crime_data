@@ -1,11 +1,15 @@
 # Making UCR Offenses Known and Clearances By Arrest into Yearly ----------
 make_ucr_yearly <- function() {
   offenses_known_yearly <- data.frame()
-  for (year in 1960:2016) {
+  for (year in 1960:2017) {
     setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")
     load(paste0("ucr_offenses_known_monthly_", year, ".rda"))
     do.call(assign, list("data", as.name(paste0("ucr_offenses_known_monthly_", year))))
     do.call(rm, list(paste0("ucr_offenses_known_monthly_", year)))
+
+    data$month    <- NULL
+    data$date     <- NULL
+    starting_cols <- starting_cols[!starting_cols %in% c("month", "date")]
 
     pop_cols <- c("total_population",
                   "population_1",
@@ -15,11 +19,12 @@ make_ucr_yearly <- function() {
 
     agency_desc_cols <- c("ori9",
                           "year",
-                          "month",
-                          "date",
                           "state",
                           "state_abb",
-                          "months_reported",
+                          "crosswalk_agency_name",
+                          "census_name",
+                          "last_month_reported",
+                          "last_update",
                           "fips_state_code",
                           "fips_county_code",
                           "fips_state_county_code",
@@ -28,7 +33,7 @@ make_ucr_yearly <- function() {
                           "agency_type",
                           "agency_subtype_1",
                           "agency_subtype_2",
-                          "group_number",
+                          "group",
                           "division",
                           "city_sequence_number",
                           "core_city_indication",
@@ -44,13 +49,7 @@ make_ucr_yearly <- function() {
                           "population_3",
                           "county_3",
                           "msa_3",
-                          "special_mailing_group",
-                          "special_mailing_address",
                           "agency_name",
-                          "mailing_address_line_1",
-                          "mailing_address_line_2",
-                          "mailing_address_line_3",
-                          "mailing_address_line_4",
                           "zip_code")
 
     temp <-
@@ -79,13 +78,17 @@ make_ucr_yearly <- function() {
     offenses_known_yearly <- bind_rows(offenses_known_yearly, data)
     rm(data); message(year); gc(); Sys.sleep(1)
   }
+  offenses_known_yearly <-
+    offenses_known_yearly %>%
+    dplyr::arrange(desc(year),
+                   ori)
   return(offenses_known_yearly)
 
 }
 
 saving_yearly <- function(data) {
   save_files(data = data,
-             year = "1960_2016",
+             year = "1960_2017",
              file_name = "ucr_offenses_known_yearly_",
              save_name = "ucr_offenses_known_yearly_")
 }

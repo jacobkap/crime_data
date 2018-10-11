@@ -330,7 +330,10 @@ year_fix <- c("^76$" = "1976",
               "^86$" = "1986",
               "^87$" = "1987",
               "^88$" = "1988",
-              "^16$" = "2016")
+              "^16$" = "2016",
+              "^17$" = "2017",
+              "^18$" = "2018",
+              "^19$" = "2019")
 
 homicide_type <- c("murder nonneglig" = "murder and non-negligent manslaughter",
                    "mansl by neglig" = "manslaughter by negligence",
