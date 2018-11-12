@@ -229,9 +229,9 @@ other_crimes <- c("vandalism",
                   "suspicion")
 
 sex_or_family_crimes <- c("prostitution",
-                      "oth_sex_off",
-                      "rape",
-                      "family_offenses")
+                          "oth_sex_off",
+                          "rape",
+                          "family_offenses")
 
 violent_crimes <- c("murder",
                     "robbery",
@@ -259,6 +259,7 @@ combined_crimes <- list(index_crimes,
                         drug_crimes,
                         alcohol_crimes,
                         other_crimes,
+                        simple_crimes,
                         simple_crimes)
 names(combined_crimes) <- c("index_crimes",
                             "financial_crimes",
@@ -268,7 +269,8 @@ names(combined_crimes) <- c("index_crimes",
                             "drug_crimes",
                             "alcohol_crimes",
                             "other_crimes",
-                            "simple_crimes")
+                            "simple_crimes_sex",
+                            "simple_crimes_race")
 
 
 offenses <- c("^murder and non-negligent manslaughter$" = "murder",
@@ -433,8 +435,8 @@ order_arrest_cols <- function(data) {
                                 names(data),
                                 value = TRUE)
   possess_heroin_coke_cols <- grep("^poss_heroin_coke",
-                                names(data),
-                                value = TRUE)
+                                   names(data),
+                                   value = TRUE)
   oth_sex_off_cols      <- grep("^oth_sex",
                                 names(data),
                                 value = TRUE)
@@ -451,8 +453,8 @@ order_arrest_cols <- function(data) {
                                 names(data),
                                 value = TRUE)
   possess_synth_narc_cols <- grep("^poss_synth_narc",
-                                names(data),
-                                value = TRUE)
+                                  names(data),
+                                  value = TRUE)
   runaway_cols          <- grep("^runaway",
                                 names(data),
                                 value = TRUE)
@@ -541,7 +543,7 @@ order_arrest_cols <- function(data) {
                   vagrancy_cols,
                   vandalism_cols,
                   weapons_cols
-)
+    )
 
 
   return(data)
@@ -567,14 +569,14 @@ within_col_order <- c("tot_arrests",
                       "tot_male_juv",
                       "tot_female_adult",
                       "tot_female_juv",
-                      "adult_white",
-                      "adult_black",
-                      "adult_asian",
                       "adult_amer_indian",
-                      "juv_white",
-                      "juv_black",
-                      "juv_asian",
+                      "adult_asian",
+                      "adult_black",
+                      "adult_white",
                       "juv_amer_indian",
+                      "juv_asian",
+                      "juv_black",
+                      "juv_white",
                       "male_under_10",
                       "male_10_12",
                       "male_13_14",
@@ -620,15 +622,28 @@ within_col_order <- c("tot_arrests",
                       "female_60_64",
                       "female_over_64")
 
-simple_arrest_categories <- c("tot_male_juv",
-                              "tot_male_adult",
-                              "tot_female_juv",
-                              "tot_female_adult",
-                              "tot_male",
-                              "tot_female",
-                              "tot_juv",
-                              "tot_adult",
-                              "tot_arrests")
+simple_arrest_sex_categories <- c("tot_male_juv",
+                                  "tot_male_adult",
+                                  "tot_female_juv",
+                                  "tot_female_adult",
+                                  "tot_male",
+                                  "tot_female",
+                                  "tot_juv",
+                                  "tot_adult",
+                                  "tot_arrests")
+
+
+simple_arrest_race_categories <- c("tot_juv",
+                                   "tot_adult",
+                                   "tot_arrests",
+                                   "ADULT_WHITE",
+                                   "ADULT_BLACK",
+                                   "ADULT_INDIAN",
+                                   "ADULT_ASIAN",
+                                   "JUVENILE_WHITE",
+                                   "JUVENILE_BLACK",
+                                   "JUVENILE_INDIAN",
+                                   "JUVENILE_ASIAN")
 
 all_arrest_categories <- c("tot_male_juv",
                            "tot_male_adult",

@@ -4,21 +4,27 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
 crosswalk   <- read_merge_crosswalks()
 cross_names <- names(crosswalk)
 cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
-# unzip_files()
+
 save_supplement_data_monthly()
-#
 ucr_property_stolen_recovered_yearly <- get_supplement_yearly()
-summary(ucr_property_stolen_recovered_yearly)
+
+
 table(ucr_property_stolen_recovered_yearly$state)
 table(ucr_property_stolen_recovered_yearly$division)
 table(ucr_property_stolen_recovered_yearly$group)
-table(ucr_property_stolen_recovered_yearly$status)
+summary(ucr_property_stolen_recovered_yearly$population)
+table(ucr_property_stolen_recovered_yearly$number_of_months_reported)
+summary(ucr_property_stolen_recovered_yearly)
+head(ucr_property_stolen_recovered_yearly$ori)
+head(ucr_property_stolen_recovered_yearly$ori9)
+
 save_files(data = ucr_property_stolen_recovered_yearly,
-           year = "1960_2016",
+           year = "1960_2017",
            file_name = "ucr_property_stolen_recovered_yearly_",
            save_name = "ucr_property_stolen_recovered_yearly_")
-save_as_zip("ucr_property_stolen_recovered_yearly_1960_2016_", "yearly")
-save_as_zip("ucr_property_stolen_recovered_monthly_1960_2016_", "monthly")
+save_as_zip("ucr_property_stolen_recovered_yearly_1960_2017_", "yearly")
+save_as_zip("ucr_property_stolen_recovered_monthly_1960_2017_", "monthly")
+
 
 save_supplement_data_monthly <- function() {
 
@@ -52,18 +58,18 @@ save_supplement_data_monthly <- function() {
                                                           supplement_division))
 
 
-
+    data <- make_num_months_reported(data)
     data <- supplement_month_wide_to_long(data)
 
-    status_cols          <- grep("status",
-                                 names(data),
-                                 value = TRUE)
-    offenses_cols        <- grep("offenses|^auto",
-                                 names(data),
-                                 value = TRUE)
-    data_cols            <- grep("offenses|^auto|^value",
-                                 names(data),
-                                 value = TRUE)
+    status_cols   <- grep("status",
+                          names(data),
+                          value = TRUE)
+    offenses_cols <- grep("offenses|^auto",
+                          names(data),
+                          value = TRUE)
+    data_cols     <- grep("offenses|^auto|^value",
+                          names(data),
+                          value = TRUE)
 
     data <-
       data %>%
@@ -100,6 +106,8 @@ save_supplement_data_monthly <- function() {
       dplyr::left_join(crosswalk) %>%
       dplyr::select(ori,
                     ori9,
+                    number_of_months_reported,
+                    status,
                     state,
                     agency_name,
                     year,
@@ -109,7 +117,6 @@ save_supplement_data_monthly <- function() {
                     group,
                     division,
                     msa,
-                    status,
                     fbi_batch_number,
                     cross_names,
                     one_of(offense_col_order),
@@ -118,7 +125,11 @@ save_supplement_data_monthly <- function() {
                                    levels = tolower(month.name))) %>%
       dplyr::arrange(ori,
                      month) %>%
-      dplyr::mutate(month = as.character(month))
+      dplyr::mutate(month = as.character(month)) %>%
+      dplyr::mutate_if(is.character, tolower) %>%
+      dplyr::mutate(ori = toupper(ori),
+                    ori9 = toupper(ori9)) %>%
+      dplyr::rename(report_indicator = status)
 
     setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/supplement_return_a")
     save_files(data = data,
@@ -126,6 +137,7 @@ save_supplement_data_monthly <- function() {
                file_name = "ucr_property_stolen_recovered_monthly_",
                save_name = "ucr_property_stolen_recovered_monthly_")
     message(file)
+    rm(data); gc(); Sys.sleep(3)
 
   }
 }
@@ -140,33 +152,6 @@ get_supplement_yearly <- function() {
     assign("data", get(file_name))
     rm(list = file_name)
 
- #   message(unique(data$year))
-#    num_cols <- grep("^auto", names(data))
-#    print(summary(data[, num_cols]))
-    #  print(unique(data$group))
-    #   Sys.sleep(10)
-
-    #  offenses_theft_total  1983
-    agency_desc_cols <- c(
-      "ori9",
-      "state",
-      "agency_name",
-      "year",
-      "population",
-      "group",
-      "division",
-      "msa",
-      "status",
-      "fbi_batch_number",
-      "fips_state_code",
-      "fips_county_code",
-      "fips_state_county_code",
-      "fips_place_code",
-      "fips_state_place_code",
-      "agency_type",
-      "agency_subtype_1",
-      "agency_subtype_2"
-    )
 
     temp <-
       data %>%
@@ -174,7 +159,7 @@ get_supplement_yearly <- function() {
                     "ori")
     temp <- temp[!duplicated(temp$ori), ]
 
-    data <-
+    supplement_yearly <-
       data %>%
       dplyr::select(-agency_desc_cols,
                     -month,
@@ -184,6 +169,7 @@ get_supplement_yearly <- function() {
       dplyr::left_join(temp) %>%
       dplyr::select(ori,
                     ori9,
+                    number_of_months_reported,
                     state,
                     agency_name,
                     year,
@@ -191,22 +177,35 @@ get_supplement_yearly <- function() {
                     group,
                     division,
                     msa,
-                    status,
                     fbi_batch_number,
                     cross_names,
                     one_of(offense_col_order),
-                    one_of(value_col_order))
+                    one_of(value_col_order)) %>%
+      dplyr::bind_rows(supplement_yearly) %>%
+      dplyr::arrange(ori,
+                     desc(year))
 
 
 
-    supplement_yearly <- bind_rows(supplement_yearly, data)
     message(data$year[1]); rm(data); gc(); Sys.sleep(1)
   }
-  supplement_yearly <-
-    supplement_yearly %>%
-    dplyr::arrange(ori,
-                   desc(year))
   return(supplement_yearly)
 }
 
+make_num_months_reported <- function(data) {
+  status_cols   <- grep("status",
+                        names(data),
+                        value = TRUE,
+                        ignore.case = TRUE)
 
+  data$number_of_months_reported <- 0
+  for (col in status_cols) {
+    # Some old years (1966-1973) have a 2 option which seems to
+    # be they report offenses but not value.
+    data[, col][data[, col] == 2] <- 1
+
+    data$number_of_months_reported <-
+      data$number_of_months_reported + as.numeric(data[, col])
+  }
+  return(data)
+}

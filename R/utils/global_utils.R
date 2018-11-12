@@ -9,7 +9,91 @@ library(haven)
 library(readr)
 library(rmarkdown)
 
-# utils for UCR files
+fix_years <- function(year) {
+  year[year < 10] <- paste0("200", year[year < 10])
+  year <- as.numeric(year)
+  year[year < 20] <- paste0("20", year[year < 20])
+  year <- as.numeric(year)
+  year[year < 100] <- paste0("19", year[year < 100])
+  year <- as.numeric(year)
+  return(year)
+}
+
+agg_yearly <- function(data, month_cols) {
+
+  yearly_data <-
+    data %>%
+    dplyr::select(-one_of(month_cols),
+                  -month,
+                  -date) %>%
+    dplyr::distinct(ori, .keep_all = TRUE)
+
+  month_cols <- c("ori", month_cols)
+  data <-
+    data %>%
+    dplyr::select(one_of(month_cols))
+
+  data <-
+    data %>%
+    dplyr::group_by(ori) %>%
+    dplyr::summarize_all(sum) %>%
+    dplyr::left_join(yearly_data)
+
+  data <- data.frame(data)
+  return(data)
+}
+
+month_wide_to_long <- function(data) {
+  month_cols <- grep(paste(tolower(month.abb), collapse = "|"),
+                     names(data),
+                     value = TRUE)
+
+  month_only_data <-
+    data %>%
+    dplyr::select(one_of(month_cols))
+  year_only_data <-
+    data %>%
+    dplyr::select(-one_of(month_cols))
+
+  final <- data.frame()
+  for (month in tolower(month.abb)) {
+    temp        <- month_only_data[, grep(paste0("^", month, "_"), month_cols)]
+    names(temp) <- gsub("^....", "", names(temp))
+    temp        <- dplyr::bind_cols(year_only_data, temp)
+    temp$month  <- tolower(month.name)[tolower(month.abb) == month]
+    temp$date   <- lubridate::ymd(paste(temp$year, temp$month, "1"))
+    temp$date   <- as.character(temp$date)
+
+    final       <- dplyr::bind_rows(final, temp)
+  }
+  return(final)
+}
+
+month_wide_to_long <- function(data) {
+  month_cols <- grep(paste(tolower(month.abb), collapse = "|"),
+                     names(data),
+                     value = TRUE)
+
+  month_only_data <-
+    data %>%
+    dplyr::select(one_of(month_cols))
+  data <-
+    data %>%
+    dplyr::select(-one_of(month_cols))
+
+  final <- data.frame()
+  for (month in tolower(month.abb)) {
+    temp        <- month_only_data[, grep(paste0("^", month, "_"), month_cols)]
+    names(temp) <- gsub("^....", "", names(temp))
+    temp        <- dplyr::bind_cols(data, temp)
+    temp$month  <- tolower(month.name)[tolower(month.abb) == month]
+    temp$date   <- lubridate::ymd(paste(temp$year, temp$month, "1"))
+    temp$date   <- as.character(temp$date)
+
+    final       <- dplyr::bind_rows(final, temp)
+  }
+  return(final)
+}
 
 convert_codebook_to_pdf <- function(file_name) {
     temp      <- readLines(file_name)
@@ -22,6 +106,9 @@ convert_codebook_to_pdf <- function(file_name) {
 }
 
 save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
+  if (any(nchar(names(data)) > 29)) {
+  print(names(data)[nchar(names(data)) > 29])
+  }
 
   assign(paste0(file_name, year), data) # Change name
   save( list = paste0(file_name, year),
@@ -39,6 +126,11 @@ save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
     do.call("write_dta", list(as.name(paste0(file_name, year)),
                               path = paste0(save_name,
                                             year, ".dta")))
+
+    # do.call("write_csv", list(as.name(paste0(file_name, year)),
+    #                           path = paste0(save_name,
+    #                                         year, ".csv")))
+
     do.call("rm", list(as.name(paste0(file_name, year))))
   }
 }
@@ -47,7 +139,7 @@ save_as_zip <- function(file_name, pattern = NULL) {
   file_ext <- c("rda", "dta")
   all_files <- list.files()
   if (!is.null(pattern)) all_files <- list.files(pattern = pattern)
-  codebooks <- all_files[grep("codebook", all_files)]
+  codebooks <- all_files[grep("codebook|pdf$", all_files)]
   for (i in seq_along(file_ext)) {
     zip_files <- all_files[grep(file_ext[i], all_files)]
     zip_files <- c(zip_files, codebooks)

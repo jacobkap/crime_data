@@ -1,5 +1,5 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R_code/arson_utils.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/arson_utils.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
 
 
 arson <- get_arson()
@@ -40,8 +40,8 @@ get_arson <- function() {
                     group_number           = str_replace_all(group_number,
                                                              group_number_fix),
                     months_reported        = str_replace_all(months_reported,
-                                                              months_reported_fix)
-                    ) %>%
+                                                             months_reported_fix)
+      ) %>%
       dplyr::select(-matches("column|date_of|month_included"),
                     -state_name,
                     -id_code,
@@ -52,6 +52,11 @@ get_arson <- function() {
     names(data) <- gsub("industrial_manufacturing",
                         "industry_manufacture",
                         names(data))
+    arson_monthly_columns <- grep(paste(tolower(month.abb),
+                                        collapse = "|"),
+                                  names(data),
+                                  value = TRUE)
+
     data  <- make_arson_yearly(data, arson_monthly_columns)
 
     if (year == 2016) {
@@ -73,13 +78,13 @@ get_arson <- function() {
     dplyr::left_join(crosswalk, by = "ori") %>%
     dplyr::arrange(desc(year), ori) %>%
     dplyr::select(ori,
-           ori9,
-           state,
-           state_abb,
-           year,
-           agency_name,
-           crosswalk_cols,
-           dplyr::everything())
+                  ori9,
+                  state,
+                  state_abb,
+                  year,
+                  agency_name,
+                  crosswalk_cols,
+                  dplyr::everything())
 
   return(arson)
 }

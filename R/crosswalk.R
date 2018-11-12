@@ -154,6 +154,12 @@ read_merge_crosswalks <- function(pop = FALSE) {
   # These ORIs have Washinton D.C. FIPS codes but are in other states
   crosswalk <- crosswalk[!crosswalk$ori %in% c("MDPPD00", "VAPPD00"),]
 
+  crosswalk <-
+    crosswalk %>%
+    dplyr::mutate_all(tolower) %>%
+    dplyr::mutate(ori = toupper(ori),
+                  ori9 = toupper(ori9))
+
   return(crosswalk)
 
 }

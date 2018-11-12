@@ -44,148 +44,35 @@ supplement_negatives <- c("000000+\\}"                = "0",
                           "000000+1n"                 = "-15",
                           "zero or not reported"      = "0")
 
-supplement_group <- c(
-  "^0$"  = "possession",
-  "^1$"  = "city 250,000+",
-  "^1a$" = "city 1,000,000+",
-  "^1b$" = "city 500,000 thru 999,999",
-  "^1c$" = "city 250,000 thru 499,999",
-  "^2$"  = "city 100,000 thru 249,999",
-  "^3$"  = "city 50,000 thru 99,999",
-  "^4$"  = "city 25,000 thru 49,999",
-  "^5$"  = "city 10,000 thru 24,999",
-  "^6$"  = "city 2,500 thru 9,999",
-  "^7$"  = "city under 2,500",
-  "^8$"  = "non-msa county",
-  "^8a$" = "non-msa county 100,000+",
-  "^8b$" = "non-msa county 25,000 thru 99,999",
-  "^8c$" = "non-msa county 10,000 thru 24,999",
-  "^8d$" = "non-msa county under 10,000",
-  "^8e$" = "non-msa state police",
-  "^9$"  = "msa county",
-  "^9a$" = "msa county 100,000+",
-  "^9b$" = "msa county 25,000 thru 99,999",
-  "^9c$" = "msa county 10,000 thru 24,999",
-  "^9d$" = "msa county under 10,000",
-  "^9e$" = "msa state police",
-  "^2c$" = NA
-)
-
-supplement_division <- c(
-  "^0$" = "possessions",
-  "^1$" = "new england",
-  "^2$" = "middle atlantic",
-  "^3$" = "east north central",
-  "^4$" = "west north central",
-  "^5$" = "south atlantic",
-  "^6$" = "east south central",
-  "^7$" = "west south central",
-  "^8$" = "mountain",
-  "^9$" = "pacific",
-
-  "^a$" = "new england",
-  "^b$" = "middle atlantic",
-  "^c$" = "east north central",
-  "^d$" = "west north central",
-  "^e$" = "south atlantic",
-  "^f$" = "east south central",
-  "^g$" = "west south central",
-  "^h$" = "mountain",
-  "^i$" = "pacific"
-)
-
-supplement_status <- c(
-  "^0$" = "not reported",
-  "^1$" = "regular"
-)
-
-supplement_states <- c(
-  "^01$" = "alabama",
-  "^02$" = "arizona",
-  "^03$" = "arkansas",
-  "^04$" = "california",
-  "^05$" = "colorado",
-  "^06$" = "connecticut",
-  "^07$" = "delaware",
-  "^08$" = "district of columbia",
-  "^09$" = "florida",
-  "^10$" = "georgia",
-  "^11$" = "idaho",
-  "^12$" = "illinois",
-  "^13$" = "indiana",
-  "^14$" = "iowa",
-  "^15$" = "kansas",
-  "^16$" = "kentucky",
-  "^17$" = "louisiana",
-  "^18$" = "maine",
-  "^19$" = "maryland",
-  "^20$" = "massachusetts",
-  "^21$" = "michigan",
-  "^22$" = "minnesota",
-  "^23$" = "mississippi",
-  "^24$" = "missouri",
-  "^25$" = "montana",
-  "^26$" = "nebraska",
-  "^27$" = "nevada",
-  "^28$" = "new hampshire",
-  "^29$" = "new jersey",
-  "^30$" = "new mexico",
-  "^31$" = "new york",
-  "^32$" = "north carolina",
-  "^33$" = "north dakota",
-  "^34$" = "ohio",
-  "^35$" = "oklahoma",
-  "^36$" = "oregon",
-  "^37$" = "pennsylvania",
-  "^38$" = "rhode island",
-  "^39$" = "south carolina",
-  "^40$" = "south dakota",
-  "^41$" = "tennessee",
-  "^42$" = "texas",
-  "^43$" = "utah",
-  "^44$" = "vermont",
-  "^45$" = "virginia",
-  "^46$" = "washington",
-  "^47$" = "west virginia",
-  "^48$" = "wisconsin",
-  "^49$" = "wyoming",
-  "^50$" = "alaska",
-  "^51$" = "hawaii",
-  "^52$" = "canal zone",
-  "^53$" = "puerto rico",
-  "^54$" = "american samoa",
-  "^55$" = "guam",
-  "^62$" = "virgin islands"
-)
-
-unzip_files <- function() {
-  files <- list.files(pattern = ".zip")
-  for (file in files) {
-    unzip(file)
-  }
-  # If not file type, sets file type as .DAT
-  files <- list.files()
-  temp <- grep(".y01", files, value = TRUE)
-  files <- grep("\\.", files, invert = TRUE, value = TRUE)
-  files <- c(files, temp)
-  for (file in files) {
-    new_name <- file
-    new_name <- gsub(".y01", "", new_name)
-    new_name <- paste0(new_name, ".DAT")
-    file.rename(file, new_name)
-  }
-}
 
 fix_negatives_supplement <- function(column) {
   column <- str_replace_all(column, supplement_negatives)
   column <- parse_number(column)
   return(column)
 }
-
-fix_status_supplement <- function(column) {
-  column <- str_replace_all(column, supplement_status)
-  return(column)
-}
+agency_desc_cols <- c(
+  "ori9",
+  "number_of_months_reported",
+  "census_name",
+  "crosswalk_agency_name",
+  "state",
+  "agency_name",
+  "year",
+  "population",
+  "group",
+  "division",
+  "msa",
+  "status",
+  "fbi_batch_number",
+  "fips_state_code",
+  "fips_county_code",
+  "fips_state_county_code",
+  "fips_place_code",
+  "fips_state_place_code",
+  "agency_type",
+  "agency_subtype_1",
+  "agency_subtype_2"
+)
 
 offense_col_order <- c(
   "offenses_burg_resident_day",
@@ -195,8 +82,8 @@ offense_col_order <- c(
   "offenses_burg_nonresident_night",
   "offenses_burg_nonresident_unk",
   "offenses_burg_total",
-  "offenses_motor_vehicle_theft",
 
+  "offenses_motor_vehicle_theft",
   "offenses_murder",
   "offenses_rape",
 
