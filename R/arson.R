@@ -2,14 +2,14 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/arson_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
 
 
-arson <- get_arson()
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arson")
-save_files(data = arson,
-           year = "2001_2017",
-           file_name = "ucr_arson_",
-           save_name = "ucr_arson_")
-zip::zip(zipfile = "ucr_arson_2001_2017.zip",
-         files = list.files())
+#arson <- get_arson()
+# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arson")
+# save_files(data = arson,
+#            year = "2001_2017",
+#            file_name = "ucr_arson_",
+#            save_name = "ucr_arson_")
+# zip::zip(zipfile = "ucr_arson_2001_2017.zip",
+#          files = list.files())
 
 get_arson <- function() {
   arson <- data.frame()
@@ -68,7 +68,7 @@ get_arson <- function() {
     arson <- bind_rows(arson, data)
 
   }
-  source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
+  source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
   crosswalk <- read_merge_crosswalks()
   crosswalk_cols <- names(crosswalk)
   crosswalk_cols <- crosswalk_cols[!crosswalk_cols %in%
@@ -88,7 +88,3 @@ get_arson <- function() {
 
   return(arson)
 }
-
-names(arson)
-summary(arson)
-

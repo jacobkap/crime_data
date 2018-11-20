@@ -1,11 +1,3 @@
-devtools::install_github("jacobkap/asciiSetupReader")
-library(asciiSetupReader)
-library(data.table)
-library(stringr)
-library(dplyr)
-library(tidyr)
-library(data.table)
-
 sum2 <- function(x) { sum(x, na.rm = TRUE) }
 
 offense_codes <- c("^01A$" = "Murder and non-negligent manslaughter",

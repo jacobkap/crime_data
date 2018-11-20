@@ -1,13 +1,4 @@
 devtools::install_github("jacobkap/asciisetupreader")
-library(tidyverse)
-library(asciiSetupReader)
-library(dplyr)
-library(stringr)
-library(data.table)
-library(memisc)
-library(haven)
-library(readr)
-library(rmarkdown)
 
 fix_all_negatives <- function(data) {
   crime_char_cols <- grep(paste(tolower(month.abb), collapse = "|"),

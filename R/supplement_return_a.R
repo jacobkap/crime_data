@@ -1,30 +1,30 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R_code/supplement_utils.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
-crosswalk   <- read_merge_crosswalks()
-cross_names <- names(crosswalk)
-cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
-
-save_supplement_data_monthly()
-ucr_property_stolen_recovered_yearly <- get_supplement_yearly()
-
-
-table(ucr_property_stolen_recovered_yearly$state)
-table(ucr_property_stolen_recovered_yearly$division)
-table(ucr_property_stolen_recovered_yearly$group)
-summary(ucr_property_stolen_recovered_yearly$population)
-table(ucr_property_stolen_recovered_yearly$number_of_months_reported)
-summary(ucr_property_stolen_recovered_yearly)
-head(ucr_property_stolen_recovered_yearly$ori)
-head(ucr_property_stolen_recovered_yearly$ori9)
-
-save_files(data = ucr_property_stolen_recovered_yearly,
-           year = "1960_2017",
-           file_name = "ucr_property_stolen_recovered_yearly_",
-           save_name = "ucr_property_stolen_recovered_yearly_")
-save_as_zip("ucr_property_stolen_recovered_yearly_1960_2017_", "yearly")
-save_as_zip("ucr_property_stolen_recovered_monthly_1960_2017_", "monthly")
-
+# source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
+# source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/supplement_utils.R')
+# source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
+# crosswalk   <- read_merge_crosswalks()
+# cross_names <- names(crosswalk)
+# cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
+#
+# save_supplement_data_monthly()
+# ucr_property_stolen_recovered_yearly <- get_supplement_yearly()
+#
+#
+# table(ucr_property_stolen_recovered_yearly$state)
+# table(ucr_property_stolen_recovered_yearly$division)
+# table(ucr_property_stolen_recovered_yearly$group)
+# summary(ucr_property_stolen_recovered_yearly$population)
+# table(ucr_property_stolen_recovered_yearly$number_of_months_reported)
+# summary(ucr_property_stolen_recovered_yearly)
+# head(ucr_property_stolen_recovered_yearly$ori)
+# head(ucr_property_stolen_recovered_yearly$ori9)
+#
+# save_files(data = ucr_property_stolen_recovered_yearly,
+#            year = "1960_2017",
+#            file_name = "ucr_property_stolen_recovered_yearly_",
+#            save_name = "ucr_property_stolen_recovered_yearly_")
+# save_as_zip("ucr_property_stolen_recovered_yearly_1960_2017_", "yearly")
+# save_as_zip("ucr_property_stolen_recovered_monthly_1960_2017_", "monthly")
+#
 
 save_supplement_data_monthly <- function() {
 

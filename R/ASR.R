@@ -1,7 +1,7 @@
 # Reads and cleans Arrest by Age, Sex, and Race (ASR) data from
 # the FBI's UCR.
-source('C:/Users/user/Dropbox/R_project/crime_data/R_code/ASR_utils.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/ASR_utils.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
 # system.time(get_ASR_yearly())
 
 # combine_years(arrest_groups = c("index_crimes",
@@ -15,17 +15,17 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
 # combine_years(arrest_groups = "simple_crimes_race")
 # combine_years(arrest_groups = "drug_crimes")
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR")
-save_as_zip("asr_index_crimes_1980_2016_", pattern = "index")
-save_as_zip("asr_financial_1980_2016_", pattern = "financial")
-save_as_zip("asr_grey_collar_property_crimes_1980_2016_", pattern = "grey_collar")
-save_as_zip("asr_violent_crimes_1980_2016_", pattern = "violent")
-save_as_zip("asr_sex_or_family_crimes_1980_2016_", pattern = "sex_or_family")
-save_as_zip("asr_alcohol_crimes_1980_2016_", pattern = "alcohol")
-save_as_zip("asr_other_crimes_1980_2016_", pattern = "other")
-save_as_zip("asr_simple_sex_1980_2016_", pattern = "simple_crimes_sex")
-save_as_zip("asr_simple_race_1980_2016_", pattern = "simple_crimes_race")
-save_as_zip("asr_drug_crimes_1980_2016_", pattern = "drug")
+# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR")
+# save_as_zip("asr_index_crimes_1980_2016_", pattern = "index")
+# save_as_zip("asr_financial_1980_2016_", pattern = "financial")
+# save_as_zip("asr_grey_collar_property_crimes_1980_2016_", pattern = "grey_collar")
+# save_as_zip("asr_violent_crimes_1980_2016_", pattern = "violent")
+# save_as_zip("asr_sex_or_family_crimes_1980_2016_", pattern = "sex_or_family")
+# save_as_zip("asr_alcohol_crimes_1980_2016_", pattern = "alcohol")
+# save_as_zip("asr_other_crimes_1980_2016_", pattern = "other")
+# save_as_zip("asr_simple_sex_1980_2016_", pattern = "simple_crimes_sex")
+# save_as_zip("asr_simple_race_1980_2016_", pattern = "simple_crimes_race")
+# save_as_zip("asr_drug_crimes_1980_2016_", pattern = "drug")
 
 combine_years <- function(arrest_groups) {
   for (arrest_group in arrest_groups) {
@@ -187,7 +187,7 @@ get_arrest_data <- function(ASR, arrest_categories) {
 }
 
 get_agency_data <- function(year) {
-  source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
+  source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
   crosswalk <- read_merge_crosswalks()
   crosswalk_cols <- names(crosswalk)
   crosswalk_cols <- crosswalk_cols[!crosswalk_cols %in% c("ori", "ori9")]

@@ -1,1 +1,1 @@
-This is a long-term project to collect and clean crime data (primarily FBI crime data) and make it accessible to the public. The code here is mostly 
+This is a long-term project to collect and clean crime data (primarily FBI crime data) and make it accessible to the public. The code here is mostly to read in the data from the FBI raw files, clean it slightly, and combine years together for a single file. 

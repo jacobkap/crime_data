@@ -1,7 +1,3 @@
-library(dplyr)
-library(asciiSetupReader)
-library(stringr)
-
 name_fixes <- c("^UCR_ORIGINATING_AGENCY_IDENTIFIER$"         = "ORI",
                 "^ORIGINATING_AGENCY_IDENTIFIER_7_CHARACTER$" = "ORI",
                 "^ORIGINATING_AGENCY_IDENTIFIER_9_CHARACTER$" = "ORI9",

@@ -1,36 +1,36 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
-hate_crimes <- agg_hate_crimes()
-hate_crimes <- clean_hate_crimes(hate_crimes)
-
-
-names(hate_crimes)
-sort(unique(hate_crimes$bias_motivation_offense_1))
-sort(unique(hate_crimes$location_code_offense_1))
-sort(unique(hate_crimes$ucr_offense_code_1))
-table(hate_crimes$hate_crime_incident_present_flag)
-table(hate_crimes$state)
-table(hate_crimes$state_abb)
-table(hate_crimes$year)
-table(hate_crimes$month)
-table(hate_crimes$month_num)
-table(hate_crimes$day_of_week)
-table(hate_crimes$offenders_race_as_a_group)
-table(hate_crimes$total_offenders)
-table(hate_crimes$total_num_of_individual_victims)
-
-sapply(hate_crimes[, grep("vic_type_", names(hate_crimes))], table)
-sapply(hate_crimes[, grep("quarter_activity", names(hate_crimes))], table)
-summary(hate_crimes)
-
-table(hate_crimes$hate_crime_incident_present_flag)
-table(hate_crimes$hate_crime_incident_present_flag, hate_crimes$year)
-
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/hate_crimes")
-save_files(data = hate_crimes,
-           year = "1992_2017",
-           file_name = "ucr_hate_crimes_",
-           save_name = "ucr_hate_crimes_")
-save_as_zip("ucr_hate_crimes_1992_2017_")
+# source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
+# hate_crimes <- agg_hate_crimes()
+# hate_crimes <- clean_hate_crimes(hate_crimes)
+#
+#
+# names(hate_crimes)
+# sort(unique(hate_crimes$bias_motivation_offense_1))
+# sort(unique(hate_crimes$location_code_offense_1))
+# sort(unique(hate_crimes$ucr_offense_code_1))
+# table(hate_crimes$hate_crime_incident_present_flag)
+# table(hate_crimes$state)
+# table(hate_crimes$state_abb)
+# table(hate_crimes$year)
+# table(hate_crimes$month)
+# table(hate_crimes$month_num)
+# table(hate_crimes$day_of_week)
+# table(hate_crimes$offenders_race_as_a_group)
+# table(hate_crimes$total_offenders)
+# table(hate_crimes$total_num_of_individual_victims)
+#
+# sapply(hate_crimes[, grep("vic_type_", names(hate_crimes))], table)
+# sapply(hate_crimes[, grep("quarter_activity", names(hate_crimes))], table)
+# summary(hate_crimes)
+#
+# table(hate_crimes$hate_crime_incident_present_flag)
+# table(hate_crimes$hate_crime_incident_present_flag, hate_crimes$year)
+#
+# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/hate_crimes")
+# save_files(data = hate_crimes,
+#            year = "1992_2017",
+#            file_name = "ucr_hate_crimes_",
+#            save_name = "ucr_hate_crimes_")
+# save_as_zip("ucr_hate_crimes_1992_2017_")
 
 agg_hate_crimes <- function() {
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/hate_crimes")
@@ -75,8 +75,8 @@ agg_hate_crimes <- function() {
 }
 
 clean_hate_crimes <- function(data) {
-  source('C:/Users/user/Dropbox/R_project/crime_data/R_code/hate_crime_utils.R')
-  source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
+  source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/hate_crime_utils.R')
+  source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
   crosswalk <- read_merge_crosswalks()
   crosswalk_cols <- names(crosswalk)
   crosswalk_cols <- crosswalk_cols[!crosswalk_cols %in% c("ori", "ori9")]

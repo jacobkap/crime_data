@@ -1,23 +1,23 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R_code/crosswalk.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
 
-crosswalk <- read_merge_crosswalks()
-cross_names <- names(crosswalk)
-cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
-shr_1976_2017 <- agg_shr()
-shr_1976_2017 <- reorder_SHR_columns(shr_1976_2017)
+# crosswalk <- read_merge_crosswalks()
+# cross_names <- names(crosswalk)
+# cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
+# shr_1976_2017 <- agg_shr()
+# shr_1976_2017 <- reorder_SHR_columns(shr_1976_2017)
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/SHR")
-save_files(data = shr_1976_2017,
-           year = "1976_2017",
-           file_name = "shr_",
-           save_name = "shr_")
-save_as_zip("shr_1976_2017_")
+# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/SHR")
+# save_files(data = shr_1976_2017,
+#            year = "1976_2017",
+#            file_name = "shr_",
+#            save_name = "shr_")
+# save_as_zip("shr_1976_2017_")
 
 agg_shr <- function() {
   shr <- data.table()
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/SHR")
-  source('C:/Users/user/Dropbox/R_project/crime_data/R_code/SHR_utils.R')
+  source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/SHR_utils.R')
   for (year in 1976:2017) {
     data <- spss_ascii_reader(dataset_name = paste0("ucr_shr_", year, ".txt"),
                               sps_name = paste0("ucr_shr_", year, ".sps"))
@@ -60,7 +60,7 @@ agg_shr <- function() {
 
 
 clean_shr <- function(data) {
-  source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
+  source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
   race_cols            <- names(data[grepl("RACE", names(data))])
   ethnic_cols          <- names(data[grepl("ETHNIC", names(data))])
   weapon_cols          <- names(data[grepl("WEAPON", names(data))])

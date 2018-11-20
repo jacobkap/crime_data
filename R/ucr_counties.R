@@ -1,22 +1,22 @@
-load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known/ucr_offenses_known_yearly_1960_2016.rda")
-county_crime_2010_2016 <- get_county_crime(ucr_offenses_known_yearly_1960_2016,
-                                           2010:2016,
-                                           type = "crimes")
-summary(county_crime_2010_2016)
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data")
-readr::write_csv(county_crime_2010_2016,
-                 path = "county_crime_2010_2016.csv")
-rm(ucr_offenses_known_yearly_1960_2016)
-
-load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR/asr_simple_crimes_1980_2016.rda")
-county_arrests_2010_2016 <- get_county_crime(asr_simple_crimes_1980_2016,
-                                             2010:2016,
-                                             type = "arrests")
-summary(county_arrests_2010_2016)
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data")
-readr::write_csv(county_arrests_2010_2016,
-                 path = "county_arrests_2010_2016.csv")
-rm(asr_simple_crimes_1980_2016)
+# load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known/ucr_offenses_known_yearly_1960_2016.rda")
+# county_crime_2010_2016 <- get_county_crime(ucr_offenses_known_yearly_1960_2016,
+#                                            2010:2016,
+#                                            type = "crimes")
+# summary(county_crime_2010_2016)
+# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data")
+# readr::write_csv(county_crime_2010_2016,
+#                  path = "county_crime_2010_2016.csv")
+# rm(ucr_offenses_known_yearly_1960_2016)
+#
+# load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/ASR/asr_simple_crimes_1980_2016.rda")
+# county_arrests_2010_2016 <- get_county_crime(asr_simple_crimes_1980_2016,
+#                                              2010:2016,
+#                                              type = "arrests")
+# summary(county_arrests_2010_2016)
+# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data")
+# readr::write_csv(county_arrests_2010_2016,
+#                  path = "county_arrests_2010_2016.csv")
+# rm(asr_simple_crimes_1980_2016)
 
 get_county_crime <- function(data, years, type) {
   setwd("C:/Users/user/Dropbox/R_project/aspep/data")

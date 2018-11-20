@@ -1,0 +1,22 @@
+Package: crimedata
+Title: Clean FBI data
+Version: 1.0.0
+Authors@R: person("Jacob", "Kaplan", email = "jkkaplan6@gmail.com", role = c("aut", "cre"))
+Description: Cleans and prepares FBI data for public use.
+Imports: 
+    dplyr,
+    asciiSetupReader,
+    stringr,
+    readr,
+    rmarkdown,
+    data.table,
+    magrittr,
+    memisc,
+    haven
+License: GPL
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1
+Suggests:
+    testthat
+VignetteBuilder: knitr

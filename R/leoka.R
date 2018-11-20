@@ -4,12 +4,13 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
 crosswalk <- read_merge_crosswalks()
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/leoka_utils.R')
 
-get_all_leoka_monthly()
-leoka_yearly <- get_all_leoka_yearly()
-global_tests(leoka_yearly)
-
-save_as_zip("ucr_leoka_monthly_1992_2017_", pattern = "month")
-save_as_zip("ucr_leoka_yearly_1992_2017_", pattern = "year")
+# get_all_leoka_monthly()
+# leoka_yearly <- get_all_leoka_yearly()
+# global_tests(leoka_yearly)
+#
+# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
+# save_as_zip("ucr_leoka_monthly_1960_2017_", pattern = "month")
+# save_as_zip("ucr_leoka_yearly_1960_2017_", pattern = "year")
 
 get_all_leoka_monthly <- function() {
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/leoka_from_fbi")
