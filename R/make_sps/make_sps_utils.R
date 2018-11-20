@@ -3,8 +3,9 @@ library(asciiSetupReader)
 library(readr)
 
 # For making sps files
-setup_num_adder <- function(data, adder, iterations) {
+setup_num_adder <- function(data, adder, iterations, initial_adder_bump = 0) {
   adder_temp <- adder
+  adder <- adder + initial_adder_bump
   final <- c()
   for (i in 1:iterations) {
     numbers_start <- stringr::str_split_fixed(data, "-", 2)[, 1]

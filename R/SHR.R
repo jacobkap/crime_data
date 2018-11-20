@@ -6,12 +6,7 @@ cross_names <- names(crosswalk)
 cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
 shr_1976_2017 <- agg_shr()
 shr_1976_2017 <- reorder_SHR_columns(shr_1976_2017)
-summary(shr_1976_2017)
-table(shr_1976_2017$state)
-table(shr_1976_2017$group)
-table(shr_1976_2017$geographic_division)
-table(is.na(shr_1976_2017$ori))
-table(shr_1976_2017$year)
+
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/SHR")
 save_files(data = shr_1976_2017,
            year = "1976_2017",

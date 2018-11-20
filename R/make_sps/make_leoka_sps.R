@@ -134,19 +134,19 @@ monthly_assault_names <- c("assault_injury_indicator",
                            "officers_killed_by_accident",
                            "assaults_with_injury_gun",
                            "assaults_with_injury_knife",
-                           "assaults_with_injury_other",
+                           "assaults_with_injury_oth_weap",
                            "assaults_with_injury_unarmed",
                            "assaults_with_injury_total",
-                           "assaults_without_injury_gun",
-                           "assaults_without_injury_knife",
-                           "assaults_without_injury_other",
-                           "assaults_without_injury_unarmed",
-                           "assaults_without_injury_total")
+                           "assaults_no_injury_gun",
+                           "assaults_no_injury_knife",
+                           "assaults_no_injury_oth_weap",
+                           "assaults_no_injury_unarmed",
+                           "assaults_no_injury_total")
 
 assault_by_call_type_names <- c("total_assaults",
                                 "assault_gun",
                                 "assault_knife",
-                                "assault_other",
+                                "assault_oth_weap",
                                 "assault_unarmed",
                                 "two_man_veh",
                                 "one_man_alone",
@@ -241,7 +241,7 @@ assaults_with_injury_nums <- c("282-286",
                                "292-296",
                                "297-301",
                                "302-306")
-assaults_without_injury_nums <- setup_num_adder(assaults_with_injury_nums, 25, 1)
+assaults_no_injury_nums <- setup_num_adder(assaults_with_injury_nums, 25, 1)
 assault_by_call_type_nums <- c("332-334",
                                "335-337",
                                "338-340",
@@ -289,7 +289,7 @@ total_assault_call_and_time_nums <- c("761-765",
 
 monthly_assault_cols <- c(monthly_assault_intro_nums,
                           assaults_with_injury_nums,
-                          assaults_without_injury_nums,
+                          assaults_no_injury_nums,
                           assault_by_call_type_nums,
                           total_assault_call_and_time_nums)
 

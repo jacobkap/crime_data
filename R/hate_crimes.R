@@ -1,4 +1,4 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R_code/global_utils.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
 hate_crimes <- agg_hate_crimes()
 hate_crimes <- clean_hate_crimes(hate_crimes)
 

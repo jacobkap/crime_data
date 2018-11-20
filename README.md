@@ -1,1 +1,1 @@
-Thank you to Daniel Goldberg for assistance with this project. 
+This is a long-term project to collect and clean crime data (primarily FBI crime data) and make it accessible to the public. The code here is mostly 

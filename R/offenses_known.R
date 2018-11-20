@@ -1,5 +1,6 @@
 source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/offenses_known_utils.R')
 crosswalk <- read_merge_crosswalks()
 
 get_all_return_a_monthly <- function() {
@@ -18,6 +19,7 @@ get_all_return_a_monthly <- function() {
       dplyr::select(-identifier_code,
                     -population_source,
                     -contains("last_population"),
+                    -contains("under50"),
                     -population_1_county,
                     -population_1_msa,
                     -population_source,
@@ -30,29 +32,16 @@ get_all_return_a_monthly <- function() {
       dplyr::mutate(year       = fix_years(year),
                     population =  rowSums(.[, grepl("population_[1-3]",
                                                     names(.))]),
-                    ori        = toupper(ori)) %>%
+                    ori        = toupper(ori),
+                    state_abb  = make_state_abb(state)) %>%
       dplyr::select(-population_1,
                     -population_2,
                     -population_3)
 
-    crime_char_cols <- grep(paste(tolower(month.abb), collapse = "|"),
-                            names(data),
-                            value = TRUE)
-    crime_char_type <- sapply(data[, crime_char_cols], typeof)
-    crime_char_cols <- crime_char_cols[ crime_char_type == "character"]
-
-    data <-
-      data %>%
-      dplyr::mutate_at(vars(crime_char_cols),
-                       fix_negatives)
-
-    data <-
-      month_wide_to_long(data) %>%
-      dplyr::mutate(month = factor(month,
-                                   levels = tolower(month.name))) %>%
-      dplyr::arrange(ori,
-                     month) %>%
-      dplyr::mutate(month = as.character(month))
+    data <- fix_all_negatives(data)
+    data <- fix_outliers(data)
+    data <- month_wide_to_long(data)
+    data$juvenile_age[data$juvenile_age == 0] <- NA
 
     data <- dplyr::left_join(data, crosswalk)
     data <- reorder_return_a_columns(data, crosswalk)
@@ -93,3 +82,4 @@ get_all_return_a_yearly <- function() {
 
   return(return_a_yearly)
 }
+

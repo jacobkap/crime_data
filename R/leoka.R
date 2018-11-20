@@ -6,6 +6,10 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/leoka_utils.R')
 
 get_all_leoka_monthly()
 leoka_yearly <- get_all_leoka_yearly()
+global_tests(leoka_yearly)
+
+save_as_zip("ucr_leoka_monthly_1992_2017_", pattern = "month")
+save_as_zip("ucr_leoka_yearly_1992_2017_", pattern = "year")
 
 get_all_leoka_monthly <- function() {
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/leoka_from_fbi")
@@ -17,7 +21,6 @@ get_all_leoka_monthly <- function() {
                                                 "ucr_leoka.sps")
     data <- make_number_of_months_reporting(data)
 
-
     data <-
       data %>%
       dplyr::filter(!is.na(ori)) %>%
@@ -28,33 +31,28 @@ get_all_leoka_monthly <- function() {
                     -state_name,
                     -sequence_number,
                     -contains("blank")) %>%
+      dplyr::mutate_at(vars(contains("injury_indicator")), remove_special_characters) %>%
       dplyr::mutate_if(is.character, tolower) %>%
       dplyr::mutate(year = fix_years(year),
                     ori  = toupper(ori),
-                    total_officers =  rowSums(.[, grepl("male_employees_officers",
+                    total_employees_officers  =  rowSums(.[, grepl("male_employees_officers",
                                                         names(.))]),
-                    total_civilians =  rowSums(.[, grepl("male_employees_civilians",
-                                                         names(.))]))
+                    total_employees_civilians =  rowSums(.[, grepl("male_employees_civilians",
+                                                         names(.))]),
+                    covered_by      = as.character(covered_by),
+                    shift_data      = as.character(shift_data),
+                    no_male_female_breakdown = as.character(no_male_female_breakdown),
+                    state_abb = make_state_abb(state)) %>%
+      dplyr::rename(total_employees_total = total_employees)
 
-    data <-
-      month_wide_to_long(data) %>%
-      dplyr::mutate(month = factor(month,
-                                   levels = tolower(month.name))) %>%
-      dplyr::arrange(ori,
-                     month) %>%
-      dplyr::mutate(month = as.character(month))
+    data <- fix_all_negatives(data)
 
     data$population[data$population > 20000000] <- NA
-    if (data$year[1] == 1979) {
-      data$aug_officers_killed_felony[data$ori == "NJ01210"] <- NA
-    }
-    if (data$year[1] == 1978) {
-      data$jul_officers_killed_accident[data$ori == "PAPPD00"] <- NA
-    }
-    if (data$year[1] == 1990) {
-      data$mar_officers_killed_accident[data$ori == "ME010SP"] <- NA
-    }
 
+
+
+    data <- fix_outliers(data)
+    data <- month_wide_to_long(data)
     data <- dplyr::left_join(data, crosswalk)
     data <- reorder_leoka_columns(data, crosswalk)
 
@@ -78,21 +76,29 @@ get_all_leoka_yearly <- function() {
   for (file in files) {
     load(file)
     file_name <- gsub(".rda", "", file)
-    assign("temp", get(file_name))
+    assign("data", get(file_name))
     do.call(rm, list(file_name))
-    month_cols <- grep("assault|ambush|disturbance|all_oth|arrest|traffic|robbery|burglary|prisoner|susp|derange|riot|total", names(data), value = TRUE)
-    month_cols <- month_cols[!grepl("indicator|officer|civilian|employee", month_cols)]
 
-    temp <- agg_leoka_yearly(temp, month_cols)
-    temp <- reorder_leoka_columns(temp, crosswalk, type = "year")
-    leoka_yearly <- dplyr::bind_rows(leoka_yearly, temp)
-    rm(temp); gc(); Sys.sleep(3)
+    month_cols <- grep("assault|ambush|disturbance|all_oth|arrest|traffic|robbery|burglary|prisoner|susp|derange|riot|total|kill", names(data), value = TRUE)
+    month_cols <- month_cols[!grepl("indicator|employee", month_cols)]
+
+    data <- agg_yearly(data, month_cols)
+    data <- reorder_leoka_columns(data, crosswalk, type = "year")
+    leoka_yearly <- dplyr::bind_rows(leoka_yearly, data)
+    message(data$year[1]); rm(data); gc(); Sys.sleep(3)
   }
 
   leoka_yearly <-
     leoka_yearly %>%
     dplyr::arrange(ori,
                    desc(year))
+
+  # Save the data in various formats
+  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
+  save_files(data = leoka_yearly,
+             year = "1960_2017",
+             file_name = "leoka_yearly_",
+             save_name = "leoka_yearly_")
 
   return(leoka_yearly)
 }

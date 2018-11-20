@@ -1,28 +1,3 @@
-negatives <- c("0+\\}"                = "0",
-               "0+j"                  = "-1",
-               "0+k"                  = "-2",
-               "0+l"                  = "-3",
-               "0+m"                  = "-4",
-               "0+n"                  = "-5",
-               "0+o"                  = "-6",
-               "0+p"                  = "-7",
-               "0+q"                  = "-8",
-               "0+r"                  = "-9",
-               "0+1\\}"               = "-10",
-               "0+1j"                 = "-11",
-               "0+1k"                 = "-12",
-               "0+1l"                 = "-13",
-               "0+1m"                 = "-14",
-               "0+1n"                 = "-15",
-               "zero or not reported" = "0")
-
-fix_negatives <- function(column) {
-  column <- tolower(column)
-  column <- stringr::str_replace_all(column, negatives)
-  column <- readr::parse_number(column)
-  return(column)
-}
-
 reorder_return_a_columns <- function(data, crosswalk, type = "month") {
   time_cols <- c("year",
                  "month",
@@ -78,24 +53,29 @@ reorder_return_a_columns <- function(data, crosswalk, type = "month") {
 }
 
 make_agg_assault <- function(data) {
-  crime_type <- c("_ACT", "_CLR_18", "_CLR", "_UNFOUND")
-  months <- toupper(month.abb)
-  for (month in months) {
-    for (type in crime_type) {
+  crime_type <- c("actual", "clr_18", "tot_clr", "unfound")
 
-      total_assault  <- data[, paste0(month, type, "_ASSAULT_TOTAL")]
-      simple_assault <- data[, paste0(month, type, "_SIMPLE_ASSAULT")]
+  for (type in crime_type) {
 
-
-      if (data$YEAR[1] %in% 1964:1973) {
-        total_assault <- total_assault + simple_assault
-        data[, paste0(month, type, "_ASSAULT_TOTAL")] <- total_assault
-      }
-
-      agg_value <- total_assault - simple_assault
-      agg_value[agg_value < -25] <- 0
-      data[, paste0(month, type, "_aggravated_assault")] <- agg_value
+    # For some reason the total assault variable during
+    # 1964-1973 does NOT include simple assault but
+    # in other years it does. So this fixes that.
+    if (data$year[1] %in% 1964:1973) {
+      data[, paste0( type, "_assault_total")] <-
+        data[, paste0(type, "_assault_total")] +
+        data[, paste0(type, "_assault_simple")]
     }
+
+    data[, paste0(type, "_aggravated_assault")] <-
+      data[, paste0(type, "_assault_total")] -
+      data[, paste0(type, "_assault_simple")]
+
+    # Some agencies that don't report aggravated assault
+    # crimes properly will have very large negative numbers
+    # of aggravated assault. This makes all aggravated assault
+    # under -25 to become NA.
+    data[data[paste0(type, "_aggravated_assault")] < -25,
+         paste0(type, "_aggravated_assault")] <- NA
   }
   return(data)
 }
@@ -104,32 +84,34 @@ make_agg_assault <- function(data) {
 
 
 fix_outliers <- function(data) {
+  # Incorrect ORI
   if (data$year[1] == 1972) {
-    data$ORI[data$NUMERIC_STATE_CODE == "virginia" &
-               data$POPULATION_1 == "446963"] <- "VA02901"
+    data$ori[data$state %in% "virginia" &
+               data$population_1 %in% "446963"] <- "VA02901"
   }
+
+  # Impossible numbers of officers killed.
   if (data$year[1] == 1974) {
-    data$NOV_OFFICERS_KILLED_BY_ACCIDENT[data$ORI == "MA01301"] <- NA
+    data$nov_officers_killed_by_accident[data$ori %in% "MA01301"] <- NA
   }
   if (data$year[1] == 1978) {
-    data$MAR_OFFICERS_KILLED_BY_ACCIDENT[data$ORI == "PAPPD00"] <- NA
+    data$mar_officers_killed_by_accident[data$ori %in% "PAPPD00"] <- NA
+    data$apr_officers_killed_by_accident[data$ori %in% "NY06240"] <- NA
+    data$jun_officers_killed_by_accident[data$ori %in% "NY06240"] <- NA
+    data$may_officers_killed_by_accident[data$ori %in% "NY04040"] <- NA
 
-    data$APR_OFFICERS_KILLED_BY_FELONY[data$ORI == "NY06240"] <- NA
-    data$JUN_OFFICERS_KILLED_BY_FELONY[data$ORI == "NY06240"] <- NA
-    data$APR_OFFICERS_KILLED_BY_ACCIDENT[data$ORI == "NY06240"] <- NA
-    data$JUN_OFFICERS_KILLED_BY_ACCIDENT[data$ORI == "NY06240"] <- NA
-
-    data$MAY_OFFICERS_KILLED_BY_ACCIDENT[data$ORI == "NY04040"] <- NA
-    data$MAY_OFFICERS_KILLED_BY_FELONY[data$ORI == "NY04040"] <- NA
+    data$apr_officers_killed_by_felony[data$ori %in% "NY06240"] <- NA
+    data$jun_officers_killed_by_felony[data$ori %in% "NY06240"] <- NA
+    data$may_officers_killed_by_felony[data$ori %in% "NY04040"] <- NA
   }
   if (data$year[1] == 1996) {
-    data$SEP_OFFICERS_KILLED_BY_FELONY[data$ORI == "LA03102"] <- NA
+    data$sep_officers_killed_by_felony[data$ori %in% "LA03102"] <- NA
   }
   if (data$year[1] == 1997) {
-    data$MAR_OFFICERS_KILLED_BY_FELONY[data$ORI == "MO0950E"] <- NA
+    data$mar_officers_killed_by_felony[data$ori %in% "MO0950E"] <- NA
   }
   if (data$year[1] %in% 2014:2016) {
-    data[data$ORI == "LANPD00", grep("UNFOUND_", names(data))] <- NA
+    data[data$ori %in% "LANPD00", grep("unfound_", names(data))] <- NA
   }
   return(data)
 }
