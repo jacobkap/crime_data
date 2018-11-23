@@ -1,4 +1,4 @@
-reorder_return_a_columns <- function(data, crosswalk, type = "month") {
+reorder_offenses_known_columns <- function(data, crosswalk, type = "month") {
   time_cols <- c("year",
                  "month",
                  "date")
@@ -15,9 +15,9 @@ reorder_return_a_columns <- function(data, crosswalk, type = "month") {
     dplyr::select(ori,
                   agency_name,
                   state,
+                  state_abb,
                   year,
-                  month,
-                  date,
+                  time_cols,
                   number_of_months_reported,
                   crosswalk_cols,
                   population,
@@ -26,7 +26,6 @@ reorder_return_a_columns <- function(data, crosswalk, type = "month") {
                   juvenile_age,
                   core_city_indication,
                   covered_by_ori,
-                  covered_by_population_group,
                   last_update,
                   fbi_field_office,
                   agency_count,
@@ -66,7 +65,7 @@ make_agg_assault <- function(data) {
         data[, paste0(type, "_assault_simple")]
     }
 
-    data[, paste0(type, "_aggravated_assault")] <-
+    data[, paste0(type, "_assault_aggravated")] <-
       data[, paste0(type, "_assault_total")] -
       data[, paste0(type, "_assault_simple")]
 
@@ -74,8 +73,8 @@ make_agg_assault <- function(data) {
     # crimes properly will have very large negative numbers
     # of aggravated assault. This makes all aggravated assault
     # under -25 to become NA.
-    data[data[paste0(type, "_aggravated_assault")] < -25,
-         paste0(type, "_aggravated_assault")] <- NA
+    data[data[paste0(type, "_assault_aggravated")] < -25 | is.na(data[paste0(type, "_assault_aggravated")]),
+         paste0(type, "_assault_aggravated")] <- NA
   }
   return(data)
 }
@@ -84,6 +83,8 @@ make_agg_assault <- function(data) {
 
 
 fix_outliers <- function(data) {
+
+  data$population[data$population > 200000000] <- NA
   # Incorrect ORI
   if (data$year[1] == 1972) {
     data$ori[data$state %in% "virginia" &

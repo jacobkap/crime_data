@@ -1,0 +1,55 @@
+Uniform Crime Reporting Statistics - UCR Data Online
+http://www.ucrdatatool.gov/
+
+
+"Crime reported by Alexander City Police Dept, Alabama"
+
+,,,Number of offenses reported,,,,,,,,,,,
+,,,Violent crime,,,,,,Property crime,,,,,
+
+Year,Months,Population,Violent crime total,Murder and nonnegligent Manslaughter,Legacy rape /1,Revised rape /2,Robbery,Aggravated assault,Property crime total,Burglary,Larceny-theft,Motor vehicle theft,
+1985,12,      14558,         110,           0,           5,,           6,          99,         654,         156,         465,          33
+1986,10,      14130,         104,           3,           5,,           7,          89,         508,          97,         388,          23
+1987,6,      14116,          53,           0,           0,,           2,          51,         257,          72,         175,          10
+1988,12,      14379,         114,           2,           8,,           8,          96,         561,         113,         432,          16
+1989,12,      14508,         150,           2,          10,,           7,         131,         702,         148,         527,          27
+1990,12,      14917,         117,           6,           3,,          10,          98,         624,         166,         444,          14
+1991,12,      15095,         165,           4,           2,,          16,         143,         648,         142,         490,          16
+1992,12,      15268,          63,           1,           1,,          16,          45,         280,          99,         170,          11
+1993,12,      15218,          52,           4,           1,,          11,          36,         137,          56,          77,           4
+1994,12,      15334,         180,           3,           8,,          32,         137,         877,         138,         719,          20
+1995,12,      15216,         104,           5,           6,,          33,          60,         883,         155,         701,          27
+1996,12,      15287,          94,           0,           3,,          23,          68,         917,         178,         719,          20
+1997,12,      15451,         118,           1,           6,,          22,          89,         989,         170,         790,          29
+1998,12,      15792,          69,           0,           4,,          25,          40,         831,         139,         670,          22
+1999,12,      16090,          76,           3,           4,,          11,          58,         736,         121,         596,          19
+2000,12,      15008,          73,           3,           8,,          15,          47,         797,         119,         658,          20
+2001,12,      15066,          88,           0,          10,,           5,          73,         977,         140,         815,          22
+2002,12,      15141,         114,           2,           8,,          23,          81,         873,         129,         724,          20
+2003,12,      14879,         108,           0,           4,,          17,          87,         811,         136,         663,          12
+2004,12,      15064,         130,           0,           5,,          20,         105,         952,         168,         761,          23
+2005,12,      15062,         142,           1,           8,,          21,         112,         859,         190,         643,          26
+2007,12,      15053,         131,           2,          14,,          24,          91,       1016,         182,         784,          50
+2008,12,      14917,         204,           3,          14,,          47,         140,       1024,         190,         790,          44
+2009,12,      15057,         132,           2,          10,,          31,          89,         843,         180,         631,          32
+2010,12,      14875,          59,           1,           8,,           9,          41,         646,         113,         522,          11
+2011,12,      14947,         138,           0,          12,,          11,         115,         768,         206,         527,          35
+2012,12,      14936,          95,           2,           2,,          15,          76,         688,         125,         536,          27
+2013,12,      14692,         119,           2,,          16,          12,          89,         661,         121,         510,          30
+2014,12,      14887,          81,           1,,           8,           8,          64,         716,         165,         523,          28
+
+		
+		,1. The figures shown in this column for the offense of rape were estimated using the legacy UCR definition of rape - previously known as "Forcible" rape.  See UCR Offense Definitions for further information.
+		
+		,2. The figures shown in this column for the offense of rape were estimated using the revised Uniform Crime Reporting (UCR) definition of rape. In December 2011 the UCR program changed its definition of SRS rape to this revised definition. This change can be seen in the UCR data starting in 2013. Prior to 2013 this column will be blank. See UCR Offense Definitions for further information.
+		
+		
+"Notes: When data are unavailable, the cells are blank or the year is not presented."
+
+
+
+          Crime rates are not available for agencies that report data for less than 12 months of a year.
+
+
+"Sources: FBI, Uniform Crime Reports, prepared by the National Archive of Criminal Justice Data"
+Date of download: Nov 20 2018

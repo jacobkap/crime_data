@@ -1,4 +1,3 @@
-setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/return_a_from_fbi")
 source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_sps_utils.R')
 
 starting_nums <- c("1",
@@ -19,8 +18,15 @@ starting_nums <- c("1",
                    "45-53",
                    "54-56",
                    "57-59",
-                   "60-74",
-                   "75-89",
+
+                   "60-68",
+                   "69-71",
+                   "72-74",
+
+                   "75-83",
+                   "84-86",
+                   "87-89",
+
                    "90-98",
                    "99-107",
                    "108-116",
@@ -57,7 +63,11 @@ starting_names <- c("identifier_code",
                     "population_1_county",
                     "population_1_msa",
                     "population_2",
+                    "population_2_county",
+                    "population_2_msa",
                     "population_3",
+                    "population_3_county",
+                    "population_3_msa",
                     "last_population_1",
                     "last_population_2",
                     "last_population_3",
@@ -238,9 +248,13 @@ return_a_value_labels <- c(state_group_division_value_labels,
                            "9D = msa-county under 10,000",
                            "9E = msa state police")
 
+setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/return_a_from_fbi")
 asciiSetupReader::make_sps_setup(file_name     = "ucr_return_a",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,
                                  value_labels  = return_a_value_labels)
-
-
+setwd("C:/Users/user/Dropbox/R_project/crime_data/setup_files")
+asciiSetupReader::make_sps_setup(file_name     = "ucr_return_a",
+                                 col_positions = col_positions,
+                                 col_labels    = col_labels,
+                                 value_labels  = return_a_value_labels)

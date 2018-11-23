@@ -48,7 +48,7 @@ get_all_leoka_monthly <- function() {
 
     data <- fix_all_negatives(data)
 
-    data$population[data$population > 20000000] <- NA
+    data$population[data$population > 200000000] <- NA
 
 
 

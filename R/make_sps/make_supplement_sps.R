@@ -1,14 +1,4 @@
 source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_sps_utils.R')
-setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/supplement")
-column_positions <- c(starting_numbers,
-                      final_month_numbers)
-column_names <- c(starting_names,
-                  final_month_names)
-asciiSetupReader::make_sps_setup(file_name = "supplement_to_return_a",
-                                 col_positions = column_positions,
-                                 col_labels    = column_names)
-
-
 
 starting_names <- c("identifier_code",
                     "state",
@@ -266,3 +256,16 @@ for (i in 2:12) {
   adder <- adder + 753
 }
 
+
+column_positions <- c(starting_numbers,
+                      final_month_numbers)
+column_names <- c(starting_names,
+                  final_month_names)
+setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/supplement")
+asciiSetupReader::make_sps_setup(file_name = "supplement_to_return_a",
+                                 col_positions = column_positions,
+                                 col_labels    = column_names)
+setwd("C:/Users/user/Dropbox/R_project/crime_data/setup_files")
+asciiSetupReader::make_sps_setup(file_name = "supplement_to_return_a",
+                                 col_positions = column_positions,
+                                 col_labels    = column_names)

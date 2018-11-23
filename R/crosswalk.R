@@ -57,11 +57,11 @@ read_merge_crosswalks <- function(pop = FALSE) {
                                                       "SUBTYPE2"))
   crosswalk2012$LATITUDE <- NULL
 
-  names(crosswalk1996)      <- str_replace_all(names(crosswalk1996), name_fixes)
-  names(crosswalk2005)      <- str_replace_all(names(crosswalk2005), name_fixes)
-  crosswalk2005$AGENCY_TYPE <- str_replace_all(crosswalk2005$AGENCY_TYPE, name_fixes)
-  names(crosswalk2012)      <- str_replace_all(names(crosswalk2012), name_fixes)
-  names(crosswalk2012_temp) <- str_replace_all(names(crosswalk2012_temp), name_fixes)
+  names(crosswalk1996)      <- stringr::str_replace_all(names(crosswalk1996), name_fixes)
+  names(crosswalk2005)      <- stringr::str_replace_all(names(crosswalk2005), name_fixes)
+  crosswalk2005$AGENCY_TYPE <- stringr::str_replace_all(crosswalk2005$AGENCY_TYPE, name_fixes)
+  names(crosswalk2012)      <- stringr::str_replace_all(names(crosswalk2012), name_fixes)
+  names(crosswalk2012_temp) <- stringr::str_replace_all(names(crosswalk2012_temp), name_fixes)
 
   if (pop) {
     cols_to_keep <- c(cols_to_keep, "population")
@@ -72,14 +72,14 @@ read_merge_crosswalks <- function(pop = FALSE) {
   crosswalk2012 <- crosswalk2012[, names(crosswalk2012) %in% cols_to_keep]
   crosswalk2012$AGENCY_SUBTYPE_1 <- NULL
   crosswalk2012$AGENCY_SUBTYPE_2 <- NULL
-  crosswalk2012$AGENCY_TYPE <- NULL
-  crosswalk2012 <- left_join(crosswalk2012, crosswalk2012_temp)
+  crosswalk2012$AGENCY_TYPE      <- NULL
+  crosswalk2012 <- dplyr::left_join(crosswalk2012, crosswalk2012_temp)
 
 
   crosswalk2005 <- crosswalk2005[!crosswalk2005$ORI %in% crosswalk2012$ORI,]
-  crosswalk     <- bind_rows(crosswalk2012, crosswalk2005)
+  crosswalk     <- dplyr::bind_rows(crosswalk2012, crosswalk2005)
   crosswalk1996 <- crosswalk1996[!crosswalk1996$ORI %in% crosswalk$ORI,]
-  crosswalk     <- bind_rows(crosswalk, crosswalk1996)
+  crosswalk     <- dplyr::bind_rows(crosswalk, crosswalk1996)
   crosswalk$ORI[crosswalk$ORI == -1] <- NA
   crosswalk$ORI9[crosswalk$ORI9 == -1] <- NA
 
@@ -88,15 +88,15 @@ read_merge_crosswalks <- function(pop = FALSE) {
 
   # Pads FIPS codes so state FIPS are all 2 characters
   # and county FIPS are all 3 characters
-  crosswalk$fips_state_code <- str_pad(crosswalk$fips_state_code,
+  crosswalk$fips_state_code <- stringr::str_pad(crosswalk$fips_state_code,
                                        width = 2,
                                        side = "left",
                                        pad = "0")
-  crosswalk$fips_county_code <- str_pad(crosswalk$fips_county_code,
+  crosswalk$fips_county_code <- stringr::str_pad(crosswalk$fips_county_code,
                                        width = 3,
                                        side = "left",
                                        pad = "0")
-  crosswalk$fips_place_code <- str_pad(crosswalk$fips_place_code,
+  crosswalk$fips_place_code <- stringr::str_pad(crosswalk$fips_place_code,
                                         width = 5,
                                         side = "left",
                                         pad = "0")
@@ -127,25 +127,25 @@ read_merge_crosswalks <- function(pop = FALSE) {
 
 
   # Fix issue where Philly has wrong county FIPS code
-  crosswalk$fips_state_place_code[crosswalk$ori == "PAPEP00"] <- "42"
-  crosswalk$fips_county_code[crosswalk$ori == "PAPEP00"] <- "101"
+  crosswalk$fips_state_place_code[crosswalk$ori  == "PAPEP00"] <- "42"
+  crosswalk$fips_county_code[crosswalk$ori       == "PAPEP00"] <- "101"
   crosswalk$fips_state_county_code[crosswalk$ori == "PAPEP00"] <- "42101"
-  crosswalk$fips_place_code[crosswalk$ori == "PAPEP00"] <- "60000"
-  crosswalk$fips_state_place_code[crosswalk$ori == "PAPEP00"] <- "4260000"
+  crosswalk$fips_place_code[crosswalk$ori        == "PAPEP00"] <- "60000"
+  crosswalk$fips_state_place_code[crosswalk$ori  == "PAPEP00"] <- "4260000"
 
   # Fix issue where Butler University has wrong county FIPS code
-  crosswalk$fips_state_place_code[crosswalk$ori == "IN04940"] <- "18"
-  crosswalk$fips_county_code[crosswalk$ori == "IN04940"] <- "097"
+  crosswalk$fips_state_place_code[crosswalk$ori  == "IN04940"] <- "18"
+  crosswalk$fips_county_code[crosswalk$ori       == "IN04940"] <- "097"
   crosswalk$fips_state_county_code[crosswalk$ori == "IN04940"] <- "18097"
-  crosswalk$fips_place_code[crosswalk$ori == "IN04940"] <- "36003"
-  crosswalk$fips_state_place_code[crosswalk$ori == "IN04940"] <- "1836003"
+  crosswalk$fips_place_code[crosswalk$ori        == "IN04940"] <- "36003"
+  crosswalk$fips_state_place_code[crosswalk$ori  == "IN04940"] <- "1836003"
 
   # Fix issue where Clinton Tennessee has wrong county FIPS code
-  crosswalk$fips_state_place_code[crosswalk$ori == "IN04940"] <- "47"
-  crosswalk$fips_county_code[crosswalk$ori == "IN04940"] <- "001"
+  crosswalk$fips_state_place_code[crosswalk$ori  == "IN04940"] <- "47"
+  crosswalk$fips_county_code[crosswalk$ori       == "IN04940"] <- "001"
   crosswalk$fips_state_county_code[crosswalk$ori == "IN04940"] <- "47001"
-  crosswalk$fips_place_code[crosswalk$ori == "IN04940"] <- "15580"
-  crosswalk$fips_state_place_code[crosswalk$ori == "IN04940"] <- "4715580"
+  crosswalk$fips_place_code[crosswalk$ori        == "IN04940"] <- "15580"
+  crosswalk$fips_state_place_code[crosswalk$ori  == "IN04940"] <- "4715580"
 
   # These ORIs have Washinton D.C. FIPS codes but are in other states
   crosswalk <- crosswalk[!crosswalk$ori %in% c("MDPPD00", "VAPPD00"),]
