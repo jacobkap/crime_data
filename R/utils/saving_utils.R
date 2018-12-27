@@ -10,8 +10,12 @@ convert_codebook_to_pdf <- function(file_name) {
 }
 
 save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
-  if (any(nchar(names(data)) > 29)) {
-    print(names(data)[nchar(names(data)) > 29])
+  data <-
+    data %>%
+    dplyr::mutate_if(is.Date, as.character)
+
+  if (any(nchar(names(data)) > 30)) {
+    print(names(data)[nchar(names(data)) > 30])
   }
 
   assign(paste0(file_name, year), data) # Change name

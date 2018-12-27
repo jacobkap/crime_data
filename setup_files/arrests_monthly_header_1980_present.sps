@@ -1,6 +1,6 @@
 arrests_monthly_header_1980_present
 
-This setup file was created using the R package asciiSetupReader(version 1.5.0) on 2018-12-08 19:11:29.
+This setup file was created using the R package asciiSetupReader(version 2.0.0) on 2018-12-27 02:14:19.
 
 
 data list
@@ -37,18 +37,18 @@ V6       "month"
 V7       "year"
 V8       "monthly_header_designation"
 V9       "breakdown_indicator"
-V10      "age_race_ethnic_origin_indicator"
-V11      "juvenile_and_adult_indicators"
+V10      "age_race_ethnicity_indicator"
+V11      "juv_and_adult_indicators"
 V12      "zero_data_indicator"
 V13      "date_of_last_update"
 V14      "date_of_1st_previous_update"
 V15      "date_of_2nd_previous_update"
-V16      "juvenile_disposition_indicator"
-V17      "juvenile_handled_within_department"
-V18      "juvenile_referred_to_juvenile_court"
-V19      "juvenile_referred_to_welfare"
-V20      "juvenile_referred_to_police"
-V21      "juvenile_referred_to_criminal_court"
+V16      "juv_disposition_indicator"
+V17      "juv_handled_within_department"
+V18      "juv_referred_to_juv_court"
+V19      "juv_referred_to_welfare"
+V20      "juv_referred_to_police"
+V21      "juv_referred_to_crim_court"
 .
 
 value labels

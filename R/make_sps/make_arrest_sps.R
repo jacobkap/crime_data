@@ -28,19 +28,19 @@ monthly_header_values <- c(state_group_division_value_labels,
                            "1 = totals for both but no breakdowns for either",
                            "2 = totals for drugs but no breakdowns",
                            "3 = totals for gambling but no breakdowns",
-                           "age_race_ethnic_origin_indicator = ",
+                           "age_race_ethnicity_indicator = ",
                            " = data for age, race, and ethnic origin",
                            "2 = no race information",
                            "3 = no ethnic origin information",
                            "4 = no race or ethnic origin information",
-                           "juvenile_and_adult_indicators = ",
+                           "juv_and_adult_indicators = ",
                            " = data for juvenile and adult",
                            "1 = no adult information",
                            "2 = no juvenile information",
                            "zero_data_indicator = ",
                            "0 = not used",
                            "1 = reported no data",
-                           "juvenile_disposition_indicator = ",
+                           "juv_disposition_indicator = ",
                            " = update juvenile disposition data",
                            "1 = no juvenile disposition data",
                            "2 = delete juvenile disposition data",
@@ -77,59 +77,59 @@ offense_codes <- c("identifier_code = ",
                    "12 = december",
                    "offense_code = ",
                    "000 = monthly header",
-                   "01A = murder and non-negligent manslaughter",
-                   "01B = manslaughter by negligence",
-                   "02  = forcible rape",
+                   "01A = murder",
+                   "01B = manslaught_neg",
+                   "02  = rape",
                    "03  = robbery",
-                   "04  = aggravated assault",
+                   "04  = agg_assault",
                    "05  = burglary",
                    "06  = theft",
-                   "07  = motor vehicle theft",
-                   "08  = other assault",
+                   "07  = mtr_veh_theft",
+                   "08  = oth_assault",
                    "09  = arson",
-                   "10  = forgery and counterfeiting",
+                   "10  = forgery",
                    "11  = fraud",
                    "12  = embezzlement",
-                   "13  = stolen property - buying, receiving, possessing",
+                   "13  = stolen_prop",
                    "14  = vandalism",
-                   "15  = weapons - carrying, possessing, etc.",
-                   "16  = prostitution and commercialized vice",
-                   "17  = other sex offenses",
-                   "18  = drugs total",
-                   "180 = drugs sale - total",
-                   "18A = drugs sale - cocaine, heroin, and derivatives",
-                   "18B = drugs sale - marijuana",
-                   "18C = drugs sale - synthetic narcotics",
-                   "18D = drugs sale - other dangerous non-narcotic drugs",
-                   "185 = drugs possession - total",
-                   "18E = drugs possession - cocaine, heroin, and derivatives",
-                   "18F = drugs possession - marijuana",
-                   "18G = drugs possession - synthetic narcotics",
-                   "18H = drugs possession - other dangerous non-narcotic drugs",
-                   "19  = gambling total",
-                   "19A = gambling - bookmaking",
-                   "19B = gambling - numbers and lottery",
-                   "19C = gambling - other",
-                   "20  = offenses against family and children",
-                   "21  = DUI",
-                   "22  = liquor laws",
+                   "15  = weapons",
+                   "16  = prostitution",
+                   "17  = oth_sex_off",
+                   "18  = total_drug",
+                   "180 = sale_drug_total",
+                   "18A = sale_heroin_coke",
+                   "18B = sale_cannabis",
+                   "18C = sale_synth_narc",
+                   "18D = sale_other_drug",
+                   "185 = poss_drug_total",
+                   "18E = poss_heroin_coke",
+                   "18F = poss_cannabis",
+                   "18G = poss_synth_narc",
+                   "18H = poss_other_drug",
+                   "19  = gamble_total",
+                   "19A = gamble_bookmaker",
+                   "19B = gamble_lottery",
+                   "19C = gamble_other",
+                   "20  = family_off",
+                   "21  = dui",
+                   "22  = liquor",
                    "23  = drunkenness",
-                   "24  = disorderly conduct",
+                   "24  = disorder_cond",
                    "25  = vagrancy",
-                   "26  = all other offenses - except traffic",
+                   "26  = all_other",
                    "27  = suspicion",
-                   "28  = curfew and loitering",
+                   "28  = curfew_loiter",
                    "29  = runaways",
                    # 1974-1979 have extra 0 for these
-                   "200 = offenses against family and children",
-                   "210 = DUI",
-                   "220 = liquor laws",
+                   "200 = family_off",
+                   "210 = dui",
+                   "220 = liquor",
                    "230 = drunkenness",
-                   "240 = disorderly conduct",
+                   "240 = disorder_cond",
                    "250 = vagrancy",
-                   "260 = all other offenses - except traffic",
+                   "260 = all_other",
                    "270 = suspicion",
-                   "280 = curfew and loitering",
+                   "280 = curfew_loiter",
                    "290 = runaways")
 
 arrest_code_values_1980 <- c("arrest_code_num = ",
@@ -179,12 +179,12 @@ arrest_code_values_1980 <- c("arrest_code_num = ",
                              "044 = female_over_64",
                              "045 = adult_white",
                              "046 = adult_black",
-                             "047 = adult_american_indian",
+                             "047 = adult_amer_ind",
                              "048 = adult_asian",
-                             "049 = juvenile_white",
-                             "050 = juvenile_black",
-                             "051 = juvenile_american_indian",
-                             "052 = juvenile_asian",
+                             "049 = juv_white",
+                             "050 = juv_black",
+                             "051 = juv_amer_ind",
+                             "052 = juv_asian",
                              "053 = adult_hispanic",
                              "054 = adult_non_hispanic",
                              "055 = juvenile_hispanic",
@@ -248,16 +248,16 @@ arrest_code_values_1974 <- c("arrest_code_num = ",
                              "048 = female_adult_unknown_age",
                              "049 = adult_white",
                              "050 = adult_black",
-                             "051 = adult_american_indian",
+                             "051 = adult_amer_ind",
                              "052 = adult_chinese",
                              "053 = adult_japanese",
                              "054 = adult_other",
-                             "055 = juvenile_white",
-                             "056 = juvenile_black",
-                             "057 = juvenile_american_indian",
-                             "058 = juvenile_chinese",
-                             "059 = juvenile_japanese",
-                             "060 = juvenile_other")
+                             "055 = juv_white",
+                             "056 = juv_black",
+                             "057 = juv_amer_ind",
+                             "058 = juv_chinese",
+                             "059 = juv_japanese",
+                             "060 = juv_other")
 arrest_code_values_1974_final <- c()
 for (i in 1:55) {
   arrest_code_values_1974_final <- c(arrest_code_values_1974_final,
@@ -342,18 +342,18 @@ monthly_header_names_1980 <- c("identifier_code",
                                "year",
                                "monthly_header_designation",
                                "breakdown_indicator",
-                               "age_race_ethnic_origin_indicator",
-                               "juvenile_and_adult_indicators",
+                               "age_race_ethnicity_indicator",
+                               "juv_and_adult_indicators",
                                "zero_data_indicator",
                                "date_of_last_update",
                                "date_of_1st_previous_update",
                                "date_of_2nd_previous_update",
-                               "juvenile_disposition_indicator",
-                               "juvenile_handled_within_department",
-                               "juvenile_referred_to_juvenile_court",
-                               "juvenile_referred_to_welfare",
-                               "juvenile_referred_to_police",
-                               "juvenile_referred_to_criminal_court")
+                               "juv_disposition_indicator",
+                               "juv_handled_within_department",
+                               "juv_referred_to_juv_court",
+                               "juv_referred_to_welfare",
+                               "juv_referred_to_police",
+                               "juv_referred_to_crim_court")
 
 detail_header_cols_1980 <- c("1",
                              "2-3",
@@ -455,18 +455,18 @@ monthly_header_names_1974 <- c("identifier_code",
                                "year",
                                "monthly_header_designation",
                                "breakdown_indicator",
-                               "age_race_ethnic_origin_indicator",
-                               "juvenile_and_adult_indicators",
+                               "age_race_ethnicity_indicator",
+                               "juv_and_adult_indicators",
                                "zero_data_indicator",
                                "date_of_last_update",
                                "date_of_1st_previous_update",
                                "date_of_2nd_previous_update",
-                               "juvenile_disposition_indicator",
-                               "juvenile_handled_within_department",
-                               "juvenile_referred_to_juvenile_court",
-                               "juvenile_referred_to_welfare",
-                               "juvenile_referred_to_police",
-                               "juvenile_referred_to_criminal_court")
+                               "juv_disposition_indicator",
+                               "juv_handled_within_department",
+                               "juv_referred_to_juv_court",
+                               "juv_referred_to_welfare",
+                               "juv_referred_to_police",
+                               "juv_referred_to_crim_court")
 
 detail_header_cols_1974 <- c("1",
                              "2-3",
@@ -558,130 +558,3 @@ asciiSetupReader::make_sps_setup(file_name     = "arrests_detail_header_1974_197
 
 
 
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
-setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/asr_from_fbi")
-files = list.files(pattern = "DAT|dat|TXT|txt")
-library(tidyverse)
-file = "ASR00.DAT"
-
-data = asciiSetupReader::read_ascii_setup(file, "arrests_agency_header_1980_present.sps")
-# Agency Header code
-agency_header <-
-  data %>%
-  dplyr::filter(agency_header_designation %in% "agency header",
-                !is.na(ori)) %>%
-  dplyr::select(-state_name,
-                -identifier_code,
-                -agency_header_designation,
-                -sequence_number,
-                -county) %>%
-  dplyr::mutate(year = fix_years(year),
-                population = readr::parse_number(population))
-rm(data); gc()
-
-# Monthly Header code
-data = asciiSetupReader::read_ascii_setup(file, "arrests_monthly_header_1980_present.sps")
-monthly_header <-
-  data %>%
-  dplyr::filter(monthly_header_designation %in% "monthly header",
-                !is.na(ori)) %>%
-  dplyr::select(-identifier_code,
-                -monthly_header_designation,
-                -population_group,
-                -country_division,
-                -state) %>%
-  dplyr::mutate(year = fix_years(year)) %>%
-  dplyr::mutate_at(vars(matches("referred|handled")), fix_negatives)
-rm(data); gc()
-
-# Detail Header code
-data = asciiSetupReader::read_ascii_setup(file, "arrests_detail_header_1980_present.sps",
-                                          coerce_numeric = FALSE)
-detail_header <-
-  data %>%
-  dplyr::filter(!month %in% "00",
-                !offense_code %in% "monthly header",
-                !is.na(ori)) %>%
-  dplyr::select(-identifier_code,
-                -occurrences,
-                -population_group,
-                -country_division,
-                -state) %>%
-  dplyr::mutate(year = fix_years(year)) %>%
-  dplyr::mutate_at(vars(contains("arrest_counter")), fix_negatives)
-
-detail_header <- make_arrest_category_cols(detail_header, arrest_cols)
-
-rm(data); gc()
-
-arrest_cols <- c("adult_american_indian",
-                 "adult_asian",
-                 "adult_black",
-                 "adult_white",
-                 "female_10_12",
-                 "female_13_14",
-                 "female_15",
-                 "female_16",
-                 "female_17",
-                 "female_18",
-                 "female_19",
-                 "female_20",
-                 "female_21",
-                 "female_22",
-                 "female_23",
-                 "female_24",
-                 "female_25_29",
-                 "female_30_34",
-                 "female_35_39",
-                 "female_40_44",
-                 "female_45_49",
-                 "female_50_54",
-                 "female_55_59",
-                 "female_60_64",
-                 "female_over_64",
-                 "female_under_10",
-                 "juvenile_american_indian",
-                 "juvenile_asian",
-                 "juvenile_black",
-                 "juvenile_white",
-                 "male_10_12",
-                 "male_13_14",
-                 "male_15",
-                 "male_16",
-                 "male_17",
-                 "male_18",
-                 "male_19",
-                 "male_20",
-                 "male_21",
-                 "male_22",
-                 "male_23",
-                 "male_24",
-                 "male_25_29",
-                 "male_30_34",
-                 "male_35_39",
-                 "male_40_44",
-                 "male_45_49",
-                 "male_50_54",
-                 "male_55_59",
-                 "male_60_64",
-                 "male_over_64",
-                 "male_under_10")
-
-make_arrest_category_cols <- function(data, arrest_cols) {
-  arrest_code_cols <- grep("arrest_code", names(data), value = TRUE)
-  arrest_code_cols <- readr::parse_number(arrest_code_cols)
-  for (col in arrest_cols) {
-    message(col)
-    data[, col] <- 0
-    for (i in arrest_code_cols) {
-      data[, col][data[, paste0("arrest_code_", i)] %in% col] <-
-        data[, col][data[, paste0("arrest_code_", i)] %in% col] +
-        data[, paste0("arrest_counter_", i)][data[, paste0("arrest_code_", i)] %in% col]
-    }
-  }
-
-  data <-
-    data %>%
-    dplyr::select(-contains("arrest"))
-  return(data)
-}

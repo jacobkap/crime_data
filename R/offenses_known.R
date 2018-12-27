@@ -1,5 +1,6 @@
 source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_offenses_known_sps.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/offenses_known_utils.R')
 crosswalk <- read_merge_crosswalks()
 

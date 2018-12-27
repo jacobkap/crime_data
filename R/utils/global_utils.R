@@ -1,7 +1,10 @@
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/saving_utils.R')
 devtools::install_github("jacobkap/asciisetupreader")
 library(memisc)
+library(tidyverse)
+library(asciiSetupReader)
 library(haven)
+library(lubridate)
 
 fix_all_negatives <- function(data) {
   crime_char_cols <- grep(paste(tolower(month.abb), collapse = "|"),
@@ -40,18 +43,22 @@ negatives <- c("0+\\}"                = "0",
 
 fix_negatives <- function(column) {
   column <- tolower(column)
-  column <- stringr::str_replace_all(column, negatives)
+  if (any(grepl("[[:alpha:]]", unique(column)))) {
+    column <- stringr::str_replace_all(column, negatives)
+  }
   column <- readr::parse_number(column)
   return(column)
 }
 
 fix_years <- function(year) {
+  year <- as.numeric(year)
   year[year < 10] <- paste0("200", year[year < 10])
   year <- as.numeric(year)
   year[year < 20] <- paste0("20", year[year < 20])
   year <- as.numeric(year)
   year[year < 100] <- paste0("19", year[year < 100])
   year <- as.numeric(year)
+  year[year == 20000] <- 2000
   return(year)
 }
 
@@ -152,7 +159,7 @@ global_checks <- function(data) {
 
 
 read_clean_csv_for_tests <- function(file_name) {
-  data <- readr::read_csv(paste0(file_name, ".csv"), skip = 9)
+  data <- readr::read_csv(paste0(file_name, ".csv"), skip = 5)
 
   data <- data[1:29, 1:13]
   names(data) <- tolower(names(data))
@@ -171,7 +178,8 @@ read_clean_csv_for_tests <- function(file_name) {
                   number_of_months_reported = months,
                   rape  = legacy_rape_1,
                   theft = larceny_theft) %>%
-    dplyr::mutate_all(readr::parse_number)
+    dplyr::mutate_if(is.character, readr::parse_number) %>%
+    dplyr::filter(!is.na(year))
 
   return(data)
 }

@@ -77,6 +77,24 @@ test_that("Offenses known values are accurate - same as ucrdatatool.gov", {
   expect_equal(fairfield_alabama_real$actual_mtr_veh_theft_total,
                fairfield_alabama_test$motor_vehicle_theft)
 
+
+  # Fort Payne Alabama
+  expect_equal(fort_payne_alabama_real$population,
+               fort_payne_alabama_test$population)
+  expect_equal(fort_payne_alabama_real$actual_murder,
+               fort_payne_alabama_test$murder)
+  expect_equal(fort_payne_alabama_real$actual_rape_total,
+               fort_payne_alabama_test$rape)
+  expect_equal(fort_payne_alabama_real$actual_robbery_total,
+               fort_payne_alabama_test$robbery)
+  expect_equal(fort_payne_alabama_real$actual_assault_aggravated,
+               fort_payne_alabama_test$aggravated_assault)
+  expect_equal(fort_payne_alabama_real$actual_burg_total,
+               fort_payne_alabama_test$burglary)
+  expect_equal(fort_payne_alabama_real$actual_theft_total,
+               fort_payne_alabama_test$theft)
+  expect_equal(fort_payne_alabama_real$actual_mtr_veh_theft_total,
+               fort_payne_alabama_test$motor_vehicle_theft)
 })
 
 

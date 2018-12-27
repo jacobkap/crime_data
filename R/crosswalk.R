@@ -57,11 +57,16 @@ read_merge_crosswalks <- function(pop = FALSE) {
                                                       "SUBTYPE2"))
   crosswalk2012$LATITUDE <- NULL
 
-  names(crosswalk1996)      <- stringr::str_replace_all(names(crosswalk1996), name_fixes)
-  names(crosswalk2005)      <- stringr::str_replace_all(names(crosswalk2005), name_fixes)
-  crosswalk2005$AGENCY_TYPE <- stringr::str_replace_all(crosswalk2005$AGENCY_TYPE, name_fixes)
-  names(crosswalk2012)      <- stringr::str_replace_all(names(crosswalk2012), name_fixes)
-  names(crosswalk2012_temp) <- stringr::str_replace_all(names(crosswalk2012_temp), name_fixes)
+  names(crosswalk1996)      <- stringr::str_replace_all(names(crosswalk1996),
+                                                        name_fixes)
+  names(crosswalk2005)      <- stringr::str_replace_all(names(crosswalk2005),
+                                                        name_fixes)
+  crosswalk2005$AGENCY_TYPE <- stringr::str_replace_all(crosswalk2005$AGENCY_TYPE,
+                                                        name_fixes)
+  names(crosswalk2012)      <- stringr::str_replace_all(names(crosswalk2012),
+                                                        name_fixes)
+  names(crosswalk2012_temp) <- stringr::str_replace_all(names(crosswalk2012_temp),
+                                                        name_fixes)
 
   if (pop) {
     cols_to_keep <- c(cols_to_keep, "population")
@@ -73,7 +78,9 @@ read_merge_crosswalks <- function(pop = FALSE) {
   crosswalk2012$AGENCY_SUBTYPE_1 <- NULL
   crosswalk2012$AGENCY_SUBTYPE_2 <- NULL
   crosswalk2012$AGENCY_TYPE      <- NULL
-  crosswalk2012 <- dplyr::left_join(crosswalk2012, crosswalk2012_temp)
+  crosswalk2012 <- dplyr::left_join(crosswalk2012, 
+                                    crosswalk2012_temp,
+                                    by = "ORI")
 
 
   crosswalk2005 <- crosswalk2005[!crosswalk2005$ORI %in% crosswalk2012$ORI,]

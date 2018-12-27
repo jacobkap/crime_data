@@ -138,7 +138,7 @@ card_names <- c("murder",
                 "robbery_with_a_gun",
                 "robbery_with_a_knife",
                 "robbery_other_weapon",
-                "robbery_strong_arm",
+                "robbery_unarmed",
                 "assault_total",
                 "assault_with_a_gun",
                 "assault_with_a_knife",
@@ -248,7 +248,7 @@ return_a_value_labels <- c(state_group_division_value_labels,
                            "9D = msa-county under 10,000",
                            "9E = msa state police")
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/return_a_from_fbi")
+setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/offenses_known_from_fbi")
 asciiSetupReader::make_sps_setup(file_name     = "ucr_return_a",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,

@@ -1,6 +1,6 @@
 ucr_leoka
 
-This setup file was created using the R package asciiSetupReader(version 1.5.0) on 2018-11-20 15:35:28.
+This setup file was created using the R package asciiSetupReader(version 1.5.0) on 2018-12-11 22:40:12.
 
 
 data list
