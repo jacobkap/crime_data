@@ -1,90 +1,92 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/arson_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_arson_sps.R')
+source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
+crosswalk <- read_merge_crosswalks()
 
+get_arson(crosswalk)
+arson_yearly <- get_data_yearly("arson", "1979_2017", "ucr_arson_yearly_", crosswalk)
+global_checks(arson_yearly)
+setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arson")
+save_as_zip("ucr_arson_monthly_1979_2017_", pattern = "month")
+save_as_zip("ucr_arson_yearly_1979_2017_", pattern = "year")
 
-#arson <- get_arson()
-# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arson")
-# save_files(data = arson,
-#            year = "2001_2017",
-#            file_name = "ucr_arson_",
-#            save_name = "ucr_arson_")
-# zip::zip(zipfile = "ucr_arson_2001_2017.zip",
-#          files = list.files())
-
-get_arson <- function() {
-  arson <- data.frame()
-  for (year in c(2001:2005, 2007:2017)) {
-    setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/arson")
-    message(year)
-    data <- spss_ascii_reader(paste0("ucr_arson_", year, ".txt"),
-                              paste0("ucr_arson_", year, ".sps"))
-    data$ORI_CODE <- NULL
-
-    ori <- spss_ascii_reader(paste0("ucr_arson_", year, ".txt"),
-                             paste0("ucr_arson_", year, ".sps"),
-                             keep_columns = "ORI_CODE",
-                             value_label_fix = FALSE)
-    data <- dplyr::bind_cols(ori, data)
-
+get_arson <- function(crosswalk) {
+  setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/arson_from_fbi")
+  files <- list.files()
+  files <- files[grepl(".txt|.dat", files, ignore.case = TRUE)]
+  for (file in files) {
+    setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/arson_from_fbi")
+    message(file)
+    data <- asciiSetupReader::read_ascii_setup(file,
+                                               "ucr_arson.sps")
 
     data <-
       data %>%
-      dplyr::rename_all(str_replace_all, arson_col_name_fix) %>%
-      dplyr::rename_all(tolower) %>%
+      # ORI NY03200 has multiple years that reported single arsons
+      # costing over $700 million
+      dplyr::filter(ori != "NY03200",
+                    !is.na(ori)) %>%
       dplyr::mutate_if(is.character, tolower) %>%
-      dplyr::mutate(year                   = str_replace_all(year,
-                                                             arson_year_fix),
-                    year                   = as.numeric(year),
-                    state_abb              = make_state_abb(state),
+      dplyr::mutate(state_abb              = make_state_abb(state),
                     ori                    = toupper(ori),
-                    group_number           = str_replace_all(group_number,
-                                                             group_number_fix),
-                    months_reported        = str_replace_all(months_reported,
-                                                             months_reported_fix)
-      ) %>%
+                    year       = fix_years(year)) %>%
       dplyr::select(-matches("column|date_of|month_included"),
                     -state_name,
-                    -id_code,
-                    -covered_by_group) %>%
-      dplyr::filter(months_reported != "no months reported",
-                    ori             != "NY03200")
-    names(data) <- gsub("reported_known_", "reported_", names(data))
-    names(data) <- gsub("industrial_manufacturing",
-                        "industry_manufacture",
-                        names(data))
-    arson_monthly_columns <- grep(paste(tolower(month.abb),
-                                        collapse = "|"),
-                                  names(data),
-                                  value = TRUE)
+                    -identifier_code,
+                    -covered_by_group,
+                    -county,
+                    -msa,
+                    -sequence_number,
+                    -core_city_indicator)
+    data <- fix_all_negatives(data)
+    data <- month_wide_to_long(data)
 
-    data  <- make_arson_yearly(data, arson_monthly_columns)
+    data <- dplyr::left_join(data, crosswalk, by = "ori")
+    data <- reorder_columns(data, crosswalk, type = "month")
 
-    if (year == 2016) {
+    data$population_group[data$population_group %in% "7b"] <- NA
+    # Very incorrect mobile arson data
+    if (data$year[1] == 2016) {
       data <-
         data %>%
         dplyr::filter(ori != "GA06059")
     }
+    if (data$year[1] == 1989) {
+      data$uninhabited_single_occupancy[data$ori %in% "NC09000" &
+                                         data$month %in% "january"] <- NA
+      data$uninhabited_total_structures[data$ori %in% "NC09000" &
+                                         data$month %in% "january"] <- NA
+      data$uninhabited_grand_total[data$ori %in% "NC09000" &
+                                    data$month %in% "january"] <- NA
+    }
+    if (data$year[1] == 1991) {
+      data$est_damage_community_public[data$ori %in% "FL02000" &
+                                         data$month %in% "december"] <- NA
+      data$est_damage_total_structures[data$ori %in% "FL02000" &
+                                         data$month %in% "december"] <- NA
+      data$est_damage_grand_total[data$ori %in% "FL02000" &
+                                         data$month %in% "december"] <- NA
+    }
+    if (data$year[1] == 2017) {
+      data$uninhabited_storage[data$ori %in% "MN06209" &
+                                         data$month %in% "april"] <- NA
+      data$uninhabited_community_public[data$ori %in% "MN06209" &
+                                         data$month %in% "april"] <- NA
+      data$uninhabited_total_structures[data$ori %in% "MN06209" &
+                                    data$month %in% "april"] <- NA
+      data$uninhabited_grand_total[data$ori %in% "MN06209" &
+                                    data$month %in% "april"] <- NA
+    }
 
-    arson <- bind_rows(arson, data)
 
+  # Save the data in various formats
+  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arson")
+  save_files(data = data,
+             year = data$year[1],
+             file_name = "ucr_arson_monthly_",
+             save_name = "ucr_arson_monthly_")
+  rm(data); gc(); Sys.sleep(3)
   }
-  source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
-  crosswalk <- read_merge_crosswalks()
-  crosswalk_cols <- names(crosswalk)
-  crosswalk_cols <- crosswalk_cols[!crosswalk_cols %in%
-                                     c("ori", "ori9")]
-  arson <-
-    arson %>%
-    dplyr::left_join(crosswalk, by = "ori") %>%
-    dplyr::arrange(desc(year), ori) %>%
-    dplyr::select(ori,
-                  ori9,
-                  state,
-                  state_abb,
-                  year,
-                  agency_name,
-                  crosswalk_cols,
-                  dplyr::everything())
-
-  return(arson)
 }
+
+

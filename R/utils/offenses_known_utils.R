@@ -1,56 +1,3 @@
-reorder_offenses_known_columns <- function(data, crosswalk, type = "month") {
-  time_cols <- c("year",
-                 "month",
-                 "date")
-
-  if (type == "year") {
-    time_cols <- "year"
-  }
-  crosswalk_cols <- names(crosswalk)
-
-  # Reorder columns
-  # Also merge with crosswalk data
-  data <-
-    data %>%
-    dplyr::select(ori,
-                  agency_name,
-                  state,
-                  state_abb,
-                  year,
-                  time_cols,
-                  number_of_months_reported,
-                  crosswalk_cols,
-                  population,
-                  population_group,
-                  country_division,
-                  juvenile_age,
-                  core_city_indication,
-                  covered_by_ori,
-                  last_update,
-                  fbi_field_office,
-                  agency_count,
-                  followup_indication,
-                  zip_code,
-                  starts_with("officers"),
-                  starts_with("actual"),
-                  starts_with("tot_clr"),
-                  starts_with("clr_18"),
-                  starts_with("unfound"),
-                  everything())
-
-  if (type == "month") {
-    data <-
-      data %>%
-      dplyr::mutate(month = factor(month,
-                                   levels = tolower(month.name))) %>%
-      dplyr::arrange(ori,
-                     month) %>%
-      dplyr::mutate(month = as.character(month))
-  }
-
-  return(data)
-}
-
 make_agg_assault <- function(data) {
   crime_type <- c("actual", "clr_18", "tot_clr", "unfound")
 
@@ -73,12 +20,34 @@ make_agg_assault <- function(data) {
     # crimes properly will have very large negative numbers
     # of aggravated assault. This makes all aggravated assault
     # under -25 to become NA.
-    data[data[paste0(type, "_assault_aggravated")] < -25 | is.na(data[paste0(type, "_assault_aggravated")]),
+    data[data[paste0(type, "_assault_aggravated")] < -25 |
+           is.na(data[paste0(type, "_assault_aggravated")]),
          paste0(type, "_assault_aggravated")] <- NA
   }
   return(data)
 }
+make_index_crimes <- function(data) {
+  crime_type <- c("actual", "clr_18", "tot_clr", "unfound")
+  index_crimes <- c("index_violent", "index_property", "index_total")
 
+  for (type in crime_type) {
+    data[, paste0(type, "_index_violent")] <-
+      data[, paste0(type, "_murder")] +
+      data[, paste0(type, "_rape_total")] +
+      data[, paste0(type, "_assault_aggravated")] +
+      data[, paste0(type, "_robbery_total")]
+
+    data[, paste0(type, "_index_property")] <-
+      data[, paste0(type, "_theft_total")] +
+      data[, paste0(type, "_burg_total")] +
+      data[, paste0(type, "_mtr_veh_theft_total")]
+
+    data[, paste0(type, "_index_total")] <-
+      data[, paste0(type, "_index_violent")] +
+      data[, paste0(type, "_index_property")]
+  }
+  return(data)
+}
 
 
 

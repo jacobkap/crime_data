@@ -6,6 +6,97 @@ library(asciiSetupReader)
 library(haven)
 library(lubridate)
 
+reorder_columns <- function(data, crosswalk, type = "month") {
+  time_cols <- c("year",
+                 "month",
+                 "date")
+
+  if (type == "year") {
+    time_cols <- "year"
+  }
+  crosswalk_cols <- names(crosswalk)
+  offenses_known_unique_cols <- c("juvenile_age",
+                                  "core_city_indication",
+                                  "last_update",
+                                  "fbi_field_office",
+                                  "followup_indication",
+                                  "zip_code")
+
+  # Reorder columns
+  data <-
+    data %>%
+    dplyr::select(ori,
+                  ori9,
+                  agency_name,
+                  state,
+                  state_abb,
+                  year,
+                  time_cols,
+                  number_of_months_reported,
+                  crosswalk_cols,
+                  population,
+                  population_group,
+                  country_division,
+                  dplyr::one_of(offenses_known_unique_cols),
+                  covered_by_ori,
+                  agency_count,
+                  dplyr::starts_with("officers"),
+                  dplyr::starts_with("actual"),
+                  dplyr::starts_with("tot_clr"),
+                  dplyr::starts_with("clr_18"),
+                  dplyr::starts_with("unfound"),
+                  dplyr::everything())
+
+  if (type == "month") {
+    data <-
+      data %>%
+      dplyr::mutate(month = factor(month,
+                                   levels = tolower(month.name))) %>%
+      dplyr::arrange(ori,
+                     month) %>%
+      dplyr::mutate(month = as.character(month))
+  } else {
+    data <-
+      data %>%
+      dplyr::arrange(ori,
+                     desc(year))
+  }
+
+  return(data)
+}
+
+get_data_yearly <- function(folder, years, name_to_save, crosswalk) {
+  setwd(paste0("C:/Users/user/Dropbox/R_project/crime_data/clean_data/",
+               folder))
+  files <- list.files(pattern = "monthly_.*.rda$")
+
+  data <- data.frame()
+  for (file in files) {
+    load(file)
+    file_name <- gsub(".rda", "", file)
+    assign("temp", get(file_name))
+    do.call(rm, list(file_name))
+    month_cols <- grep("^reported|unfound|actual|clear|uninhab|est_dam|tot_clr|clr_18|unfound|officer",
+                       names(temp), value = TRUE)
+    temp <- agg_yearly(temp, month_cols)
+
+    data <- dplyr::bind_rows(data, temp)
+    message(temp$year[1]); rm(temp); gc(); Sys.sleep(3)
+  }
+
+  data <- reorder_columns(data, crosswalk, type = "year")
+
+  # Save the data in various formats
+  setwd(paste0("C:/Users/user/Dropbox/R_project/crime_data/clean_data/",
+               folder))
+  save_files(data = data,
+             year = years,
+             file_name = name_to_save,
+             save_name = name_to_save)
+
+  return(data)
+}
+
 fix_all_negatives <- function(data) {
   crime_char_cols <- grep(paste(tolower(month.abb), collapse = "|"),
                           names(data),
@@ -80,7 +171,7 @@ agg_yearly <- function(data, month_cols) {
     data %>%
     dplyr::group_by(ori) %>%
     dplyr::summarize_all(sum) %>%
-    dplyr::left_join(yearly_data)
+    dplyr::left_join(yearly_data, by = "ori")
 
   data <- data.frame(data)
   return(data)
@@ -129,29 +220,29 @@ make_state_abb <- function(state) {
 
 global_checks <- function(data) {
   message("State names")
-  print(sort(table(data$state)))
+  print(table(data$state))
   message("State abbreviations")
-  print(sort(table(data$state_abb)))
+  print(table(data$state_abb))
   message("All ORIs in right state")
-  print(sort(table(substr(data$ori[!data$state %in% c("nebraska",
+  print(table(substr(data$ori[!data$state %in% c("nebraska",
                                                       "guam")], 1, 2) ==
                      data$state_abb[!data$state %in% c("nebraska",
-                                                       "guam")])))
+                                                       "guam")]))
   message("Country divisions")
-  print(sort(table(data$country_division)))
+  print(table(data$country_division))
   message("Population groups")
-  print(sort(table(data$population_group)))
+  print(table(data$population_group))
   message("Population summary")
   print(summary(data$population))
   message("Year")
-  print(sort(table(data$year)))
+  print(table(data$year))
   message("Any NA ORIs?")
   print(table(is.na(data$ori)))
 
+  message("Column names")
   print(names(data))
 
   message("Names longer than 28 characters")
-
   print(names(data)[nchar(names(data)) > 28])
   print(summary(data))
 
@@ -159,7 +250,7 @@ global_checks <- function(data) {
 
 
 read_clean_csv_for_tests <- function(file_name) {
-  data <- readr::read_csv(paste0(file_name, ".csv"), skip = 5)
+  data <- readr::read_csv(paste0(file_name, ".csv"), skip = 8)
 
   data <- data[1:29, 1:13]
   names(data) <- tolower(names(data))
@@ -182,4 +273,29 @@ read_clean_csv_for_tests <- function(file_name) {
     dplyr::filter(!is.na(year))
 
   return(data)
+}
+
+
+save_raw_data_from_zip <- function(from_folder, to_folder) {
+  setwd(from_folder)
+  zip_files <- list.files()
+  zip_files <- zip_files[grepl(".zip", zip_files, ignore.case = TRUE)]
+  for (zip_file in zip_files) {
+    unzip(zip_file)
+  }
+  files <- list.files()
+  files <- files[grepl(".txt$|.dat$", files, ignore.case = TRUE)]
+  for (file in files) {
+    file.copy(file, to_folder)
+  }
+}
+
+
+check_raw_files_nchar <- function(folder) {
+  files <- list.files()
+  for (file in files) {
+    z <- readr::read_lines(file)
+    message(file)
+    print(table(nchar(z)))
+  }
 }

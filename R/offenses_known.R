@@ -4,14 +4,17 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_offenses_know
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/offenses_known_utils.R')
 crosswalk <- read_merge_crosswalks()
 
-get_all_return_a_monthly()
-offenses_known_yearly <- get_all_return_a_yearly()
+get_all_return_a_monthly(crosswalk)
+offenses_known_yearly <- get_data_yearly("offenses_known",
+                                         "1960_2017",
+                                         "offenses_known_yearly_",
+                                         crosswalk)
 global_checks(offenses_known_yearly)
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")
 save_as_zip("ucr_offenses_known_monthly_1960_2017_", pattern = "month")
 save_as_zip("ucr_offenses_known_yearly_1960_2017_", pattern = "year")
 
-get_all_return_a_monthly <- function() {
+get_all_return_a_monthly <- function(crosswalk) {
   setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/offenses_known_from_fbi")
   files <- list.files()
   files <- files[!grepl("sps", files)]
@@ -56,10 +59,11 @@ get_all_return_a_monthly <- function() {
     data <- fix_outliers(data)
     data <- month_wide_to_long(data)
     data <- make_agg_assault(data)
+    data <- make_index_crimes(data)
     data$juvenile_age[data$juvenile_age == 0] <- NA
 
     data <- dplyr::left_join(data, crosswalk)
-    data <- reorder_offenses_known_columns(data, crosswalk)
+    data2 <- reorder_columns(data, crosswalk)
 
     # Save the data in various formats
     setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")
@@ -72,38 +76,4 @@ get_all_return_a_monthly <- function() {
   }
 }
 
-get_all_return_a_yearly <- function() {
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")
-  files <- list.files(pattern = "monthly_.*.rda$")
-
-  offenses_known_yearly <- data.frame()
-  for (file in files) {
-    load(file)
-    file_name <- gsub(".rda", "", file)
-    assign("data", get(file_name))
-    do.call(rm, list(file_name))
-    month_cols <- grep("act|tot_clr|clr_18|unfound|officer", names(data), value = TRUE)
-
-    data$covered_by_ori <- as.character(data$covered_by_ori)
-
-    data <- agg_yearly(data, month_cols)
-    data <- reorder_offenses_known_columns(data, crosswalk, type = "year")
-    offenses_known_yearly <- dplyr::bind_rows(offenses_known_yearly, data)
-    rm(data); gc(); Sys.sleep(3)
-  }
-
-  offenses_known_yearly <-
-    offenses_known_yearly %>%
-    dplyr::arrange(ori,
-                   desc(year))
-
-  # Save the data in various formats
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")
-  save_files(data = offenses_known_yearly,
-             year = "1960_2017",
-             file_name = "offenses_known_yearly_",
-             save_name = "offenses_known_yearly_")
-
-  return(offenses_known_yearly)
-}
 

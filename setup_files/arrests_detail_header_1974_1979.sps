@@ -1,6 +1,6 @@
 arrests_detail_header_1974_1979
 
-This setup file was created using the R package asciiSetupReader(version 2.0.0) on 2018-12-27 02:14:20.
+This setup file was created using the R package asciiSetupReader(version 2.0.0) on 2019-01-17 10:36:13.
 
 
 data list
