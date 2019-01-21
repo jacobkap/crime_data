@@ -1,3 +1,5 @@
+library(lubridate)
+library(haven)
 convert_codebook_to_pdf <- function(file_name) {
   temp      <- readLines(file_name)
   old_name  <- file_name
@@ -46,12 +48,14 @@ save_as_zip <- function(file_name, pattern = NULL) {
   file_ext <- c("rda", "dta")
   all_files <- list.files()
   if (!is.null(pattern)) {
-    sps_files <- all_files[grep("sps$|record description", all_files, ignore.case = TRUE)]
+    sps_files <- all_files[grep("maltz|manual|sps$|record description", all_files, ignore.case = TRUE)]
     all_files <- list.files(pattern = pattern)
     all_files <- c(sps_files, all_files)
   }
 
-  codebooks <- all_files[grep("manual|codebook|pdf$|sps$", all_files)]
+  codebooks <- all_files[grep("maltz|manual|codebook|pdf$|sps$",
+                              all_files,
+                              ignore.case = TRUE)]
   for (i in seq_along(file_ext)) {
     zip_files <- all_files[grep(file_ext[i], all_files)]
     zip_files <- c(zip_files, codebooks)
