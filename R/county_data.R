@@ -5,7 +5,7 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/county_data_utils.R')
 # get_county_data(offenses_known_yearly_1960_2017,
 #                  "county_ucr_offenses_known_yearly_1960_2017",
 #                 aspep_county)
-# rm(offenses_known_yearly_1960_2017); gc(); Sys.sleep(5)
+#  rm(offenses_known_yearly_1960_2017); gc(); Sys.sleep(5)
 
 # Arrests by sex
 # load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests/ucr_arrests_yearly_all_crimes_totals_sex_1974_2016.rda")
@@ -50,6 +50,8 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/county_data_utils.R')
 #                 aspep_county)
 # rm(ucr_arrests_yearly_all_crimes_totals_race_2000_2016); gc(); Sys.sleep(5)
 
+
+
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests")
 files <- list.files(pattern = "yearly.*age.*rda")
 # Reverse alphabetical order since coincidentally this order
@@ -89,15 +91,17 @@ for (file in files) {
 }
 
 setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/county_data")
-save_as_zip("county_ucr_offenses_known_", pattern = "offense")
-save_as_zip("county_ucr_arrests_", pattern = "arrest")
+save_as_zip("county_ucr_offenses_known_1960_2017_", pattern = "offense")
+save_as_zip("county_ucr_arrests_1974_2016_", pattern = "arrest")
 
 get_county_data <- function(data, name_to_save, aspep_county) {
 
   data <-
     data %>%
     dplyr::filter(!population_group %in% c("possessions", "7b"),
-                  !is.na(fips_state_county_code)) %>%
+                  !is.na(fips_state_county_code),
+                  # Butler University in Indiana has wrong FIPS codes.
+                  ori != "IN04940") %>%
     dplyr::select(ori,
                   year,
                   population,
