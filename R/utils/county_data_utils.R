@@ -28,7 +28,8 @@ population_group_fix <- c(
 )
 
 get_coverage_data <- function(data) {
-  coverage_data %>%
+  coverage_data <-
+    data %>%
     dplyr::select(ori,
                   year,
                   fips_state_county,
@@ -44,7 +45,7 @@ get_coverage_data <- function(data) {
     dplyr::summarize(county_population = sum(population))
 
   coverage_data <-
-    data %>%
+    coverage_data %>%
     dplyr::left_join(county_pop, by = c("year", "fips_state_county")) %>%
     dplyr::mutate(coverage = (population / county_population) *
                     ((12 - number_of_months_reported)/12)) %>%

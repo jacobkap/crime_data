@@ -1,11 +1,11 @@
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/saving_utils.R')
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/county_data_utils.R')
 # Offenses known
-load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known/offenses_known_yearly_1960_2017.rda")
-get_county_data(offenses_known_yearly_1960_2017,
-                "county_ucr_offenses_known_yearly_1960_2017",
-                aspep_county)
-rm(offenses_known_yearly_1960_2017); gc(); Sys.sleep(5)
+# load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known/offenses_known_yearly_1960_2017.rda")
+# offenses_known_yearly_1960_2017$juvenile_age <- NULL
+# get_county_data(offenses_known_yearly_1960_2017,
+#                 "county_ucr_offenses_known_yearly_1960_2017")
+# rm(offenses_known_yearly_1960_2017); gc(); Sys.sleep(5)
 
 # Arrests by sex
 # load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests/ucr_arrests_yearly_all_crimes_totals_sex_1974_2016.rda")
@@ -13,16 +13,14 @@ rm(offenses_known_yearly_1960_2017); gc(); Sys.sleep(5)
 #   ucr_arrests_yearly_all_crimes_totals_sex_1974_2016 %>%
 #   dplyr::filter(year %in% 1974:1989)
 # get_county_data(ucr_arrests_yearly_all_crimes_totals_sex_1974_1989,
-#                 "county_ucr_arrests_yearly_all_crimes_totals_sex_1974_1989",
-#                 aspep_county)
+#                 "county_ucr_arrests_yearly_all_crimes_totals_sex_1974_1989")
 # rm(ucr_arrests_yearly_all_crimes_totals_sex_1974_1989); gc(); Sys.sleep(5)
 # ucr_arrests_yearly_all_crimes_totals_sex_1990_2016 <-
 #   ucr_arrests_yearly_all_crimes_totals_sex_1974_2016 %>%
 #   dplyr::filter(year %in% 1990:2016)
 # rm(ucr_arrests_yearly_all_crimes_totals_sex_1974_2016); gc(); Sys.sleep(5)
 # get_county_data(ucr_arrests_yearly_all_crimes_totals_sex_1990_2016,
-#                 "county_ucr_arrests_yearly_all_crimes_totals_sex_1990_2016",
-#                 aspep_county)
+#                 "county_ucr_arrests_yearly_all_crimes_totals_sex_1990_2016")
 # rm(ucr_arrests_yearly_all_crimes_totals_sex_1990_2016); gc(); Sys.sleep(5)
 
 # Arrests by race
@@ -31,23 +29,20 @@ rm(offenses_known_yearly_1960_2017); gc(); Sys.sleep(5)
 #   ucr_arrests_yearly_all_crimes_totals_race_1974_2016 %>%
 #   dplyr::filter(year %in% 1974:1989)
 # get_county_data(ucr_arrests_yearly_all_crimes_totals_race_1974_1989,
-#                 "county_ucr_arrests_yearly_all_crimes_totals_race_1974_1989",
-#                 aspep_county)
+#                 "county_ucr_arrests_yearly_all_crimes_totals_race_1974_1989")
 # rm(ucr_arrests_yearly_all_crimes_totals_race_1974_1989); gc(); Sys.sleep(5)
 # ucr_arrests_yearly_all_crimes_totals_race_1990_1999 <-
 #   ucr_arrests_yearly_all_crimes_totals_race_1974_2016 %>%
 #   dplyr::filter(year %in% 1990:1999)
 # get_county_data(ucr_arrests_yearly_all_crimes_totals_race_1990_1999,
-#                 "county_ucr_arrests_yearly_all_crimes_totals_race_1990_1999",
-#                 aspep_county)
+#                 "county_ucr_arrests_yearly_all_crimes_totals_race_1990_1999")
 # rm(ucr_arrests_yearly_all_crimes_totals_race_1990_1999); gc(); Sys.sleep(5)
 # ucr_arrests_yearly_all_crimes_totals_race_2000_2016 <-
 #   ucr_arrests_yearly_all_crimes_totals_race_1974_2016 %>%
 #   dplyr::filter(year %in% 2000:2016)
 # rm(ucr_arrests_yearly_all_crimes_totals_race_1974_2016); gc(); Sys.sleep(5)
 # get_county_data(ucr_arrests_yearly_all_crimes_totals_race_2000_2016,
-#                 "county_ucr_arrests_yearly_all_crimes_totals_race_2000_2016",
-#                 aspep_county)
+#                 "county_ucr_arrests_yearly_all_crimes_totals_race_2000_2016")
 # rm(ucr_arrests_yearly_all_crimes_totals_race_2000_2016); gc(); Sys.sleep(5)
 
 
@@ -68,21 +63,18 @@ rm(offenses_known_yearly_1960_2017); gc(); Sys.sleep(5)
 #       ucr_arrests_yearly_drug_crimes_age_by_sex_1974_2016 %>%
 #       dplyr::filter(year %in% 1974:1989)
 #     get_county_data(temp,
-#                     name_to_save = "ucr_arrests_yearly_drug_crimes_age_by_sex_1974_1989",
-#                     aspep_county)
+#                     name_to_save = "ucr_arrests_yearly_drug_crimes_age_by_sex_1974_1989")
 #     rm(temp)
 #     temp <-
 #       ucr_arrests_yearly_drug_crimes_age_by_sex_1974_2016 %>%
 #       dplyr::filter(year %in% 1990:2016)
 #     rm(ucr_arrests_yearly_drug_crimes_age_by_sex_1974_2016)
 #     get_county_data(temp,
-#                     name_to_save = "ucr_arrests_yearly_drug_crimes_age_by_sex_1990_2016",
-#                     aspep_county)
+#                     name_to_save = "ucr_arrests_yearly_drug_crimes_age_by_sex_1990_2016")
 #     rm(temp)
 #   } else {
 #     get_county_data(get(file_name),
-#                     name_to_save = name_to_save,
-#                     aspep_county)
+#                     name_to_save = name_to_save)
 #     do.call(rm, list(file_name)); gc(); Sys.sleep(5)
 #
 #   }
@@ -94,7 +86,7 @@ setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/county_data")
 save_as_zip("county_ucr_offenses_known_1960_2017_", pattern = "offense")
 save_as_zip("county_ucr_arrests_1974_2016_", pattern = "arrest")
 
-get_county_data <- function(data, name_to_save, aspep_county) {
+get_county_data <- function(data, name_to_save) {
 
   data <-
     data %>%
@@ -191,8 +183,8 @@ get_county_data <- function(data, name_to_save, aspep_county) {
                   fips_county_code,
                   fips_state_county,
                   tidyselect::everything()) %>%
-    dplyr::arrange(fips_state_county,
-                   desc(year))
+    dplyr::arrange(desc(year),
+                   fips_state_county)
 
   # Save the data in various formats
   setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/county_data")
