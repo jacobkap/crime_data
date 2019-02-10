@@ -85,19 +85,19 @@ starting_names <- c("identifier_code",
                     "population_group_in_previous_year",
                     "blank")
 
-monthly_nums <- c("306-307",
-                  "308-313",
-                  "314",
-                  "315",
-                  "316",
-                  "317",
-                  "318",
-                  "319",
-                  "320",
-                  "321",
-                  "322")
+card_types_nums <- c("306-307",
+                     "308-313",
+                     "314",
+                     "315",
+                     "316",
+                     "317",
+                     "318",
+                     "319",
+                     "320",
+                     "321",
+                     "322")
 
-monthly_card_0_nums <- c("323-327",
+monthly_card_unfound_nums <- c("323-327",
                          "328-332",
                          "333-337",
                          "338-342",
@@ -125,9 +125,20 @@ monthly_card_0_nums <- c("323-327",
                          "448-452",
                          "453-457",
                          "458-462")
-monthly_card_nums <- c(monthly_card_0_nums,
-                       setup_num_adder(monthly_card_0_nums, 140, 3))
+monthly_card_nums <- c(monthly_card_unfound_nums,
+                       setup_num_adder(monthly_card_unfound_nums, 140, 3))
 
+card_types_names <- c("month_included_in",
+                      "date_of_last_update",
+                      "card_unfound_type",
+                      "card_actual_type",
+                      "card_tot_clr_type",
+                      "card_clr_18_type",
+                      "card_officers_type",
+                      "card_unfound_pt",
+                      "card_actual_pt",
+                      "card_tot_clr_pt",
+                      "card_clr_18_pt")
 
 card_names <- c("murder",
                 "manslaughter",
@@ -162,7 +173,8 @@ actual_card_names        <- paste0("actual_", card_names)
 total_cleared_card_names <- paste0("tot_clr_", card_names)
 cleared_18_card_names    <- paste0("clr_18_", card_names)
 
-monthly_card_names <- c(unfound_card_names,
+monthly_card_names <- c(card_types_names,
+                        unfound_card_names,
                         actual_card_names,
                         total_cleared_card_names,
                         cleared_18_card_names)
@@ -175,7 +187,8 @@ officers_names <- c("officers_killed_by_felony",
                     "officers_killed_by_accident",
                     "officers_assaulted")
 
-monthly_nums <- c(monthly_card_nums,
+monthly_nums <- c(card_types_nums,
+                  monthly_card_nums,
                   officers_nums)
 monthly_names <- c(monthly_card_names,
                    officers_names)
@@ -219,10 +232,88 @@ col_positions <- c(starting_nums,
 col_labels <- c(starting_names,
                 all_month_names)
 
+card_value_labels <- c( "_card_unfound_type = ",
+                        "0 = not updated",
+                        "2 = adjustment",
+                        "4 = not available",
+                        "5 = normal return",
+                        "_card_actual_type = ",
+                        "0 = not updated",
+                        "2 = adjustment",
+                        "4 = not available",
+                        "5 = normal return",
+                        "_card_tot_clr_type = ",
+                        "0 = not updated",
+                        "2 = adjustment",
+                        "4 = not available",
+                        "5 = normal return",
+                        "_card_clr_18_type = ",
+                        "0 = not updated",
+                        "2 = adjustment",
+                        "4 = not available",
+                        "5 = normal return",
+                        "_card_officers_type = ",
+                        "0 = not updated",
+                        "2 = adjustment",
+                        "4 = not available",
+                        "5 = normal return",
+                        "_card_unfound_pt = ",
+                        " = no return received",
+                        "0 = missing",
+                        "P = breakdown offenses",
+                        "T = totals only",
+                        "_card_actual_pt = ",
+                        " = no return received",
+                        "0 = missing",
+                        "P = breakdown offenses",
+                        "T = totals only",
+                        "_card_tot_clr_pt = ",
+                        " = no return received",
+                        "0 = missing",
+                        "P = breakdown offenses",
+                        "T = totals only",
+                        "_card_clr_18_pt = ",
+                        " = no return received",
+                        "0 = missing",
+                        "P = breakdown offenses",
+                        "T = totals only")
+jan_card_value_labels <- gsub("^_card", "jan_card", card_value_labels)
+feb_card_value_labels <- gsub("^_card", "feb_card", card_value_labels)
+mar_card_value_labels <- gsub("^_card", "mar_card", card_value_labels)
+apr_card_value_labels <- gsub("^_card", "apr_card", card_value_labels)
+may_card_value_labels <- gsub("^_card", "may_card", card_value_labels)
+jun_card_value_labels <- gsub("^_card", "jun_card", card_value_labels)
+jul_card_value_labels <- gsub("^_card", "jul_card", card_value_labels)
+aug_card_value_labels <- gsub("^_card", "aug_card", card_value_labels)
+sep_card_value_labels <- gsub("^_card", "sep_card", card_value_labels)
+oct_card_value_labels <- gsub("^_card", "oct_card", card_value_labels)
+nov_card_value_labels <- gsub("^_card", "nov_card", card_value_labels)
+dec_card_value_labels <- gsub("^_card", "dec_card", card_value_labels)
+
+all_card_value_labels <- c(jan_card_value_labels,
+                           feb_card_value_labels,
+                           mar_card_value_labels,
+                           apr_card_value_labels,
+                           may_card_value_labels,
+                           jun_card_value_labels,
+                           jul_card_value_labels,
+                           aug_card_value_labels,
+                           sep_card_value_labels,
+                           oct_card_value_labels,
+                           nov_card_value_labels,
+                           dec_card_value_labels)
+
+
+
 return_a_value_labels <- c(state_group_division_value_labels,
+                           all_card_value_labels,
                            "core_city_indication = ",
                            "Y = core city of MSA",
                            "N = not core city of MSA",
+                           "followup_indication = ",
+                           "Y = send a follow-up",
+                           "N = do not send a follow-up",
+
                            "covered_by_population_group = ",
                            "0  = possessions",
                            "1  = city 250,000+",
@@ -246,7 +337,18 @@ return_a_value_labels <- c(state_group_division_value_labels,
                            "9B = msa-county 25,000 thru 99,999",
                            "9C = msa-county 10,000 thru 24,999",
                            "9D = msa-county under 10,000",
-                           "9E = msa state police")
+                           "9E = msa state police",
+                           "special_mailing_group = ",
+                           "0 = not a special mailing group agency.",
+                           "1 = the return is to be sent to another agency.",
+                           "2 = small city (groups 5 -7) to be sent a large city (groups 1 -4) form.",
+                           "7 = the agency is a 'non-contributor', it is not sent forms.",
+                           "9 = the agency is a contributor but not on the mailing list,they are not sent forms.",
+                           "special_mailing_address = ",
+                           "Y = special mailing address",
+                           "N = not a special mailing address")
+
+
 
 setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/offenses_known_from_fbi")
 asciiSetupReader::make_sps_setup(file_name     = "ucr_return_a",

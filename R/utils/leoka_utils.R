@@ -89,12 +89,6 @@ reorder_leoka_columns <- function(data, crosswalk, type = "month") {
   return(data)
 }
 
-remove_special_characters <- function(col) {
-  col[!col %in% c("assaults not reported",
-                  "assaults reported but no breakdowns",
-                  "information complete")] <- NA
-  return(col)
-}
 
 fix_outliers <- function(data) {
   if (data$year[1] == 1977) {
@@ -132,6 +126,7 @@ fix_outliers <- function(data) {
   }
   if (data$year[1] == 2017) {
     data$jan_officers_killed_by_accident[data$ori %in% "IN08200"] <- NA
+
   }
 
   # This agency has wrong state and is only there for first 5 years.

@@ -26,3 +26,32 @@ population_group_fix <- c(
   "^city 500,000 thru 999,999$"           = "cities 250,000 and over",
   "^city 1,000,000\\+$"                   = "cities 250,000 and over"
 )
+
+get_coverage_data <- function(data) {
+  coverage_data %>%
+    dplyr::select(ori,
+                  year,
+                  fips_state_county,
+                  population,
+                  number_of_months_reported)
+  county_pop <-
+    data %>%
+    dplyr::select(year,
+                  fips_state_county,
+                  population) %>%
+    dplyr::group_by(year,
+                    fips_state_county) %>%
+    dplyr::summarize(county_population = sum(population))
+
+  coverage_data <-
+    data %>%
+    dplyr::left_join(county_pop, by = c("year", "fips_state_county")) %>%
+    dplyr::mutate(coverage = (population / county_population) *
+                    ((12 - number_of_months_reported)/12)) %>%
+    dplyr::group_by(year,
+                    fips_state_county) %>%
+    dplyr::summarize(coverage_indicator = sum(coverage)) %>%
+    dplyr::mutate(coverage_indicator = (1 - coverage_indicator) * 100)
+
+  return(coverage_data)
+}

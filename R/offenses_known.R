@@ -4,7 +4,7 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_offenses_know
 source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/offenses_known_utils.R')
 crosswalk <- read_merge_crosswalks()
 
-get_all_return_a_monthly(crosswalk)
+# get_all_return_a_monthly(crosswalk)
 offenses_known_yearly <- get_data_yearly("offenses_known",
                                          "1960_2017",
                                          "offenses_known_yearly_",
@@ -42,14 +42,15 @@ get_all_return_a_monthly <- function(crosswalk) {
                     -agency_state_name,
                     -covered_by_population_group,
                     -contains("blank"),
-                    -contains("mailing"),
                     -population_group_in_previous_year) %>%
+      dplyr::mutate_at(dplyr::vars(tidyselect::matches("card")), remove_special_characters) %>%
+      dplyr::mutate_at(dplyr::vars(tidyselect::matches("mail")), crime_remove_special_characters) %>%
       dplyr::mutate_if(is.character, tolower) %>%
-      dplyr::mutate(year       = fix_years(year),
-                    population =  rowSums(.[, grepl("population_[1-3]",
+      dplyr::mutate(year           = fix_years(year),
+                    population     =  rowSums(.[, grepl("population_[1-3]",
                                                     names(.))]),
-                    ori        = toupper(ori),
-                    state_abb  = make_state_abb(state),
+                    ori            = toupper(ori),
+                    state_abb      = make_state_abb(state),
                     covered_by_ori = as.character(covered_by_ori)) %>%
       dplyr::select(-population_1,
                     -population_2,
@@ -58,12 +59,19 @@ get_all_return_a_monthly <- function(crosswalk) {
     data <- fix_all_negatives(data)
     data <- fix_outliers(data)
     data <- month_wide_to_long(data)
+
+    if (data$year[1] == 2017) {
+      data$unfound_burg_attempted[data$ori %in% "LANPD00"] <- NA
+      data$unfound_burg_total[data$ori %in% "LANPD00"] <- NA
+    }
+
+
     data <- make_agg_assault(data)
     data <- make_index_crimes(data)
     data$juvenile_age[data$juvenile_age == 0] <- NA
 
-    data <- dplyr::left_join(data, crosswalk)
-    data2 <- reorder_columns(data, crosswalk)
+    data <- dplyr::left_join(data, crosswalk, by = "ori")
+    data <- reorder_columns(data, crosswalk)
 
     # Save the data in various formats
     setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")

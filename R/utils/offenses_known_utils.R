@@ -86,4 +86,8 @@ fix_outliers <- function(data) {
   return(data)
 }
 
-
+crime_remove_special_characters <- function(col) {
+  col <- iconv(col, "UTF-8", "ASCII", sub = "")
+  col <- gsub(" conty, ", " county, ", col, ignore.case = TRUE)
+  return(col)
+}

@@ -6,6 +6,20 @@ library(asciiSetupReader)
 library(haven)
 library(lubridate)
 
+
+remove_special_characters <- function(col) {
+  col[!col %in% c("assaults not reported",
+                  "assaults reported but no breakdowns",
+                  "information complete",
+                  "breakdown offenses",
+                  "missing",
+                  "totals only",
+                  "adjustment",
+                  "normal return",
+                  "not updated")] <- NA
+  return(col)
+}
+
 reorder_columns <- function(data, crosswalk, type = "month") {
   time_cols <- c("year",
                  "month",
@@ -40,6 +54,10 @@ reorder_columns <- function(data, crosswalk, type = "month") {
                   dplyr::one_of(offenses_known_unique_cols),
                   covered_by_ori,
                   agency_count,
+                  date_of_last_update,
+                  month_included_in,
+                  dplyr::contains("mailing"),
+                  dplyr::starts_with("card"),
                   dplyr::starts_with("officers"),
                   dplyr::starts_with("actual"),
                   dplyr::starts_with("tot_clr"),
@@ -103,7 +121,7 @@ fix_all_negatives <- function(data) {
                           value = TRUE)
   crime_char_type <- sapply(data[, crime_char_cols], typeof)
   crime_char_cols <- crime_char_cols[crime_char_type == "character"]
-  crime_char_cols <- crime_char_cols[!grepl("indicator", crime_char_cols)]
+  crime_char_cols <- crime_char_cols[!grepl("indicator|card", crime_char_cols)]
 
   data <-
     data %>%
@@ -154,6 +172,7 @@ fix_years <- function(year) {
 }
 
 agg_yearly <- function(data, month_cols) {
+  card_cols <- grep("card_", names(data), value = TRUE)
 
   yearly_data <-
     data %>%
@@ -163,8 +182,10 @@ agg_yearly <- function(data, month_cols) {
     dplyr::distinct(ori, .keep_all = TRUE)
 
   month_cols <- c("ori", month_cols)
+  month_cols <- month_cols[!month_cols %in% card_cols]
   data <-
     data %>%
+    dplyr::select(-one_of(card_cols)) %>%
     dplyr::select(one_of(month_cols))
 
   data <-

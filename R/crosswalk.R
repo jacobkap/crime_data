@@ -78,7 +78,7 @@ read_merge_crosswalks <- function(pop = FALSE) {
   crosswalk2012$AGENCY_SUBTYPE_1 <- NULL
   crosswalk2012$AGENCY_SUBTYPE_2 <- NULL
   crosswalk2012$AGENCY_TYPE      <- NULL
-  crosswalk2012 <- dplyr::left_join(crosswalk2012, 
+  crosswalk2012 <- dplyr::left_join(crosswalk2012,
                                     crosswalk2012_temp,
                                     by = "ORI")
 
@@ -154,8 +154,10 @@ read_merge_crosswalks <- function(pop = FALSE) {
   crosswalk$fips_place_code[crosswalk$ori        == "IN04940"] <- "15580"
   crosswalk$fips_state_place_code[crosswalk$ori  == "IN04940"] <- "4715580"
 
-  # These ORIs have Washinton D.C. FIPS codes but are in other states
-  crosswalk <- crosswalk[!crosswalk$ori %in% c("MDPPD00", "VAPPD00"),]
+  # These ORIs have Washinton D.C. or Illinois FIPS codes but are in other states
+  crosswalk <- crosswalk[!crosswalk$ori %in% c("MDPPD00",
+                                               "VAPPD00",
+                                               "IN04940"),]
 
   crosswalk <-
     crosswalk %>%
