@@ -1,4 +1,3 @@
-library(lubridate)
 library(haven)
 convert_codebook_to_pdf <- function(file_name) {
   temp      <- readLines(file_name)
@@ -12,9 +11,9 @@ convert_codebook_to_pdf <- function(file_name) {
 }
 
 save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
-  data <-
-    data %>%
-    dplyr::mutate_if(is.Date, as.character)
+ data <-
+   data %>%
+   dplyr::mutate_if(is.Date, as.character)
 
   if (any(nchar(names(data)) > 30)) {
     print(names(data)[nchar(names(data)) > 30])
@@ -36,16 +35,24 @@ save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
                               path = paste0(save_name,
                                             year, ".dta")))
 
-    # do.call("write_csv", list(as.name(paste0(file_name, year)),
-    #                           path = paste0(save_name,
-    #                                         year, ".csv")))
+    do.call("write_csv", list(as.name(paste0(file_name, year)),
+                              path = paste0(save_name,
+                                            year, ".csv")))
+
+    do.call("write_sav", list(as.name(paste0(file_name, year)),
+                              path = paste0(save_name,
+                                            year, ".sav")))
+
+    do.call("write_sas", list(as.name(paste0(file_name, year)),
+                              path = paste0(save_name,
+                                            year, ".sas")))
 
     do.call("rm", list(as.name(paste0(file_name, year))))
   }
 }
 
 save_as_zip <- function(file_name, pattern = NULL) {
-  file_ext <- c("rda", "dta")
+  file_ext <- c("rda", "dta", "sav", "sas", "csv")
   all_files <- list.files()
   if (!is.null(pattern)) {
     sps_files <- all_files[grep("maltz|manual|sps$|record description", all_files, ignore.case = TRUE)]

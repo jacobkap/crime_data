@@ -1,40 +1,40 @@
-# source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
-# source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/supplement_utils.R')
-# source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
-# crosswalk   <- read_merge_crosswalks()
-# cross_names <- names(crosswalk)
-# cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
-#
-# save_supplement_data_monthly()
-# ucr_property_stolen_recovered_yearly <- get_supplement_yearly()
-#
-#
-# table(ucr_property_stolen_recovered_yearly$state)
-# table(ucr_property_stolen_recovered_yearly$division)
-# table(ucr_property_stolen_recovered_yearly$group)
-# summary(ucr_property_stolen_recovered_yearly$population)
-# table(ucr_property_stolen_recovered_yearly$number_of_months_reported)
-# summary(ucr_property_stolen_recovered_yearly)
-# head(ucr_property_stolen_recovered_yearly$ori)
-# head(ucr_property_stolen_recovered_yearly$ori9)
-#
-# save_files(data = ucr_property_stolen_recovered_yearly,
-#            year = "1960_2017",
-#            file_name = "ucr_property_stolen_recovered_yearly_",
-#            save_name = "ucr_property_stolen_recovered_yearly_")
-# save_as_zip("ucr_property_stolen_recovered_yearly_1960_2017_", "yearly")
-# save_as_zip("ucr_property_stolen_recovered_monthly_1960_2017_", "monthly")
+source(here::here('R/utils/global_utils.R'))
+source(here::here('R/utils/supplement_utils.R'))
+source(here::here('R/crosswalk.R'))
+crosswalk   <- read_merge_crosswalks()
+cross_names <- names(crosswalk)
+cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
+
+save_supplement_data_monthly()
+ucr_property_stolen_recovered_yearly <- get_supplement_yearly()
+
+
+table(ucr_property_stolen_recovered_yearly$state)
+table(ucr_property_stolen_recovered_yearly$division)
+table(ucr_property_stolen_recovered_yearly$group)
+summary(ucr_property_stolen_recovered_yearly$population)
+table(ucr_property_stolen_recovered_yearly$number_of_months_reported)
+summary(ucr_property_stolen_recovered_yearly)
+head(ucr_property_stolen_recovered_yearly$ori)
+head(ucr_property_stolen_recovered_yearly$ori9)
+
+save_files(data = ucr_property_stolen_recovered_yearly,
+           year = "1960_2017",
+           file_name = "ucr_property_stolen_recovered_yearly_",
+           save_name = "ucr_property_stolen_recovered_yearly_")
+save_as_zip("ucr_property_stolen_recovered_yearly_1960_2017_", "yearly")
+save_as_zip("ucr_property_stolen_recovered_monthly_1960_2017_", "monthly")
 #
 
 save_supplement_data_monthly <- function() {
 
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/supplement")
+  setwd(here::here("raw_data/supplement_to_offenses_known_from_fbi"))
   files <- list.files(pattern = ".DAT|.TXT|.txt")
   for (file in files) {
-    setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/supplement")
-    data <- suppressWarnings(asciiSetupReader::spss_ascii_reader(dataset_name = file,
-                                                                 sps_name = "supplement_to_return_a.sps",
-                                                                 coerce_numeric = FALSE))
+    setwd(here::here("raw_data/supplement_to_offenses_known_from_fbi"))
+    data <- suppressWarnings(read_ascii_setup(data = file,
+                                              setup_file = "supplement_to_return_a.sps",
+                                              coerce_numeric = FALSE))
     # The last row is blank, this removes it
     data <- data[!is.na(data$ori), ]
 
@@ -131,7 +131,7 @@ save_supplement_data_monthly <- function() {
                     ori9 = toupper(ori9)) %>%
       dplyr::rename(report_indicator = status)
 
-    setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/supplement_return_a")
+    setwd(here::here("clean_data/supplement_return_a"))
     save_files(data = data,
                year = data$year[1],
                file_name = "ucr_property_stolen_recovered_monthly_",
@@ -143,7 +143,7 @@ save_supplement_data_monthly <- function() {
 }
 
 get_supplement_yearly <- function() {
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/supplement_return_a")
+  setwd(here::here("clean_data/supplement_return_a"))
   files <- list.files(pattern = "monthly.*.rda")
   supplement_yearly <- data.frame(stringsAsFactors = FALSE)
   for (file in files) {
@@ -209,3 +209,4 @@ make_num_months_reported <- function(data) {
   }
   return(data)
 }
+

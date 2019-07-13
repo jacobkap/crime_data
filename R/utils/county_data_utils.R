@@ -28,6 +28,7 @@ population_group_fix <- c(
 )
 
 get_coverage_data <- function(data) {
+  data$number_of_months_reported[data$number_of_months_reported < 3] <- 0
   coverage_data <-
     data %>%
     dplyr::select(ori,
@@ -56,3 +57,4 @@ get_coverage_data <- function(data) {
 
   return(coverage_data)
 }
+

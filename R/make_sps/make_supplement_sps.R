@@ -1,4 +1,4 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_sps_utils.R')
+source(here::here('R/make_sps/make_sps_utils.R'))
 
 starting_names <- c("identifier_code",
                     "state",
@@ -261,11 +261,11 @@ column_positions <- c(starting_numbers,
                       final_month_numbers)
 column_names <- c(starting_names,
                   final_month_names)
-setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/supplement")
+setwd(here::here("raw_data/supplement_to_offenses_known_from_fbi"))
 asciiSetupReader::make_sps_setup(file_name = "supplement_to_return_a",
                                  col_positions = column_positions,
                                  col_labels    = column_names)
-setwd("C:/Users/user/Dropbox/R_project/crime_data/setup_files")
+setwd(here::here("setup_files"))
 asciiSetupReader::make_sps_setup(file_name = "supplement_to_return_a",
                                  col_positions = column_positions,
                                  col_labels    = column_names)

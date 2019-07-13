@@ -1,4 +1,4 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_sps_utils.R')
+source(here::here('R/make_sps/make_sps_utils.R'))
 
 starting_numbers <- c("1",
                       "2-3",
@@ -400,12 +400,12 @@ col_positions <- col_positions[-length(col_positions)]
 col_labels    <- col_labels[-length(col_labels)]
 
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/leoka_from_fbi")
+setwd(here::here("raw_data/leoka_from_fbi"))
 asciiSetupReader::make_sps_setup(file_name     = "ucr_leoka",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,
                                  value_labels  = leoka_value_labels)
-setwd("C:/Users/user/Dropbox/R_project/crime_data/setup_files")
+setwd(here::here("setup_files"))
 asciiSetupReader::make_sps_setup(file_name     = "ucr_leoka",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,

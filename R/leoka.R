@@ -1,23 +1,23 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_leoka_sps.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
+source(here::here('R/crosswalk.R'))
+source(here::here('R/make_sps/make_leoka_sps.R'))
+source(here::here('R/utils/global_utils.R'))
 crosswalk <- read_merge_crosswalks()
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/leoka_utils.R')
+source(here::here('R/utils/leoka_utils.R'))
 
 # get_all_leoka_monthly()
 # leoka_yearly <- get_all_leoka_yearly()
 # global_tests(leoka_yearly)
 #
-# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
+# setwd("clean_data/LEOKA")
 # save_as_zip("ucr_leoka_monthly_1960_2017_", pattern = "month")
 # save_as_zip("ucr_leoka_yearly_1960_2017_", pattern = "year")
 
 get_all_leoka_monthly <- function() {
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/leoka_from_fbi")
+  setwd(here::here("raw_data/leoka_from_fbi"))
   files <- list.files()
   files <- files[!grepl("sps", files)]
   for (file in files) {
-    setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/leoka_from_fbi")
+    setwd(here::here("raw_data/leoka_from_fbi"))
     data <- asciiSetupReader::spss_ascii_reader(file,
                                                 "ucr_leoka.sps")
     data <- make_number_of_months_reporting(data)
@@ -58,7 +58,7 @@ get_all_leoka_monthly <- function() {
     data <- reorder_leoka_columns(data, crosswalk)
 
     # Save the data in various formats
-    setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
+    setwd(here::here("clean_data/LEOKA"))
     save_files(data = data,
                year = data$year[1],
                file_name = "leoka_monthly_",
@@ -70,7 +70,7 @@ get_all_leoka_monthly <- function() {
 
 
 get_all_leoka_yearly <- function() {
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
+  setwd(here::here("clean_data/LEOKA"))
   files <- list.files(pattern = "monthly_.*.rda$")
 
   leoka_yearly <- data.frame()
@@ -95,7 +95,7 @@ get_all_leoka_yearly <- function() {
                    desc(year))
 
   # Save the data in various formats
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/LEOKA")
+  setwd("clean_data/LEOKA")
   save_files(data = leoka_yearly,
              year = "1960_2017",
              file_name = "leoka_yearly_",

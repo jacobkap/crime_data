@@ -1,6 +1,6 @@
 arrests_monthly_header_1980_present
 
-This setup file was created using the R package asciiSetupReader(version 2.0.0) on 2019-01-17 10:36:13.
+This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-11 13:05:27. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list

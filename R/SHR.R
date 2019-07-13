@@ -1,38 +1,38 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
-#
-# crosswalk <- read_merge_crosswalks()
-# cross_names <- names(crosswalk)
-# cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
-# shr_1976_2017 <- agg_shr()
-# shr_1976_2017 <- reorder_SHR_columns(shr_1976_2017)
+source(here::here('R/crosswalk.R'))
+source(here::here('R/utils/global_utils.R'))
 
-# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/SHR")
-# save_files(data = shr_1976_2017,
-#            year = "1976_2017",
-#            file_name = "shr_",
-#            save_name = "shr_")
-# save_as_zip("shr_1976_2017_")
+crosswalk <- read_merge_crosswalks()
+cross_names <- names(crosswalk)
+cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
+shr_1976_2017 <- agg_shr()
+shr_1976_2017 <- reorder_SHR_columns(shr_1976_2017)
+setwd("clean_data/SHR")
+save_files(data = shr_1976_2017,
+           year = "1976_2017",
+           file_name = "shr_",
+           save_name = "shr_")
+save_as_zip("shr_1976_2017_")
 
 agg_shr <- function() {
   shr <- data.table()
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/SHR")
-  source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/SHR_utils.R')
+  setwd(here::here("raw_data/SHR_from_fbi"))
+  source(here::here('R/utils/SHR_utils.R'))
   for (year in 1976:2017) {
-    data <- spss_ascii_reader(dataset_name = paste0("ucr_shr_", year, ".txt"),
-                              sps_name = paste0("ucr_shr_", year, ".sps"))
+    data <- read_ascii_setup(data = paste0("ucr_shr_", year, ".txt"),
+                             setup_file = paste0("ucr_shr_", year, ".sps"))
     names(data) <- str_replace_all(names(data), shr_names)
     data$ORI <- NULL
     data$STATE_NAME <- NULL
+
 
     # Adds ORI codes cause some years choose to value-label them
     ori_col <- "ORI_CODE"
     if (year %in% c(1976:1979, 1984:1988)) ori_col <- "AGENCY_CODE"
 
-    ORIs <- spss_ascii_reader(dataset_name = paste0("ucr_shr_", year, ".txt"),
-                              sps_name = paste0("ucr_shr_", year, ".sps"),
-                              keep_columns = ori_col,
-                              value_label_fix = FALSE)
+    ORIs <- read_ascii_setup(data = paste0("ucr_shr_", year, ".txt"),
+                             setup_file     = paste0("ucr_shr_", year, ".sps"),
+                             select_columns = ori_col,
+                             use_vale_labels = FALSE)
     names(ORIs) <- "ORI"
 
     data <- bind_cols(ORIs, data)
@@ -47,7 +47,7 @@ agg_shr <- function() {
     data$ori9 <- toupper(data$ori9)
     data$state_abb <- toupper(data$state_abb)
 
-    data <- data.table(data)
+    data <- data.table::data.table(data)
     shr <- rbind(shr, data, fill = TRUE)
 
 
@@ -60,7 +60,7 @@ agg_shr <- function() {
 
 
 clean_shr <- function(data) {
-  source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
+  source(here::here('R/utils/global_utils.R'))
   race_cols            <- names(data[grepl("RACE", names(data))])
   ethnic_cols          <- names(data[grepl("ETHNIC", names(data))])
   weapon_cols          <- names(data[grepl("WEAPON", names(data))])
@@ -70,8 +70,10 @@ clean_shr <- function(data) {
   age_cols             <- names(data[grepl("_AGE", names(data))])
   sex_cols             <- names(data[grepl("SEX", names(data))])
   count_cols           <- names(data[grepl("COUNT$", names(data))])
-  misc_cols            <- c("STATE", "MONTH_OF_OFFENSE",
-                            "TYPE_OF_ACTION", "MSA_INDICATION",
+  misc_cols            <- c("STATE",
+                            "MONTH_OF_OFFENSE",
+                            "TYPE_OF_ACTION",
+                            "MSA_INDICATION",
                             "AGENCY_NAME")
 
   data$state_abb <- state.abb[match(toupper(data$STATE),toupper(state.name))]
@@ -100,10 +102,10 @@ clean_shr <- function(data) {
   data$SITUATION               <- str_replace_all_lower(data$SITUATION,
                                                         situation)
   data$GROUP                   <- str_replace_all_lower(data$GROUP,
-                                                  group_number_fix)
+                                                        group_number_fix)
   if ("SUB_GROUP" %in% names(data)) {
-  data$SUB_GROUP               <- str_replace_all_lower(data$SUB_GROUP,
-                                                        sub_group)
+    data$SUB_GROUP               <- str_replace_all_lower(data$SUB_GROUP,
+                                                          sub_group)
   }
   data$GEOGRAPHIC_DIVISION     <- str_replace_all_lower(data$GEOGRAPHIC_DIVISION,
                                                         division)
@@ -137,10 +139,10 @@ clean_shr <- function(data) {
 fix_additionals <- function(data) {
   victim_cols          <- names(data)[grepl("^VICTIM", names(data))]
   victim_col_numbers   <- as.numeric(gsub("^VICTIM_([0-9]+)_.*", "\\1",
-                                        victim_cols))
+                                          victim_cols))
   offender_cols        <- names(data)[grepl("^OFFENDER", names(data))]
   offender_col_numbers <- as.numeric(gsub("^OFFENDER_([0-9]+)_.*", "\\1",
-                                        offender_cols))
+                                          offender_cols))
   for (i in 1:10) {
     vic_cols           <- victim_cols[victim_col_numbers >= i + 1]
     off_cols           <- offender_cols[offender_col_numbers >= i + 1]
@@ -153,21 +155,21 @@ fix_additionals <- function(data) {
 
 reorder_SHR_columns <- function(data) {
   starting_cols <- c("ori", "ori9", "year", "state", "state_abb")
-  offenders     <- grep("^offender", names(data), value = TRUE)
-  vic_age       <- grep("victim.*age", names(data), value = TRUE)
-  vic_sex       <- grep("victim.*sex", names(data), value = TRUE)
-  vic_race      <- grep("victim.*race", names(data), value = TRUE)
-  vic_ethnic    <- grep("victim.*origin", names(data), value = TRUE)
+  offenders     <- grep("^offender",        names(data), value = TRUE)
+  vic_age       <- grep("victim.*age",      names(data), value = TRUE)
+  vic_sex       <- grep("victim.*sex",      names(data), value = TRUE)
+  vic_race      <- grep("victim.*race",     names(data), value = TRUE)
+  vic_ethnic    <- grep("victim.*origin",   names(data), value = TRUE)
   vic_relation  <- grep("victim.*relation", names(data), value = TRUE)
   others <- names(data)[!names(data) %in%
-                                   c(cross_names,
-                                     starting_cols,
-                                     offenders,
-                                     vic_age,
-                                     vic_sex,
-                                     vic_race,
-                                     vic_ethnic,
-                                     vic_relation)]
+                          c(cross_names,
+                            starting_cols,
+                            offenders,
+                            vic_age,
+                            vic_sex,
+                            vic_race,
+                            vic_ethnic,
+                            vic_relation)]
   data <-
     data %>%
     dplyr::select(-contains("icpsr")) %>%

@@ -1,7 +1,7 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_offenses_known_sps.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/offenses_known_utils.R')
+source(here::here('R/crosswalk.R'))
+source(here::here('R/utils/global_utils.R'))
+source(here::here('R/make_sps/make_offenses_known_sps.R'))
+source(here::here('R/utils/offenses_known_utils.R'))
 crosswalk <- read_merge_crosswalks()
 
 # get_all_return_a_monthly(crosswalk)
@@ -10,19 +10,18 @@ offenses_known_yearly <- get_data_yearly("offenses_known",
                                          "offenses_known_yearly_",
                                          crosswalk)
 global_checks(offenses_known_yearly)
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")
+setwd(here::here("clean_data/offenses_known"))
 save_as_zip("ucr_offenses_known_monthly_1960_2017_", pattern = "month")
 save_as_zip("ucr_offenses_known_yearly_1960_2017_", pattern = "year")
 
 get_all_return_a_monthly <- function(crosswalk) {
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/offenses_known_from_fbi")
+  setwd(here::here("raw_data/offenses_known_from_fbi"))
   files <- list.files()
   files <- files[!grepl("sps", files)]
 
   for (file in files) {
-    setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/offenses_known_from_fbi")
-    data <- asciiSetupReader::spss_ascii_reader(file,
-                                                "ucr_return_a.sps")
+    setwd(here::here("raw_data/offenses_known_from_fbi"))
+    data <- read_ascii_setup(file, "ucr_return_a.sps")
 
     data <-
       data %>%
@@ -74,7 +73,7 @@ get_all_return_a_monthly <- function(crosswalk) {
     data <- reorder_columns(data, crosswalk)
 
     # Save the data in various formats
-    setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known")
+    setwd(here::here("clean_data/offenses_known"))
     save_files(data = data,
                year = data$year[1],
                file_name = "offenses_known_monthly_",

@@ -1,6 +1,6 @@
-ucr_hate_crimes_batch_header_2017
+ucr_hate_crimes_batch_header
 
-This setup file was created using the R package asciiSetupReader(version 1.5.0) on 2018-11-20 15:35:26.
+This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-13 14:38:06. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -98,7 +98,7 @@ V35      "current_population_5"
 V36      "ucr_county_code_5"
 V37      "msa_code_5"
 V38      "last_population_5"
-V39      "master_file_year"
+V39      "year"
 V40      "state_first_quarter_activity"
 V41      "state_second_quarter_activity"
 V42      "state_third_quarter_activity"

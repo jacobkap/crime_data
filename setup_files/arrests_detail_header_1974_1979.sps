@@ -1,6 +1,6 @@
 arrests_detail_header_1974_1979
 
-This setup file was created using the R package asciiSetupReader(version 2.0.0) on 2019-01-17 10:36:13.
+This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-11 13:05:27. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -407,7 +407,7 @@ V8
 '18G'      "poss_synth_narc"
 '18H'      "poss_other_drug"
 '19 '      "gamble_total"
-'19A'      "gamble_bookmaker"
+'19A'      "gamble_bookmake"
 '19B'      "gamble_lottery"
 '19C'      "gamble_other"
 '20 '      "family_off"

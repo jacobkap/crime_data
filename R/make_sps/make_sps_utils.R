@@ -2,6 +2,15 @@ devtools::install_github("jacobkap/asciiSetupReader")
 library(asciiSetupReader)
 library(readr)
 
+repeated_label_number_fixer <- function(labels, numbers) {
+  final <- c()
+  for (number in numbers) {
+    final <- c(final,
+               gsub("_num", paste0("_", number), labels))
+  }
+  return(final)
+}
+
 # For making sps files
 setup_num_adder <- function(data, adder, iterations, initial_adder_bump = 0) {
   adder_temp <- adder

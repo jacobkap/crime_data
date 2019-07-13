@@ -1,4 +1,4 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_sps_utils.R')
+source(here::here('R/make_sps/make_sps_utils.R'))
 
 starting_nums <- c("1",
                    "2-3",
@@ -187,12 +187,12 @@ col_labels <- c(starting_names,
                 all_month_names)
 
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/arson_from_fbi")
+setwd(here::here("raw_data/arson_from_fbi"))
 asciiSetupReader::make_sps_setup(file_name     = "ucr_arson",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,
                                  value_labels  = state_group_division_value_labels)
-setwd("C:/Users/user/Dropbox/R_project/crime_data/setup_files")
+setwd(here::here("setup_files"))
 asciiSetupReader::make_sps_setup(file_name     = "ucr_arson",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,

@@ -1,14 +1,21 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/saving_utils.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/county_data_utils.R')
+source(here::here('R/utils/saving_utils.R'))
+source(here::here('R/utils/county_data_utils.R'))
 # Offenses known
-# load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/offenses_known/offenses_known_yearly_1960_2017.rda")
-# offenses_known_yearly_1960_2017$juvenile_age <- NULL
-# get_county_data(offenses_known_yearly_1960_2017,
-#                 "county_ucr_offenses_known_yearly_1960_2017")
-# rm(offenses_known_yearly_1960_2017); gc(); Sys.sleep(5)
+load(here::here("clean_data/offenses_known/offenses_known_yearly_1960_2017.rda"))
+offenses_known_yearly_1960_2017$juvenile_age <- NULL
+offenses_known_2009 <-
+  offenses_known_yearly_1960_2017 %>%
+  filter(year %in% 2009)
+get_county_data(offenses_known_yearly_1960_2017,
+                "county_ucr_offenses_known_yearly_1960_2017")
+rm(offenses_known_yearly_1960_2017); gc(); Sys.sleep(5)
 
 # Arrests by sex
-# load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests/ucr_arrests_yearly_all_crimes_totals_sex_1974_2016.rda")
+
+arrests_2013 <-
+  ucr_arrests_yearly_all_crimes_totals_sex_1974_2016 %>%
+  dplyr::filter(year %in% 2013)
+# load(here::here("clean_data/arrests/ucr_arrests_yearly_all_crimes_totals_sex_1974_2016.rda"))
 # ucr_arrests_yearly_all_crimes_totals_sex_1974_1989 <-
 #   ucr_arrests_yearly_all_crimes_totals_sex_1974_2016 %>%
 #   dplyr::filter(year %in% 1974:1989)
@@ -24,7 +31,7 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/county_data_utils.R')
 # rm(ucr_arrests_yearly_all_crimes_totals_sex_1990_2016); gc(); Sys.sleep(5)
 
 # Arrests by race
-# load("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests/ucr_arrests_yearly_all_crimes_totals_race_1974_2016.rda")
+# load(here::here("clean_data/arrests/ucr_arrests_yearly_all_crimes_totals_race_1974_2016.rda"))
 # ucr_arrests_yearly_all_crimes_totals_race_1974_1989 <-
 #   ucr_arrests_yearly_all_crimes_totals_race_1974_2016 %>%
 #   dplyr::filter(year %in% 1974:1989)
@@ -47,13 +54,13 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/county_data_utils.R')
 
 
 
-# setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests")
+# setwd(here::here("clean_data/arrests"))
 # files <- list.files(pattern = "yearly.*age.*rda")
 # # Reverse alphabetical order since coincidentally this order
 # # is smaller files so laptop won't crash as soon
 # files <- rev(files)
 # for (file in files) {
-#   setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests")
+#   setwd(here::here("clean_data/arrests"))
 #   load(file)
 #   file_name <- gsub(".rda", "", file)
 #   name_to_save <- paste0("county_", file_name)
@@ -82,26 +89,37 @@ source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/county_data_utils.R')
 #
 # }
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/county_data")
+setwd(here::here("clean_data/county_data"))
 save_as_zip("county_ucr_offenses_known_1960_2017_", pattern = "offense")
 save_as_zip("county_ucr_arrests_1974_2016_", pattern = "arrest")
 
 get_county_data <- function(data, name_to_save) {
+
+  # Arrest data is slightly different from crime data
+  if (!any(grepl("covered_by_ori", names(data)))) {
+    data$covered_by[data$covered_by %in% "not covered by another agency"] <- NA
+    names(data) <- gsub("^covered_by$", "covered_by_ori", names(data))
+  }
+  data$fips_state_place_code <- NULL
+  data$fips_place_code <- NULL
+
 
   data <-
     data %>%
     dplyr::filter(!population_group %in% c("possessions", "7b"),
                   !is.na(fips_state_county_code),
                   # Butler University in Indiana has wrong FIPS codes.
-                  ori != "IN04940") %>%
+                  ori != "IN04940",
+                  # Keeps only agencies that are not covered by other agencies
+                  is.na(covered_by_ori),
+                  number_of_months_reported != 0
+    ) %>%
     dplyr::select(ori,
                   year,
                   population,
                   population_group,
                   number_of_months_reported,
                   matches("male|juv|adult|officer|_tot|actual|tot_clr|clr_18|unfound|fips|state")) %>%
-    dplyr::select(-fips_state_place_code,
-                  -fips_place_code) %>%
     dplyr::rename(fips_state_county = fips_state_county_code) %>%
     dplyr::mutate(population_group = stringr::str_replace_all(population_group,
                                                               population_group_fix)) %>%
@@ -184,10 +202,12 @@ get_county_data <- function(data, name_to_save) {
                   fips_state_county,
                   tidyselect::everything()) %>%
     dplyr::arrange(desc(year),
-                   fips_state_county)
+                   fips_state_county) %>%
+    dplyr::ungroup()
 
+  data <- as.data.frame(data)
   # Save the data in various formats
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/county_data")
+  setwd(here::here("clean_data/county_data"))
   save_files(data = data,
              year = "",
              file_name = name_to_save,

@@ -1,24 +1,23 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_arson_sps.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
+source(here::here('R/utils/global_utils.R'))
+source(here::here('R/make_sps/make_arson_sps.R'))
+source(here::here('R/crosswalk.R'))
 crosswalk <- read_merge_crosswalks()
 
 get_arson(crosswalk)
 arson_yearly <- get_data_yearly("arson", "1979_2017", "ucr_arson_yearly_", crosswalk)
 global_checks(arson_yearly)
-setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arson")
+setwd(here::here("clean_data/arson"))
 save_as_zip("ucr_arson_monthly_1979_2017_", pattern = "month")
 save_as_zip("ucr_arson_yearly_1979_2017_", pattern = "year")
 
 get_arson <- function(crosswalk) {
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/arson_from_fbi")
+  setwd(here::here("raw_data/arson_from_fbi"))
   files <- list.files()
   files <- files[grepl(".txt|.dat", files, ignore.case = TRUE)]
   for (file in files) {
-    setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/arson_from_fbi")
+    setwd(here::here("raw_data/arson_from_fbi"))
     message(file)
-    data <- asciiSetupReader::read_ascii_setup(file,
-                                               "ucr_arson.sps")
+    data <- read_ascii_setup(file, "ucr_arson.sps")
 
     data <-
       data %>%
@@ -80,7 +79,7 @@ get_arson <- function(crosswalk) {
 
 
   # Save the data in various formats
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arson")
+  setwd(here::here("clean_data/arson"))
   save_files(data = data,
              year = data$year[1],
              file_name = "ucr_arson_monthly_",

@@ -1,4 +1,4 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_sps_utils.R')
+source(here::here('R/make_sps/make_sps_utils.R'))
 
 
 # Setup value labels ------------------------------------------------------
@@ -502,7 +502,7 @@ detail_header_names_1974 <- c(detail_header_names_1974, arrest_names_1974)
 
 
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/asr_from_fbi")
+setwd(here::here("raw_data/asr_from_fbi"))
 asciiSetupReader::make_sps_setup(file_name     = "arrests_agency_header_1980_present",
                                  col_positions = agency_header_cols_1980,
                                  col_labels    = agency_header_names_1980,
@@ -529,7 +529,7 @@ asciiSetupReader::make_sps_setup(file_name     = "arrests_detail_header_1974_197
                                  col_labels    = detail_header_names_1974,
                                  value_labels  = detail_header_value_labels_1974)
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data/setup_files")
+setwd(here::here("setup_files"))
 asciiSetupReader::make_sps_setup(file_name     = "arrests_agency_header_1980_present",
                                  col_positions = agency_header_cols_1980,
                                  col_labels    = agency_header_names_1980,

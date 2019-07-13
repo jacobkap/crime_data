@@ -1,6 +1,6 @@
 ucr_shr
 
-This setup file was created using the R package asciiSetupReader(version 1.5.0) on 2018-11-20 15:35:29.
+This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-13 11:33:27. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list

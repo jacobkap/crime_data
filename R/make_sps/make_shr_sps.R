@@ -1,4 +1,4 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_sps_utils.R')
+source(here::here('R/make_sps/make_sps_utils.R'))
 
 starting_nums <- c("1",
                    "2-3",
@@ -347,12 +347,12 @@ value_labels <- c(state_group_division_value_labels,
                   offender_10_value_labels,
                   offender_11_value_labels)
 
-setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/shr_from_fbi")
+setwd(here::here("raw_data/shr_from_fbi"))
 asciiSetupReader::make_sps_setup(file_name     = "ucr_shr",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,
                                  value_labels  = state_group_division_value_labels)
-setwd("C:/Users/user/Dropbox/R_project/crime_data/setup_files")
+setwd(here::here("setup_files"))
 asciiSetupReader::make_sps_setup(file_name     = "ucr_shr",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,

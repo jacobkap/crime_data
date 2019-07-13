@@ -1,11 +1,11 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/saving_utils.R')
+source(here::here('R/utils/saving_utils.R'))
 devtools::install_github("jacobkap/asciisetupreader")
 library(memisc)
 library(tidyverse)
 library(asciiSetupReader)
 library(haven)
 library(lubridate)
-
+library(data.table)
 
 remove_special_characters <- function(col) {
   col[!col %in% c("assaults not reported",
@@ -34,7 +34,9 @@ reorder_columns <- function(data, crosswalk, type = "month") {
                                   "last_update",
                                   "fbi_field_office",
                                   "followup_indication",
-                                  "zip_code")
+                                  "zip_code",
+                                  "date_of_last_update",
+                                  "month_included_in")
 
   # Reorder columns
   data <-
@@ -54,8 +56,6 @@ reorder_columns <- function(data, crosswalk, type = "month") {
                   dplyr::one_of(offenses_known_unique_cols),
                   covered_by_ori,
                   agency_count,
-                  date_of_last_update,
-                  month_included_in,
                   dplyr::contains("mailing"),
                   dplyr::starts_with("card"),
                   dplyr::starts_with("officers"),

@@ -1,19 +1,20 @@
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/arrests_utils.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/utils/global_utils.R')
-source('C:/Users/user/Dropbox/R_project/crime_data/R/make_sps/make_arrest_sps.R')
-setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/asr_from_fbi")
+source(here::here('R/utils/arrests_utils_objects.R'))
+source(here::here('R/utils/arrests_utils.R'))
+source(here::here('R/utils/global_utils.R'))
+source(here::here('R/make_sps/make_arrest_sps.R'))
+setwd(here::here("raw_data/asr_from_fbi"))
 files = list.files(pattern = "DAT|dat|TXT|txt")
 
+files
+#get_temp_arrest_files(files[34:43])
 
-#get_temp_arrest_files(files)
-
-#combine_arrest_years()
+# combine_arrest_years()
 setwd(here::here("clean_data/arrests"))
-save_as_zip("ucr_arrests_yearly_1974_2016_", pattern = "yearly")
+save_as_zip("ucr_arrests_yearly_1974_2016_",  pattern = "yearly")
 save_as_zip("ucr_arrests_monthly_1974_2016_", pattern = "monthly")
 
 get_temp_arrest_files <- function(files) {
-
+print(files)
   for (file in files) {
 
     sps_years <- "1980_present"
@@ -21,7 +22,7 @@ get_temp_arrest_files <- function(files) {
       sps_years <- "1974_1979"
     }
 
-    setwd("C:/Users/user/Dropbox/R_project/crime_data/raw_data/asr_from_fbi")
+    setwd(here::here("raw_data/asr_from_fbi"))
     agency_header  <- get_agency_header(file,  sps_years)
     monthly_header <- get_monthly_header(file, sps_years)
     detail_header  <- get_detail_header(file,  sps_years)
@@ -49,13 +50,14 @@ get_temp_arrest_files <- function(files) {
                           agency_header,
                           number_of_months_reported,
                           type = "monthly")
+    Sys.sleep(5)
     # Yearly
     long_to_wide_and_save(yearly_detail_header,
                           yearly_monthly_header,
                           agency_header,
                           number_of_months_reported,
                           type = "yearly")
-    message(file); gc(); Sys.sleep(3)
+    message(file); gc(); Sys.sleep(5)
   }
 }
 
@@ -97,17 +99,20 @@ long_to_wide_and_save <- function(detail_header,
                                   agency_header,
                                   number_of_months_reported,
                                   type) {
-  source('C:/Users/user/Dropbox/R_project/crime_data/R/crosswalk.R')
+  source(here::here('R/crosswalk.R'))
   crosswalk <- read_merge_crosswalks()
   cross_names <- names(crosswalk)
   cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
 
   time_vars <- "year"
-  identifier_cols <- c("ori", "offense_code")
+  identifier_cols <- c("ori",
+                       "offense_code")
   first_join_by <- "ori"
   if (type == "monthly") {
     time_vars <- c("year", "month")
-    identifier_cols <- c("ori", "offense_code", "month")
+    identifier_cols <- c("ori",
+                         "offense_code",
+                         "month")
     first_join_by <- c("ori", "month")
   }
 
@@ -151,7 +156,7 @@ long_to_wide_and_save <- function(detail_header,
         wide_data %>%
         make_long_to_wide(type = type) %>%
         # Changes NA to 0s in numeric columns
-        dplyr::mutate_if(is.numeric, funs(replace(., is.na(.), 0))) %>%
+        dplyr::mutate_if(is.numeric, list(~replace(., is.na(.), 0))) %>%
         # Combine everything together
         dplyr::full_join(monthly_header, by = first_join_by) %>%
         dplyr::full_join(agency_header, by = "ori") %>%
@@ -163,16 +168,17 @@ long_to_wide_and_save <- function(detail_header,
                       state_abb = toupper(state_abb)) %>%
         dplyr::select(ori,
                       ori9,
+                      number_of_months_reported,
+                      population,
                       agency_name,
                       one_of(time_vars),
                       state,
                       state_abb,
-                      number_of_months_reported,
-                      population,
                       population_group,
                       country_division,
                       cross_names,
                       matches("date"),
+                      covered_by,
                       everything()) %>%
         dplyr::select(-agency_type,
                       -agency_subtype_1,
@@ -181,7 +187,7 @@ long_to_wide_and_save <- function(detail_header,
                       -census_name)
 
 
-      setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests_temp")
+      setwd(here::here("clean_data/arrests_temp"))
       save_files(data = wide_data,
                  year = unique(wide_data$year),
                  file_name = file_name,
@@ -194,7 +200,7 @@ long_to_wide_and_save <- function(detail_header,
 
 
 combine_arrest_years <- function(crime_type) {
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests_temp")
+  setwd(here::here("clean_data/arrests_temp"))
   all_files <- list.files()
   all_files <- gsub(".....rda$", "", all_files)
   all_files <- unique(all_files)
@@ -228,12 +234,12 @@ combine_and_save <- function(files) {
   file_name <- gsub(".....rda$", "", file)
   years <- paste0(min(data$year), "_", max(data$year))
   if (min(data$year) == max(data$year)) years <- unique(data$year)
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests")
+  setwd(here::here("clean_data/arrests"))
   save_files(data = data,
              year = years,
              file_name = file_name,
              save_name = file_name)
   rm(data); gc();
-  setwd("C:/Users/user/Dropbox/R_project/crime_data/clean_data/arrests_temp")
+  setwd(here::here("clean_data/arrests_temp"))
 }
 
