@@ -163,14 +163,15 @@ riot_names           <- paste0("riot_", assault_by_call_type_names)
 riot_names           <- gsub("riot_detective_assist",
                              'riot_detective_assiste',
                              riot_names)
-prisoners_names <- paste0("prisoner_", assault_by_call_type_names)
+prisoners_names      <- paste0("prisoner_", assault_by_call_type_names)
 suspicious_names     <- paste0("susp_pers_", assault_by_call_type_names)
 ambush_names         <- paste0("ambush_", assault_by_call_type_names)
 deranged_names       <- paste0("deranged_", assault_by_call_type_names)
 traffic_names        <- paste0("traffic_", assault_by_call_type_names)
 all_other_names      <- paste0("all_other_", assault_by_call_type_names)
 total_names          <- paste0("total_", assault_by_call_type_names)
-total_names          <- gsub("total_total_assaults", "total_assaults_total", total_names)
+total_names          <- gsub("total_total_assaults",
+                             "total_assaults_total", total_names)
 
 time_names <- c("time_of_assault_0001_to_0200",
                 "time_of_assault_0201_to_0400",
@@ -201,33 +202,8 @@ monthly_names <- c(monthly_assault_names,
                    total_names,
                    time_names)
 
-jan_names <- paste0("jan_", monthly_names)
-feb_names <- paste0("feb_", monthly_names)
-mar_names <- paste0("mar_", monthly_names)
-apr_names <- paste0("apr_", monthly_names)
-may_names <- paste0("may_", monthly_names)
-jun_names <- paste0("jun_", monthly_names)
-jul_names <- paste0("jul_", monthly_names)
-aug_names <- paste0("aug_", monthly_names)
-sep_names <- paste0("sep_", monthly_names)
-oct_names <- paste0("oct_", monthly_names)
-nov_names <- paste0("nov_", monthly_names)
-dec_names <- paste0("dec_", monthly_names)
-
-
-all_month_names <- c(jan_names,
-                     feb_names,
-                     mar_names,
-                     apr_names,
-                     may_names,
-                     jun_names,
-                     jul_names,
-                     aug_names,
-                     sep_names,
-                     oct_names,
-                     nov_names,
-                     dec_names)
-
+monthly_names <- paste0("replace_", monthly_names)
+all_month_names <- repeated_label_replace_fixer(monthly_names, tolower(month.abb))
 
 
 monthly_assault_intro_nums <- c("274",
@@ -297,70 +273,23 @@ all_month_numbers <- c(monthly_assault_cols,
                        setup_num_adder(monthly_assault_cols, 618, 11))
 
 
-injury_no_injury_labels <- c("_assault_injury_indicator = ",
-                             "0 = information complete",
-                             "1 = assaults not reported",
-                             "2 = assaults reported but no breakdowns",
-                             "_assault_no_injury_indicator = ",
-                             "0 = information complete",
-                             "1 = assaults not reported",
-                             "2 = assaults reported but no breakdowns")
-jan_injury_no_injury_labels <- gsub("^_", "jan_", injury_no_injury_labels)
-feb_injury_no_injury_labels <- gsub("^_", "feb_", injury_no_injury_labels)
-mar_injury_no_injury_labels <- gsub("^_", "mar_", injury_no_injury_labels)
-apr_injury_no_injury_labels <- gsub("^_", "apr_", injury_no_injury_labels)
-may_injury_no_injury_labels <- gsub("^_", "may_", injury_no_injury_labels)
-jun_injury_no_injury_labels <- gsub("^_", "jun_", injury_no_injury_labels)
-jul_injury_no_injury_labels <- gsub("^_", "jul_", injury_no_injury_labels)
-aug_injury_no_injury_labels <- gsub("^_", "aug_", injury_no_injury_labels)
-sep_injury_no_injury_labels <- gsub("^_", "sep_", injury_no_injury_labels)
-oct_injury_no_injury_labels <- gsub("^_", "oct_", injury_no_injury_labels)
-nov_injury_no_injury_labels <- gsub("^_", "nov_", injury_no_injury_labels)
-dec_injury_no_injury_labels <- gsub("^_", "dec_", injury_no_injury_labels)
+injury_no_injury_indicator_labels <- c("replace_assault_injury_indicator = ",
+                                       "0 = information complete",
+                                       "1 = assaults not reported",
+                                       "2 = assaults reported but no breakdowns",
+                                       "replace_assault_no_injury_indicator = ",
+                                       "0 = information complete",
+                                       "1 = assaults not reported",
+                                       "2 = assaults reported but no breakdowns",
+                                       "replace_month_indicator = ",
+                                       "0 = normal update",
+                                       "1 = not reported",
+                                       "2 = reported, no data",
+                                       "3 = deleted")
 
-all_injury_no_injury_labels <- c(jan_injury_no_injury_labels,
-                                 feb_injury_no_injury_labels,
-                                 mar_injury_no_injury_labels,
-                                 apr_injury_no_injury_labels,
-                                 may_injury_no_injury_labels,
-                                 jun_injury_no_injury_labels,
-                                 jul_injury_no_injury_labels,
-                                 aug_injury_no_injury_labels,
-                                 sep_injury_no_injury_labels,
-                                 oct_injury_no_injury_labels,
-                                 nov_injury_no_injury_labels,
-                                 dec_injury_no_injury_labels)
+injury_no_injury_indicator_labels <- repeated_label_replace_fixer(injury_no_injury_indicator_labels,
+                                                                  tolower(month.abb))
 
-month_indicator_labels <- c("_month_indicator = ",
-                            "0 = normal update",
-                            "1 = not reported",
-                            "2 = reported, no data",
-                            "3 = deleted")
-jan_month_indicator_labels <- gsub("^_", "jan_", month_indicator_labels)
-feb_month_indicator_labels <- gsub("^_", "feb_", month_indicator_labels)
-mar_month_indicator_labels <- gsub("^_", "mar_", month_indicator_labels)
-apr_month_indicator_labels <- gsub("^_", "apr_", month_indicator_labels)
-may_month_indicator_labels <- gsub("^_", "may_", month_indicator_labels)
-jun_month_indicator_labels <- gsub("^_", "jun_", month_indicator_labels)
-jul_month_indicator_labels <- gsub("^_", "jul_", month_indicator_labels)
-aug_month_indicator_labels <- gsub("^_", "aug_", month_indicator_labels)
-sep_month_indicator_labels <- gsub("^_", "sep_", month_indicator_labels)
-oct_month_indicator_labels <- gsub("^_", "oct_", month_indicator_labels)
-nov_month_indicator_labels <- gsub("^_", "nov_", month_indicator_labels)
-dec_month_indicator_labels <- gsub("^_", "dec_", month_indicator_labels)
-
-all_month_indicator_labels <- c(jan_month_indicator_labels,
-                                feb_month_indicator_labels,
-                                mar_month_indicator_labels,
-                                apr_month_indicator_labels,
-                                may_month_indicator_labels,
-                                jun_month_indicator_labels,
-                                jul_month_indicator_labels,
-                                aug_month_indicator_labels,
-                                sep_month_indicator_labels,
-                                oct_month_indicator_labels,
-                                nov_month_indicator_labels,
-                                dec_month_indicator_labels)
 
 
 leoka_value_labels = c(state_group_division_value_labels,
@@ -382,8 +311,7 @@ leoka_value_labels = c(state_group_division_value_labels,
                        "no_male_female_breakdown = ",
                        "0 = normal",
                        "1 = no breakdowns, all data will be in the 'male employees' area",
-                       all_injury_no_injury_labels,
-                       all_month_indicator_labels)
+                       injury_no_injury_indicator_labels)
 
 
 col_positions <- c(starting_numbers,
@@ -400,11 +328,6 @@ col_positions <- col_positions[-length(col_positions)]
 col_labels    <- col_labels[-length(col_labels)]
 
 
-setwd(here::here("raw_data/leoka_from_fbi"))
-asciiSetupReader::make_sps_setup(file_name     = "ucr_leoka",
-                                 col_positions = col_positions,
-                                 col_labels    = col_labels,
-                                 value_labels  = leoka_value_labels)
 setwd(here::here("setup_files"))
 asciiSetupReader::make_sps_setup(file_name     = "ucr_leoka",
                                  col_positions = col_positions,

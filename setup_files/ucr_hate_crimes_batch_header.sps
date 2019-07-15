@@ -1,6 +1,6 @@
 ucr_hate_crimes_batch_header
 
-This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-13 14:38:06. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-14 20:34:49. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -62,7 +62,7 @@ V53      280-282
 variable labels
 V1       "hate_crime_record_type"
 V2       "state"
-V3       "ori"
+V3       "ori9"
 V4       "incident_number"
 V5       "date_ori_was_added"
 V6       "date_ori_went_nibrs"
@@ -208,6 +208,15 @@ V10
 '7'       "West South Central"
 '8'       "Mountain"
 '9'       "Pacific"
+'A'       "New England"
+'B'       "Middle Atlantic"
+'C'       "East North Central"
+'D'       "West North Central"
+'E'       "South Atlantic"
+'F'       "East South Central"
+'G'       "West South Central"
+'H'       "Mountain"
+'I'       "Pacific"
 V2        
 '50'      "Alaska"
 '01'      "Alabama"
@@ -300,6 +309,15 @@ V10
 '7'       "West South Central"
 '8'       "Mountain"
 '9'       "Pacific"
+'A'       "New England"
+'B'       "Middle Atlantic"
+'C'       "East North Central"
+'D'       "West North Central"
+'E'       "South Atlantic"
+'F'       "East South Central"
+'G'       "West South Central"
+'H'       "Mountain"
+'I'       "Pacific"
 V11       
 '1'       "North East"
 '2'       "North Central"

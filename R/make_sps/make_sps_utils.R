@@ -2,11 +2,11 @@ devtools::install_github("jacobkap/asciiSetupReader")
 library(asciiSetupReader)
 library(readr)
 
-repeated_label_number_fixer <- function(labels, numbers) {
+repeated_label_replace_fixer <- function(labels, replace_values) {
   final <- c()
-  for (number in numbers) {
+  for (replace_value in replace_values) {
     final <- c(final,
-               gsub("_num", paste0("_", number), labels))
+               gsub("replace", replace_value, labels))
   }
   return(final)
 }
@@ -140,4 +140,13 @@ state_group_division_value_labels <- c("state = ",
                                        "6 = East South Central",
                                        "7 = West South Central",
                                        "8 = Mountain",
-                                       "9 = Pacific")
+                                       "9 = Pacific",
+                                       "A = New England",
+                                       "B = Middle Atlantic",
+                                       "C = East North Central",
+                                       "D = West North Central",
+                                       "E = South Atlantic",
+                                       "F = East South Central",
+                                       "G = West South Central",
+                                       "H = Mountain",
+                                       "I = Pacific")

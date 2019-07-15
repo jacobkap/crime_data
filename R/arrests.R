@@ -8,13 +8,13 @@ files = list.files(pattern = "DAT|dat|TXT|txt")
 files
 #get_temp_arrest_files(files[34:43])
 
-# combine_arrest_years()
+combine_arrest_years()
 setwd(here::here("clean_data/arrests"))
 save_as_zip("ucr_arrests_yearly_1974_2016_",  pattern = "yearly")
 save_as_zip("ucr_arrests_monthly_1974_2016_", pattern = "monthly")
 
 get_temp_arrest_files <- function(files) {
-print(files)
+  print(files)
   for (file in files) {
 
     sps_years <- "1980_present"
@@ -199,7 +199,7 @@ long_to_wide_and_save <- function(detail_header,
 }
 
 
-combine_arrest_years <- function(crime_type) {
+combine_arrest_years <- function() {
   setwd(here::here("clean_data/arrests_temp"))
   all_files <- list.files()
   all_files <- gsub(".....rda$", "", all_files)
@@ -233,7 +233,9 @@ combine_and_save <- function(files) {
   }
   file_name <- gsub(".....rda$", "", file)
   years <- paste0(min(data$year), "_", max(data$year))
-  if (min(data$year) == max(data$year)) years <- unique(data$year)
+  if (min(data$year) == max(data$year)) {
+    years <- unique(data$year)
+  }
   setwd(here::here("clean_data/arrests"))
   save_files(data = data,
              year = years,

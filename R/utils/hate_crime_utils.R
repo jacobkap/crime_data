@@ -7,5 +7,19 @@ misc_cols <- c("population_group",
                "judicial_district",
                "agency_nibrs_flag",
                "agency_inactive_date",
-               "date_ori_was_added")
+               "date_ori_was_added",
+               "date_ori_went_nibrs",
+               "state_first_quarter_activity",
+               "state_second_quarter_activity",
+               "state_third_quarter_activity",
+               "state_fourth_quarter_activity",
+               "federal_first_quarter_activity",
+               "federal_second_quarter_activity",
+               "federal_third_quarter_activity",
+               "federal_fourth_quarter_activity",
+               "data_source",
+               "quarter_of_the_year",
+               "agency_indicator")
+
+
 

@@ -84,8 +84,7 @@ reorder_columns <- function(data, crosswalk, type = "month") {
 }
 
 get_data_yearly <- function(folder, years, name_to_save, crosswalk) {
-  setwd(paste0("C:/Users/user/Dropbox/R_project/crime_data/clean_data/",
-               folder))
+  setwd(here::here(paste0("clean_data/", folder)))
   files <- list.files(pattern = "monthly_.*.rda$")
 
   data <- data.frame()
@@ -105,8 +104,7 @@ get_data_yearly <- function(folder, years, name_to_save, crosswalk) {
   data <- reorder_columns(data, crosswalk, type = "year")
 
   # Save the data in various formats
-  setwd(paste0("C:/Users/user/Dropbox/R_project/crime_data/clean_data/",
-               folder))
+  setwd(here::here(paste0("clean_data/", folder)))
   save_files(data = data,
              year = years,
              file_name = name_to_save,
@@ -152,7 +150,7 @@ negatives <- c("0+\\}"                = "0",
 
 fix_negatives <- function(column) {
   column <- tolower(column)
-  if (any(grepl("[[:alpha:]]", unique(column)))) {
+  if (is.character(column) && any(grepl("[[:alpha:]]", unique(column)))) {
     column <- stringr::str_replace_all(column, negatives)
   }
   column <- readr::parse_number(column)
@@ -213,10 +211,7 @@ month_wide_to_long <- function(data) {
 
   final <- data.frame()
   for (month in tolower(month.abb)) {
-    temp        <- month_only_data[, grep(paste0("^",
-                                                 month,
-                                                 "_"),
-                                          month_cols)]
+    temp        <- month_only_data[, grep(paste0("^", month, "_"), month_cols)]
     names(temp) <- gsub("^....", "", names(temp))
     temp        <- dplyr::bind_cols(data, temp)
     temp$month  <- tolower(month.name)[tolower(month.abb) == month]

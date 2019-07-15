@@ -14,6 +14,8 @@ save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
  data <-
    data %>%
    dplyr::mutate_if(is.Date, as.character)
+ data <- ungroup(data)
+ data <- as.data.frame(data)
 
   if (any(nchar(names(data)) > 30)) {
     print(names(data)[nchar(names(data)) > 30])
@@ -43,16 +45,12 @@ save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
                               path = paste0(save_name,
                                             year, ".sav")))
 
-    do.call("write_sas", list(as.name(paste0(file_name, year)),
-                              path = paste0(save_name,
-                                            year, ".sas")))
-
     do.call("rm", list(as.name(paste0(file_name, year))))
   }
 }
 
 save_as_zip <- function(file_name, pattern = NULL) {
-  file_ext <- c("rda", "dta", "sav", "sas", "csv")
+  file_ext <- c("rda", "dta", "sav", "csv")
   all_files <- list.files()
   if (!is.null(pattern)) {
     sps_files <- all_files[grep("maltz|manual|sps$|record description", all_files, ignore.case = TRUE)]
@@ -68,7 +66,7 @@ save_as_zip <- function(file_name, pattern = NULL) {
     zip_files <- c(zip_files, codebooks)
     zip_files <- sort(zip_files)
 
-    zip::zip(zipfile = paste0(file_name,
+    zip::zipr(zipfile = paste0(file_name,
                               file_ext[i], ".zip"),
              files = zip_files)
   }

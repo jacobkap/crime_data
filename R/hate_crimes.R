@@ -1,6 +1,6 @@
 source(here::here('R/utils/global_utils.R'))
-hate_crimes <- agg_hate_crimes()
-hate_crimes <- clean_hate_crimes(hate_crimes)
+source(here::here('R/utils/hate_crime_utils.R'))
+hate_crimes <- get_hate_crimes()
 #
 #
 names(hate_crimes)
@@ -28,21 +28,19 @@ table(hate_crimes$hate_crime_incident_present_flag, hate_crimes$year)
 #
 setwd(here::here("clean_data/hate_crimes"))
 save_files(data = hate_crimes,
-           year = "1992_2017",
+           year = "1991_2017",
            file_name = "ucr_hate_crimes_",
            save_name = "ucr_hate_crimes_")
-save_as_zip("ucr_hate_crimes_1992_2017_")
+save_as_zip("ucr_hate_crimes_1991_2017_")
 
-get_hate_crimes <- function() {
+  get_hate_crimes <- function() {
 
   setwd(here::here("raw_data/hate_crime_from_fbi"))
-
   files <- list.files()
-  files <- files[-grep(".sps$", files)]
   hate_crimes <- data.frame()
   for (file in files) {
     batch_header <- read_ascii_setup(file,
-                                     "ucr_hate_crimes_batch_header.sps") %>%
+                                     here::here("setup_files/ucr_hate_crimes_batch_header.sps")) %>%
       dplyr::filter(hate_crime_record_type == "BH") %>%
       dplyr::select(-incident_number,
                     -state_abbreviation,
@@ -68,7 +66,7 @@ get_hate_crimes <- function() {
 
 
     incident_report <- read_ascii_setup(file,
-                                        "ucr_hate_crimes_incident_report.sps")  %>%
+                                        here::here("setup_files/ucr_hate_crimes_incident_report.sps")) %>%
       dplyr::filter(hate_crime_record_type == "IR") %>%
       dplyr::select(-hate_crime_record_type)
 
@@ -97,18 +95,19 @@ get_hate_crimes <- function() {
     hate_crimes %>%
     dplyr::left_join(crosswalk, by = "ori9") %>%
     dplyr::mutate(incident_date = ymd(incident_date),
-                  month         = as.character(lubridate::month(date,
+                  month         = as.character(lubridate::month(incident_date,
                                                                 label = TRUE,
                                                                 abbr = FALSE)),
-                  month_num     = lubridate::month(date),
-                  day_of_week   = as.character(lubridate::wday(date,
+                  month_num     = lubridate::month(incident_date),
+                  day_of_week   = as.character(lubridate::wday(incident_date,
                                                                label = TRUE,
                                                                abbr = FALSE)),
                   ori           = toupper(ori),
                   ori9          = toupper(ori9),
                   unique_id     = paste(year,
                                         ori9,
-                                        incident_number, sep = "_"),) %>%
+                                        incident_number, sep = "_"),
+                  state_abb     = make_state_abb(state)) %>%
     dplyr::arrange(desc(year),
                    ori) %>%
     dplyr::select(ori,
@@ -116,7 +115,7 @@ get_hate_crimes <- function() {
                   hate_crime_incident_present_flag,
                   state,
                   state_abb,
-                  date,
+                  incident_date,
                   month,
                   month_num,
                   day_of_week,
@@ -124,8 +123,8 @@ get_hate_crimes <- function() {
                   population,
                   agency_name,
                   city_name,
-                  crosswalk_cols,
                   misc_cols,
+                  crosswalk_cols,
                   matches("^msa"),
                   matches("^fips_county_code_[0-9]"),
                   incident_number,
@@ -137,15 +136,7 @@ get_hate_crimes <- function() {
                   matches("^ucr_offense"),
                   matches("^bias_motivation"),
                   matches("^location"),
-                  matches("^vic_type_individual"),
-                  matches("^vic_type_business"),
-                  matches("^vic_type_government"),
-                  matches("^vic_type_society"),
-                  matches("^vic_type_unknown"),
-                  matches("^vic_type_financial"),
-                  matches("^vic_type_religious"),
-                  matches("^vic_type_other"),
-                  matches("^vic_type_unknown"))
+                  matches("^vic_type"))
 
   return(hate_crimes)
 }
@@ -161,14 +152,6 @@ spread_type_of_victim <- function(data) {
                         "financial",
                         "religious",
                         "other")
-  victim_type_names <- c("individual victim",
-                         "business victim",
-                         "government victim",
-                         "society/public victim",
-                         "unknown victim",
-                         "financial institution victim",
-                         "religious organization victim",
-                         "other victim")
   for (type_col in victim_type_cols) {
     for (i in 1:10) {
       col_name <- paste0("vic_type_", type_col, "_offense_", i)
@@ -183,10 +166,9 @@ spread_type_of_victim <- function(data) {
       temp <- gsub("O |O$", "Other ", temp)
       temp <- gsub("U |U$", "Unknown ", temp)
 
-      data[, col_name] <- "not victim"
+      data[, col_name] <- 0
 
-      data[, col_name][grepl(type_col, temp,
-                             ignore.case = TRUE)] <- victim_type_names[victim_type_cols == type_col]
+      data[, col_name][grepl(type_col, temp, ignore.case = TRUE)] <- 1
 
     }
   }
@@ -197,3 +179,4 @@ spread_type_of_victim <- function(data) {
 
   return(data)
 }
+

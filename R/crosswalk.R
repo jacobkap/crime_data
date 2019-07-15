@@ -120,8 +120,6 @@ read_merge_crosswalks <- function(pop = FALSE) {
                  "fips_state_county_code",
                  "fips_place_code",
                  "agency_type",
-                 "agency_subtype_1",
-                 "agency_subtype_2",
                  "agency_name",
                  "census_name")
   if (pop) keep_cols <- c(keep_cols, "population")

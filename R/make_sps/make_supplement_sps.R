@@ -3,8 +3,8 @@ source(here::here('R/make_sps/make_sps_utils.R'))
 starting_names <- c("identifier_code",
                     "state",
                     "ori",
-                    "group",
-                    "division",
+                    "population_group",
+                    "country_division",
                     "year",
                     "msa",
                     "agency_name",
@@ -128,6 +128,9 @@ month_names <- c("status",
                  "value_recovered_total",
                  "fbi_batch_number")
 
+month_names <- paste0("replace_", month_names)
+month_names <- repeated_label_replace_fixer(month_names, tolower(month.abb))
+
 month_numbers <- c("58-58",
                    "59-65",
                    "66-72",
@@ -235,37 +238,24 @@ month_numbers <- c("58-58",
                    "799-807",
                    "808-810")
 
-final_month_names <- c(paste0("jan_", month_names))
-final_month_numbers <- c(month_numbers)
-adder <- 753
-for (i in 2:12) {
-  month <- tolower(month.abb)[i]
-  temp_names <- paste0(month, "_", month_names)
+month_numbers <- c(month_numbers,
+                   setup_num_adder(month_numbers, adder = 753, iterations = 11))
 
-  numbers_start <- stringr::str_split_fixed(month_numbers, "-", 2)[, 1]
-  numbers_start <- as.numeric(numbers_start)
-  numbers_start <- numbers_start + adder
+supplement_value_labels <- c("replace_status = ",
+                             "0 = Not Reported",
+                             "1 = Regular")
 
-  numbers_end   <- stringr::str_split_fixed(month_numbers, "-", 2)[, 2]
-  numbers_end   <- as.numeric(numbers_end)
-  numbers_end   <- numbers_end + adder
-  temp_numbers  <- paste0(numbers_start, "-", numbers_end)
-
-  final_month_names   <- c(final_month_names, temp_names)
-  final_month_numbers <- c(final_month_numbers, temp_numbers)
-  adder <- adder + 753
-}
-
+supplement_value_labels <- repeated_label_replace_fixer(supplement_value_labels,
+                                                        tolower(month.abb))
+supplement_value_labels <- c(state_group_division_value_labels,
+                             supplement_value_labels)
 
 column_positions <- c(starting_numbers,
-                      final_month_numbers)
+                      month_numbers)
 column_names <- c(starting_names,
-                  final_month_names)
-setwd(here::here("raw_data/supplement_to_offenses_known_from_fbi"))
-asciiSetupReader::make_sps_setup(file_name = "supplement_to_return_a",
-                                 col_positions = column_positions,
-                                 col_labels    = column_names)
+                  month_names)
 setwd(here::here("setup_files"))
-asciiSetupReader::make_sps_setup(file_name = "supplement_to_return_a",
+asciiSetupReader::make_sps_setup(file_name     = "supplement_to_return_a",
                                  col_positions = column_positions,
-                                 col_labels    = column_names)
+                                 col_labels    = column_names,
+                                 value_labels  = supplement_value_labels)

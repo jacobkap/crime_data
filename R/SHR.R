@@ -15,7 +15,7 @@ save_as_zip("shr_1976_2017_")
 
 agg_shr <- function() {
   shr <- data.table()
-  setwd(here::here("raw_data/SHR_from_fbi"))
+  setwd(here::here("raw_data/nacjd_data/SHR"))
   source(here::here('R/utils/SHR_utils.R'))
   for (year in 1976:2017) {
     data <- read_ascii_setup(data = paste0("ucr_shr_", year, ".txt"),
@@ -32,7 +32,7 @@ agg_shr <- function() {
     ORIs <- read_ascii_setup(data = paste0("ucr_shr_", year, ".txt"),
                              setup_file     = paste0("ucr_shr_", year, ".sps"),
                              select_columns = ori_col,
-                             use_vale_labels = FALSE)
+                             use_value_labels = FALSE)
     names(ORIs) <- "ORI"
 
     data <- bind_cols(ORIs, data)

@@ -41,32 +41,14 @@ victim_nums <- c("76-77",
                  "78",
                  "79",
                  "80")
-victim_names <- c("victim_num_age",
-                  "victim_num_sex",
-                  "victim_num_race",
-                  "victim_num_ethnic_origin")
-victim_1_names  <- gsub("num", "1", victim_names)
-victim_2_names  <- gsub("num", "2", victim_names)
-victim_3_names  <- gsub("num", "3", victim_names)
-victim_4_names  <- gsub("num", "4", victim_names)
-victim_5_names  <- gsub("num", "5", victim_names)
-victim_6_names  <- gsub("num", "6", victim_names)
-victim_7_names  <- gsub("num", "7", victim_names)
-victim_8_names  <- gsub("num", "8", victim_names)
-victim_9_names  <- gsub("num", "9", victim_names)
-victim_10_names <- gsub("num", "10", victim_names)
-victim_11_names <- gsub("num", "11", victim_names)
+victim_names <- c("victim_replace_age",
+                  "victim_replace_sex",
+                  "victim_replace_race",
+                  "victim_replace_ethnic_origin")
+victim_1_names  <- gsub("replace", "1", victim_names)
 
-victims_2_11_names <- c(victim_2_names,
-                        victim_3_names,
-                        victim_4_names,
-                        victim_5_names,
-                        victim_6_names,
-                        victim_7_names,
-                        victim_8_names,
-                        victim_9_names,
-                        victim_10_names,
-                        victim_11_names)
+victims_2_11_names <- repeated_label_replace_fixer(victim_names, 2:11)
+
 
 offender_nums <- c("81-82",
                    "83",
@@ -76,36 +58,17 @@ offender_nums <- c("81-82",
                    "88-89",
                    "90-91",
                    "92")
-offender_names <- c("offender_num_age",
-                    "offender_num_sex",
-                    "offender_num_race",
-                    "offender_num_ethnic_origin",
-                    "offender_num_weapon",
-                    "offender_num_relation_to_vic_1",
-                    "offender_num_circumstance",
-                    "offender_num_subcircumstance")
-offender_1_names  <- gsub("num", "1", offender_names)
-offender_2_names  <- gsub("num", "2", offender_names)
-offender_3_names  <- gsub("num", "3", offender_names)
-offender_4_names  <- gsub("num", "4", offender_names)
-offender_5_names  <- gsub("num", "5", offender_names)
-offender_6_names  <- gsub("num", "6", offender_names)
-offender_7_names  <- gsub("num", "7", offender_names)
-offender_8_names  <- gsub("num", "8", offender_names)
-offender_9_names  <- gsub("num", "9", offender_names)
-offender_10_names <- gsub("num", "10", offender_names)
-offender_11_names <- gsub("num", "11", offender_names)
+offender_names <- c("offender_replace_age",
+                    "offender_replace_sex",
+                    "offender_replace_race",
+                    "offender_replace_ethnic_origin",
+                    "offender_replace_weapon",
+                    "offender_replace_relation_to_vic_1",
+                    "offender_replace_circumstance",
+                    "offender_replace_subcircumstance")
+offender_1_names  <- gsub("replace", "1", offender_names)
 
-offenders_2_11_names <- c(offender_2_names,
-                          offender_3_names,
-                          offender_4_names,
-                          offender_5_names,
-                          offender_6_names,
-                          offender_7_names,
-                          offender_8_names,
-                          offender_9_names,
-                          offender_10_names,
-                          offender_11_names)
+offenders_2_11_names <- repeated_label_replace_fixer(offender_names, 2:11)
 
 count_nums <- c("93-95",
                 "96-98")
@@ -159,38 +122,30 @@ victim_value_labels <- c("victim_num_age = ",
                          "H = hispanic",
                          "N = not hispanic",
                          "U = unknown")
-victim_1_value_labels  <- gsub("num", "1", victim_value_labels)
-victim_2_value_labels  <- gsub("num", "2", victim_value_labels)
-victim_3_value_labels  <- gsub("num", "3", victim_value_labels)
-victim_4_value_labels  <- gsub("num", "4", victim_value_labels)
-victim_5_value_labels  <- gsub("num", "5", victim_value_labels)
-victim_6_value_labels  <- gsub("num", "6", victim_value_labels)
-victim_7_value_labels  <- gsub("num", "7", victim_value_labels)
-victim_8_value_labels  <- gsub("num", "8", victim_value_labels)
-victim_9_value_labels  <- gsub("num", "9", victim_value_labels)
-victim_10_value_labels <- gsub("num", "10", victim_value_labels)
-victim_11_value_labels <- gsub("num", "11", victim_value_labels)
 
-offender_value_labels <- c("offender_num_age = ",
+victim_value_labels <- repeated_label_replace_fixer(victim_value_labels, 1:11)
+
+
+offender_value_labels <- c("offender_replace_age = ",
                            "00 = unknown",
                            "99 = 99 years or older",
-                           "offender_num_sex = ",
+                           "offender_replace_sex = ",
                            "M = male",
                            "F = female",
                            "U = unknown",
-                           "offender_num_race = ",
+                           "offender_replace_race = ",
                            "W = white",
                            "B = black",
                            "I = american indian or alaskan native",
                            "A = asian",
                            "U = unknown",
-                           "offender_num_ethnic_origin = ",
+                           "offender_replace_ethnic_origin = ",
                            "H = hispanic",
                            "N = not hispanic",
                            "U = unknown",
 
                            # Weapons
-                           "offender_1_weapon = ",
+                           "offender_replace_weapon = ",
                            "11 = firearm, type not states",
                            "12 = handgun",
                            "13 = rifle",
@@ -210,7 +165,7 @@ offender_value_labels <- c("offender_num_age = ",
                            "90 = other or unknown weapon",
 
                            # Relationship
-                           "offender_num_relation_to_vic_1 = ",
+                           "offender_replace_relation_to_vic_1 = ",
                            # Within family
                            "HU = husband",
                            "WI = wife",
@@ -247,7 +202,7 @@ offender_value_labels <- c("offender_num_age = ",
 
                            # Circumstanes
                            # Felony type
-                           "offender_num_circumstances = ",
+                           "offender_replace_circumstances = ",
                            "02 = rape",
                            "03 = robbery",
                            "05 = burglary",
@@ -287,7 +242,7 @@ offender_value_labels <- c("offender_num_age = ",
                            "59 = all other manslaughter by negligence except traffic deaths",
 
                            # Subcircumstance
-                           "offender_num_subcircumstance = ",
+                           "offender_replace_subcircumstance = ",
                            "A = felon attacked police officer",
                            "B = felon attacked fellow police officer",
                            "C = felon attacked a civilian",
@@ -295,17 +250,9 @@ offender_value_labels <- c("offender_num_age = ",
                            "E = felon killed in commission of a crime",
                            "F = felon resisted arrest",
                            "G = not enough information to determine")
-offender_1_value_labels  <- gsub("num", "1", offender_value_labels)
-offender_2_value_labels  <- gsub("num", "2", offender_value_labels)
-offender_3_value_labels  <- gsub("num", "3", offender_value_labels)
-offender_4_value_labels  <- gsub("num", "4", offender_value_labels)
-offender_5_value_labels  <- gsub("num", "5", offender_value_labels)
-offender_6_value_labels  <- gsub("num", "6", offender_value_labels)
-offender_7_value_labels  <- gsub("num", "7", offender_value_labels)
-offender_8_value_labels  <- gsub("num", "8", offender_value_labels)
-offender_9_value_labels  <- gsub("num", "9", offender_value_labels)
-offender_10_value_labels <- gsub("num", "10", offender_value_labels)
-offender_11_value_labels <- gsub("num", "11", offender_value_labels)
+
+offender_value_labels <- repeated_label_replace_fixer(offender_value_labels, 1:11)
+
 
 
 col_positions <- c(starting_nums,
@@ -324,34 +271,9 @@ col_labels <- c(starting_names,
 
 value_labels <- c(state_group_division_value_labels,
                   value_labels,
-                  victim_1_value_labels,
-                  victim_2_value_labels,
-                  victim_3_value_labels,
-                  victim_4_value_labels,
-                  victim_5_value_labels,
-                  victim_6_value_labels,
-                  victim_7_value_labels,
-                  victim_8_value_labels,
-                  victim_9_value_labels,
-                  victim_10_value_labels,
-                  victim_11_value_labels,
-                  offender_1_value_labels,
-                  offender_2_value_labels,
-                  offender_3_value_labels,
-                  offender_4_value_labels,
-                  offender_5_value_labels,
-                  offender_6_value_labels,
-                  offender_7_value_labels,
-                  offender_8_value_labels,
-                  offender_9_value_labels,
-                  offender_10_value_labels,
-                  offender_11_value_labels)
+                  victim_value_labels,
+                  offender_value_labels)
 
-setwd(here::here("raw_data/shr_from_fbi"))
-asciiSetupReader::make_sps_setup(file_name     = "ucr_shr",
-                                 col_positions = col_positions,
-                                 col_labels    = col_labels,
-                                 value_labels  = state_group_division_value_labels)
 setwd(here::here("setup_files"))
 asciiSetupReader::make_sps_setup(file_name     = "ucr_shr",
                                  col_positions = col_positions,

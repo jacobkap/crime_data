@@ -1,6 +1,6 @@
 ucr_hate_crimes_incident_report
 
-This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-13 14:13:34. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-14 21:44:47. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -69,12 +69,12 @@ V60      214-221
 variable labels
 V1       "hate_crime_record_type"
 V2       "state"
-V3       "ori"
+V3       "ori9"
 V4       "incident_number"
 V5       "incident_date"
 V6       "data_source"
 V7       "quarter_of_the_year"
-V8       "total_number_of_individual_victims"
+V8       "total_num_of_individual_victims"
 V9       "total_offenders"
 V10      "offenders_race_as_a_group"
 V11      "ucr_offense_code_1"
@@ -204,6 +204,7 @@ V10
 'A'        "Asian or Pacific Islander"
 'M'        "Multi-racial Group"
 'U'        "Unknown"
+'P'        "Unknown"
 V11        
 '200'      "Arson"
 '13A'      "Aggravated Assault"
@@ -396,7 +397,7 @@ V16
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
-V18        
+V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
 '03'       "Bar/Nightclub"
@@ -538,7 +539,7 @@ V21
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
-V23        
+V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
 '03'       "Bar/Nightclub"
@@ -680,7 +681,7 @@ V26
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
-V28        
+V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
 '03'       "Bar/Nightclub"
@@ -822,7 +823,7 @@ V31
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
-V33        
+V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
 '03'       "Bar/Nightclub"
@@ -964,7 +965,7 @@ V36
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
-V38        
+V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
 '03'       "Bar/Nightclub"
@@ -1106,7 +1107,7 @@ V41
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
-V43        
+V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
 '03'       "Bar/Nightclub"
@@ -1248,7 +1249,7 @@ V46
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
-V48        
+V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
 '03'       "Bar/Nightclub"
@@ -1390,7 +1391,7 @@ V51
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
-V53        
+V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
 '03'       "Bar/Nightclub"
@@ -1532,7 +1533,7 @@ V56
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
-V58        
+V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
 '03'       "Bar/Nightclub"

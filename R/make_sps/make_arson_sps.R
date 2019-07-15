@@ -101,31 +101,11 @@ single_month_names <- c(monthly_indicator_names,
                         paste0("cleared_18_", location_types),
                         paste0("uninhabited_", abandoned_types),
                         paste0("est_damage_", location_types))
-jan_month_names <- paste0("jan_", single_month_names)
-feb_month_names <- paste0("feb_", single_month_names)
-mar_month_names <- paste0("mar_", single_month_names)
-apr_month_names <- paste0("apr_", single_month_names)
-may_month_names <- paste0("may_", single_month_names)
-jun_month_names <- paste0("jun_", single_month_names)
-jul_month_names <- paste0("jul_", single_month_names)
-aug_month_names <- paste0("aug_", single_month_names)
-sep_month_names <- paste0("sep_", single_month_names)
-oct_month_names <- paste0("oct_", single_month_names)
-nov_month_names <- paste0("nov_", single_month_names)
-dec_month_names <- paste0("dec_", single_month_names)
 
-all_month_names <- c(jan_month_names,
-                     feb_month_names,
-                     mar_month_names,
-                     apr_month_names,
-                     may_month_names,
-                     jun_month_names,
-                     jul_month_names,
-                     aug_month_names,
-                     sep_month_names,
-                     oct_month_names,
-                     nov_month_names,
-                     dec_month_names)
+
+monthly_names <- paste0("replace_", single_month_names)
+all_month_names <- repeated_label_replace_fixer(monthly_names, tolower(month.abb))
+
 
 monthly_value_nums <- c("104-108",
                         "109-113",
@@ -186,12 +166,6 @@ col_positions <- c(starting_nums,
 col_labels <- c(starting_names,
                 all_month_names)
 
-
-setwd(here::here("raw_data/arson_from_fbi"))
-asciiSetupReader::make_sps_setup(file_name     = "ucr_arson",
-                                 col_positions = col_positions,
-                                 col_labels    = col_labels,
-                                 value_labels  = state_group_division_value_labels)
 setwd(here::here("setup_files"))
 asciiSetupReader::make_sps_setup(file_name     = "ucr_arson",
                                  col_positions = col_positions,

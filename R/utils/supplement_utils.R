@@ -1,55 +1,28 @@
-supplement_month_wide_to_long <- function(data) {
-  crime_cols <- grep("offenses|value|auto|status|fbi", names(data), value = TRUE)
-  crime_only_data <- data[, crime_cols]
-  data <- data %>% dplyr::select(-one_of(crime_cols))
-
-  final <- data.frame()
-  for (month in tolower(month.abb)) {
-    temp        <- crime_only_data[, grep(paste0("^", month, "_"), crime_cols)]
-    names(temp) <- gsub("^....", "", names(temp))
-    temp        <- dplyr::bind_cols(data, temp)
-    temp$month  <- tolower(month.name)[tolower(month.abb) == month]
-    temp$date   <- lubridate::ymd(paste(temp$year, temp$month, "1"))
-    temp$date   <- as.character(temp$date)
-
-    final       <- dplyr::bind_rows(final, temp)
-  }
-  return(final)
-}
-
 supplement_remove_missing <- function(column) {
-  column[column %in% c(1000, 2000, 3000, 4000, 5000,
-                       6000, 7000, 8000, 9000, 10000,
-                       20000, 30000, 40000, 50000, 60000,
-                       70000, 80000, 90000, 100000,
+  column[column %in% c(1000,
+                       2000,
+                       3000,
+                       4000,
+                       5000,
+                       6000,
+                       7000,
+                       8000,
+                       9000,
+                       10000,
+                       20000,
+                       30000,
+                       40000,
+                       50000,
+                       60000,
+                       70000,
+                       80000,
+                       90000,
+                       100000,
                        99942)] <- NA
   return(column)
 }
 
-supplement_negatives <- c("000000+\\}"                = "0",
-                          "000000+j"                  = "-1",
-                          "000000+k"                  = "-2",
-                          "000000+l"                  = "-3",
-                          "000000+m"                  = "-4",
-                          "000000+n"                  = "-5",
-                          "000000+o"                  = "-6",
-                          "000000+p"                  = "-7",
-                          "000000+q"                  = "-8",
-                          "000000+r"                  = "-9",
-                          "000000+1\\}"               = "-10",
-                          "000000+1j"                 = "-11",
-                          "000000+1k"                 = "-12",
-                          "000000+1l"                 = "-13",
-                          "000000+1m"                 = "-14",
-                          "000000+1n"                 = "-15",
-                          "zero or not reported"      = "0")
 
-
-fix_negatives_supplement <- function(column) {
-  column <- str_replace_all(column, supplement_negatives)
-  column <- parse_number(column)
-  return(column)
-}
 agency_desc_cols <- c(
   "ori9",
   "number_of_months_reported",
@@ -59,19 +32,16 @@ agency_desc_cols <- c(
   "agency_name",
   "year",
   "population",
-  "group",
-  "division",
+  "population_group",
+  "country_division",
   "msa",
-  "status",
+  "report_indicator",
   "fbi_batch_number",
   "fips_state_code",
   "fips_county_code",
   "fips_state_county_code",
   "fips_place_code",
-  "fips_state_place_code",
-  "agency_type",
-  "agency_subtype_1",
-  "agency_subtype_2"
+  "agency_type"
 )
 
 offense_col_order <- c(

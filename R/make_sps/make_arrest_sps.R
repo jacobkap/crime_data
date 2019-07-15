@@ -500,35 +500,6 @@ detail_header_names_1974 <- c(detail_header_names_1974, arrest_names_1974)
 
 
 
-
-
-setwd(here::here("raw_data/asr_from_fbi"))
-asciiSetupReader::make_sps_setup(file_name     = "arrests_agency_header_1980_present",
-                                 col_positions = agency_header_cols_1980,
-                                 col_labels    = agency_header_names_1980,
-                                 value_labels  = agency_header_values)
-asciiSetupReader::make_sps_setup(file_name     = "arrests_monthly_header_1980_present",
-                                 col_positions = monthly_header_cols_1980,
-                                 col_labels    = monthly_header_names_1980,
-                                 value_labels  = monthly_header_values)
-asciiSetupReader::make_sps_setup(file_name     = "arrests_detail_header_1980_present",
-                                 col_positions = detail_header_cols_1980,
-                                 col_labels    = detail_header_names_1980,
-                                 value_labels  = detail_header_value_labels_1980)
-
-asciiSetupReader::make_sps_setup(file_name     = "arrests_agency_header_1974_1979",
-                                 col_positions = agency_header_cols_1974,
-                                 col_labels    = agency_header_names_1974,
-                                 value_labels  = agency_header_values)
-asciiSetupReader::make_sps_setup(file_name     = "arrests_monthly_header_1974_1979",
-                                 col_positions = monthly_header_cols_1974,
-                                 col_labels    = monthly_header_names_1974,
-                                 value_labels  = monthly_header_values)
-asciiSetupReader::make_sps_setup(file_name     = "arrests_detail_header_1974_1979",
-                                 col_positions = detail_header_cols_1974,
-                                 col_labels    = detail_header_names_1974,
-                                 value_labels  = detail_header_value_labels_1974)
-
 setwd(here::here("setup_files"))
 asciiSetupReader::make_sps_setup(file_name     = "arrests_agency_header_1980_present",
                                  col_positions = agency_header_cols_1980,

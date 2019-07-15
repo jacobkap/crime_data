@@ -4,13 +4,13 @@ source(here::here('R/utils/global_utils.R'))
 crosswalk <- read_merge_crosswalks()
 source(here::here('R/utils/leoka_utils.R'))
 
-# get_all_leoka_monthly()
-# leoka_yearly <- get_all_leoka_yearly()
-# global_tests(leoka_yearly)
-#
-# setwd("clean_data/LEOKA")
-# save_as_zip("ucr_leoka_monthly_1960_2017_", pattern = "month")
-# save_as_zip("ucr_leoka_yearly_1960_2017_", pattern = "year")
+get_all_leoka_monthly()
+leoka_yearly <- get_all_leoka_yearly()
+global_checks(leoka_yearly)
+
+setwd(here::here("clean_data/LEOKA"))
+save_as_zip("ucr_leoka_monthly_1960_2017_", pattern = "month")
+save_as_zip("ucr_leoka_yearly_1960_2017_",  pattern = "year")
 
 get_all_leoka_monthly <- function() {
   setwd(here::here("raw_data/leoka_from_fbi"))
@@ -36,15 +36,15 @@ get_all_leoka_monthly <- function() {
       dplyr::mutate_if(is.character, tolower) %>%
       dplyr::mutate(year = fix_years(year),
                     ori  = toupper(ori),
-                    total_employees_officers  =  rowSums(.[, grepl("male_employees_officers",
-                                                        names(.))]),
-                    total_employees_civilians =  rowSums(.[, grepl("male_employees_civilians",
-                                                         names(.))]),
-                    covered_by      = as.character(covered_by),
-                    shift_data      = as.character(shift_data),
+                    total_employees_officers  = rowSums(.[, grepl("male_employees_officers",
+                                                                  names(.))]),
+                    total_employees_civilians = rowSums(.[, grepl("male_employees_civilians",
+                                                                  names(.))]),
+                    covered_by               = as.character(covered_by),
+                    shift_data               = as.character(shift_data),
                     no_male_female_breakdown = as.character(no_male_female_breakdown),
                     state_abb = make_state_abb(state)) %>%
-      dplyr::rename(total_employees_total = total_employees)
+      dplyr::rename(total_employees_total    = total_employees)
 
     data <- fix_all_negatives(data)
 
@@ -95,7 +95,7 @@ get_all_leoka_yearly <- function() {
                    desc(year))
 
   # Save the data in various formats
-  setwd("clean_data/LEOKA")
+  setwd(here::here("clean_data/LEOKA"))
   save_files(data = leoka_yearly,
              year = "1960_2017",
              file_name = "leoka_yearly_",

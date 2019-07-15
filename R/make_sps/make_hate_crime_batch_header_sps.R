@@ -167,11 +167,6 @@ col_labels <- c("hate_crime_record_type",
                 "fips_county_code_4",
                 "fips_county_code_5")
 
-setwd(here::here("raw_data/hate_crime_from_fbi"))
-make_sps_setup(file_name     = "ucr_hate_crimes_batch_header.sps",
-               col_positions = col_positions,
-               col_labels    = col_labels,
-               value_labels  = batch_header_values_labels)
 setwd(here::here("setup_files"))
 make_sps_setup(file_name     = "ucr_hate_crimes_batch_header.sps",
                col_positions = col_positions,

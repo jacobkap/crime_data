@@ -1,6 +1,6 @@
 ucr_leoka
 
-This setup file was created using the R package asciiSetupReader(version 1.5.0) on 2018-12-11 22:40:12.
+This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-14 13:25:57. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -4656,6 +4656,11 @@ V71
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V53        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V253       
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4664,6 +4669,11 @@ V254
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V54        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V436       
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4672,6 +4682,11 @@ V437
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V55        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V619       
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4680,6 +4695,11 @@ V620
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V56        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V802       
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4688,6 +4708,11 @@ V803
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V57        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V985       
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4696,6 +4721,11 @@ V986
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V58        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V1168      
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4704,6 +4734,11 @@ V1169
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V59        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V1351      
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4712,6 +4747,11 @@ V1352
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V60        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V1534      
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4720,6 +4760,11 @@ V1535
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V61        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V1717      
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4728,6 +4773,11 @@ V1718
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V62        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V1900      
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4736,6 +4786,11 @@ V1901
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
+V63        
+'0'        "normal update"
+'1'        "not reported"
+'2'        "reported, no data"
+'3'        "deleted"
 V2083      
 '0'        "information complete"
 '1'        "assaults not reported"
@@ -4744,61 +4799,6 @@ V2084
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V53        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
-V54        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
-V55        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
-V56        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
-V57        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
-V58        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
-V59        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
-V60        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
-V61        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
-V62        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
-V63        
-'0'        "normal update"
-'1'        "not reported"
-'2'        "reported, no data"
-'3'        "deleted"
 V64        
 '0'        "normal update"
 '1'        "not reported"

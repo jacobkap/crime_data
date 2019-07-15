@@ -17,9 +17,10 @@ incident_values = c("data_source = ",
                     "I = American Indian or Native Alaskan",
                     "A = Asian or Pacific Islander",
                     "M = Multi-racial Group",
-                    "U = Unknown")
+                    "U = Unknown",
+                    "P = Unknown")
 
-offense_code_values_1 = c("ucr_offense_code_1 = ",
+offense_code_values = c("ucr_offense_code_replace = ",
                           "200 = Arson",
                           # Assault
                           "13A = Aggravated Assault",
@@ -132,7 +133,7 @@ offense_code_values_1 = c("ucr_offense_code_1 = ",
                           "58 = Undocumented code",
                           #
                           # Bias motivation
-                          "bias_motivation_offense_1 = ",
+                          "bias_motivation_offense_replace = ",
                           # Race
                           "11 = Anti-White",
                           "12 = Anti-Black",
@@ -175,7 +176,7 @@ offense_code_values_1 = c("ucr_offense_code_1 = ",
                           "85 = Anti-Sikh",
 
                           # Type of victim
-                          "type_of_victims_offense_1 = ",
+                          "type_of_victims_offense_replace = ",
                           "I = Individual",
                           "B = Business",
                           "F = Financial Institution",
@@ -185,28 +186,12 @@ offense_code_values_1 = c("ucr_offense_code_1 = ",
                           "O = Other",
                           "U = Unknown")
 
-offense_code_values_2  <- gsub("_1", "_2", offense_code_values_1)
-offense_code_values_3  <- gsub("_1", "_3", offense_code_values_1)
-offense_code_values_4  <- gsub("_1", "_4", offense_code_values_1)
-offense_code_values_5  <- gsub("_1", "_5", offense_code_values_1)
-offense_code_values_6  <- gsub("_1", "_6", offense_code_values_1)
-offense_code_values_7  <- gsub("_1", "_7", offense_code_values_1)
-offense_code_values_8  <- gsub("_1", "_8", offense_code_values_1)
-offense_code_values_9  <- gsub("_1", "_9", offense_code_values_1)
-offense_code_values_10 <- gsub("_1", "_10", offense_code_values_1)
+offense_code_values <- repeated_label_replace_fixer(offense_code_values, 1:10)
+
 
 incident_values_labels <- c(state_group_division_value_labels[1:57],
                             incident_values,
-                            offense_code_values_1,
-                            offense_code_values_2,
-                            offense_code_values_3,
-                            offense_code_values_4,
-                            offense_code_values_5,
-                            offense_code_values_6,
-                            offense_code_values_7,
-                            offense_code_values_8,
-                            offense_code_values_9,
-                            offense_code_values_10)
+                            offense_code_values)
 
 col_positions <- c("1-2",
                    "3-4",
@@ -239,28 +224,24 @@ col_labels <- c("hate_crime_record_type",
                 "incident_date",
                 "data_source",
                 "quarter_of_the_year",
-                "total_number_of_individual_victims",
+                "total_num_of_individual_victims",
                 "total_offenders",
                 "offenders_race_as_a_group")
 
-offense_and_bias_col_labels <- c("ucr_offense_code_num",
-                                 "number_of_victims_offense_num",
-                                 "location_code_offense_num",
-                                 "bias_motivation_offense_num",
-                                 "type_of_victims_offense_num")
+offense_and_bias_col_labels <- c("ucr_offense_code_replace",
+                                 "number_of_victims_offense_replace",
+                                 "location_code_offense_replace",
+                                 "bias_motivation_offense_replace",
+                                 "type_of_victims_offense_replace")
 
-offense_and_bias_col_labels <- repeated_label_number_fixer(offense_and_bias_col_labels,
+offense_and_bias_col_labels <- repeated_label_replace_fixer(offense_and_bias_col_labels,
                                                            1:10)
 
 
 col_labels <- c(col_labels,
                 offense_and_bias_col_labels)
 
-setwd(here::here("raw_data/hate_crime_from_fbi"))
-make_sps_setup(file_name     = "ucr_hate_crimes_incident_report.sps",
-               col_positions = col_positions,
-               col_labels    = col_labels,
-               value_labels  = incident_values_labels)
+
 setwd(here::here("setup_files"))
 make_sps_setup(file_name     = "ucr_hate_crimes_incident_report.sps",
                col_positions = col_positions,

@@ -4,7 +4,7 @@ source(here::here('R/make_sps/make_offenses_known_sps.R'))
 source(here::here('R/utils/offenses_known_utils.R'))
 crosswalk <- read_merge_crosswalks()
 
-# get_all_return_a_monthly(crosswalk)
+get_all_return_a_monthly(crosswalk)
 offenses_known_yearly <- get_data_yearly("offenses_known",
                                          "1960_2017",
                                          "offenses_known_yearly_",
