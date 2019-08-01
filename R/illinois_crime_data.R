@@ -57,7 +57,7 @@ excel_links <- c("https://www.isp.state.il.us/docs/cii/cii17/ds/CrimeData_17_16.
                  "https://www.isp.state.il.us/docs/cii/cii12/ds/Internet_HateCrime_12_11.xlsx",
                  "https://www.isp.state.il.us/docs/cii/cii11/ds/Internet_Supplemental_11_10.xls",
                  "https://www.isp.state.il.us/docs/cii/cii11/ds/Internet_HateCrime_11_10.xls",
-                 "https://www.isp.state.il.us/docs/cii/cii09/db/Internet_Supplemental0908.DBF",
+                 "https://www.isp.state.il.us/docs/cii/cii09/db/Internet_Supplemental0908.dbf",
                  "https://www.isp.state.il.us/docs/cii/cii08/db/Offense_Arrest_data_layout0807.pdf",
                  "https://www.isp.state.il.us/docs/cii/cii08/db/Internet_Supplemental0807.DBF",
                  "https://www.isp.state.il.us/docs/cii/cii08/db/Supplemental_data_layout0807.pdf",
@@ -116,11 +116,12 @@ excel_links <- c("https://www.isp.state.il.us/docs/cii/cii17/ds/CrimeData_17_16.
                  "https://www.isp.state.il.us/docs/cii/cii00/db/cii00supp.dbf",
                  "https://www.isp.state.il.us/docs/cii/cii00/db/supp00lo.pdf",
                  "https://www.isp.state.il.us/docs/cii/cii99/db/cii99lo.pdf",
-                 "https://www.isp.state.il.us/docs/cii/cii99/db/CII99SUPP2.dbf")
+                 "https://www.isp.state.il.us/docs/cii/cii99/db/CII99SUPP2.dbf",
+                 "https://www.isp.state.il.us/docs/cii/cii99/db/sup99low.pdf")
 
 for (file in excel_links) {
 
-  file_name <- gsub(".*/ds/", "", file)
+  file_name <- gsub(".*/(ds|db)/", "", file)
 
   download.file(url = file,
                 destfile = file_name,
