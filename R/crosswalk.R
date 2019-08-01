@@ -40,21 +40,21 @@ agency_type2005 <- c("^1$"  = 'Sheriffs office',              # Sheriff
 # or 2005
 read_merge_crosswalks <- function(pop = FALSE) {
   setwd(here::here("clean_data/crosswalk"))
-  crosswalk1996      <- spss_ascii_reader("crosswalk1996.txt",
-                                          "crosswalk1996.sps",
-                                          value_label_fix = FALSE)
-  crosswalk2005      <- spss_ascii_reader("crosswalk2005.txt",
-                                          "crosswalk2005.sps",
-                                          value_label_fix = FALSE)
-  crosswalk2012      <- spss_ascii_reader("crosswalk2012.txt",
-                                          "crosswalk2012.sps",
-                                          value_label_fix = FALSE)
-  crosswalk2012_temp <- spss_ascii_reader("crosswalk2012.txt",
-                                          "crosswalk2012.sps",
-                                          keep_columns = c("ORI7",
-                                                           "AGCYTYPE",
-                                                           "SUBTYPE1",
-                                                           "SUBTYPE2"))
+  crosswalk1996      <- asciiSetupReader::read_ascii_setup("crosswalk1996.txt",
+                                                           "crosswalk1996.sps",
+                                                           use_value_labels = FALSE)
+  crosswalk2005      <- asciiSetupReader::read_ascii_setup("crosswalk2005.txt",
+                                                           "crosswalk2005.sps",
+                                                           use_value_labels = FALSE)
+  crosswalk2012      <- asciiSetupReader::read_ascii_setup("crosswalk2012.txt",
+                                                           "crosswalk2012.sps",
+                                                           use_value_labels = FALSE)
+  crosswalk2012_temp <- asciiSetupReader::read_ascii_setup("crosswalk2012.txt",
+                                                           "crosswalk2012.sps",
+                                                           select_columns = c("ORI7",
+                                                                            "AGCYTYPE",
+                                                                            "SUBTYPE1",
+                                                                            "SUBTYPE2"))
   crosswalk2012$LATITUDE <- NULL
 
   names(crosswalk1996)      <- stringr::str_replace_all(names(crosswalk1996),

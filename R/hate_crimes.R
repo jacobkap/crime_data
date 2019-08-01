@@ -23,7 +23,6 @@ sapply(hate_crimes[, grep("vic_type_", names(hate_crimes))], table)
 sapply(hate_crimes[, grep("quarter_activity", names(hate_crimes))], table)
 summary(hate_crimes)
 
-table(hate_crimes$hate_crime_incident_present_flag)
 table(hate_crimes$hate_crime_incident_present_flag, hate_crimes$year)
 #
 setwd(here::here("clean_data/hate_crimes"))
@@ -33,7 +32,7 @@ save_files(data = hate_crimes,
            save_name = "ucr_hate_crimes_")
 save_as_zip("ucr_hate_crimes_1991_2017_")
 
-  get_hate_crimes <- function() {
+get_hate_crimes <- function() {
 
   setwd(here::here("raw_data/hate_crime_from_fbi"))
   files <- list.files()
@@ -93,6 +92,7 @@ save_as_zip("ucr_hate_crimes_1991_2017_")
 
   hate_crimes <-
     hate_crimes %>%
+    dplyr::mutate(ori9          = toupper(ori9)) %>%
     dplyr::left_join(crosswalk, by = "ori9") %>%
     dplyr::mutate(incident_date = ymd(incident_date),
                   month         = as.character(lubridate::month(incident_date,
@@ -102,8 +102,6 @@ save_as_zip("ucr_hate_crimes_1991_2017_")
                   day_of_week   = as.character(lubridate::wday(incident_date,
                                                                label = TRUE,
                                                                abbr = FALSE)),
-                  ori           = toupper(ori),
-                  ori9          = toupper(ori9),
                   unique_id     = paste(year,
                                         ori9,
                                         incident_number, sep = "_"),
@@ -138,6 +136,7 @@ save_as_zip("ucr_hate_crimes_1991_2017_")
                   matches("^location"),
                   matches("^vic_type"))
 
+  hate_crimes <- data.frame(hate_crimes)
   return(hate_crimes)
 }
 

@@ -103,22 +103,22 @@ value_labels <- c("suburban_indicator = ",
                   "E = multiple victims/multiple offenders",
                   "F = multiple victims/unknown offender(s)")
 
-victim_value_labels <- c("victim_num_age = ",
+victim_value_labels <- c("victim_replace_age = ",
                          "NB = birth-6 days, including abandoned infant",
                          "BB = 7 days to 364 days",
                          "00 = unknown",
                          "99 = 99 years or older",
-                         "victim_num_sex = ",
+                         "victim_replace_sex = ",
                          "M = male",
                          "F = female",
                          "U = unknown",
-                         "victim_num_race = ",
+                         "victim_replace_race = ",
                          "W = white",
                          "B = black",
                          "I = american indian or alaskan native",
                          "A = asian",
                          "U = unknown",
-                         "victim_num_ethnic_origin = ",
+                         "victim_replace_ethnic_origin = ",
                          "H = hispanic",
                          "N = not hispanic",
                          "U = unknown")
@@ -202,7 +202,7 @@ offender_value_labels <- c("offender_replace_age = ",
 
                            # Circumstanes
                            # Felony type
-                           "offender_replace_circumstances = ",
+                           "offender_replace_circumstance = ",
                            "02 = rape",
                            "03 = robbery",
                            "05 = burglary",
@@ -278,4 +278,4 @@ setwd(here::here("setup_files"))
 asciiSetupReader::make_sps_setup(file_name     = "ucr_shr",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,
-                                 value_labels  = state_group_division_value_labels)
+                                 value_labels  = value_labels)
