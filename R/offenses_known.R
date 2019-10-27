@@ -21,7 +21,7 @@ get_all_return_a_monthly <- function(crosswalk) {
 
   for (file in files) {
     setwd(here::here("raw_data/offenses_known_from_fbi"))
-    data <- read_ascii_setup(file, "ucr_return_a.sps")
+    data <- read_ascii_setup(file, here::here("setup_files/ucr_return_a.sps"))
 
     data <-
       data %>%

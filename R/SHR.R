@@ -1,66 +1,78 @@
 source(here::here('R/crosswalk.R'))
 source(here::here('R/utils/global_utils.R'))
+source(here::here('R/utils/SHR_utils.R'))
 
 crosswalk <- read_merge_crosswalks()
 cross_names <- names(crosswalk)
 cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
-shr_1976_2017 <- agg_shr()
-shr_1976_2017 <- reorder_SHR_columns(shr_1976_2017)
+shr_1976_2018 <- agg_shr(crosswalk, cross_names)
+
+global_checks(shr_1976_2018)
+shr_checks(shr_1976_2018, age = FALSE)
+shr_checks(shr_1976_2018, age = TRUE)
 setwd("clean_data/SHR")
-save_files(data = shr_1976_2017,
-           year = "1976_2017",
+save_files(data = shr_1976_2018,
+           year = "1976_2018",
            file_name = "shr_",
            save_name = "shr_")
-save_as_zip("shr_1976_2017_")
+save_as_zip("shr_1976_2018_")
 
-agg_shr <- function() {
+agg_shr <- function(crosswalk, cross_names) {
+  source(here::here('R/utils/global_utils.R'))
   shr <- data.table()
+
+  setwd(here::here("raw_data/shr_from_fbi"))
+  files <- list.files()
+  for (file in files) {
+    data <- read_ascii_setup(file, here::here("setup_files/ucr_shr.sps"))
+    data <- data[!is.na(data$ori), ]
+    data$state_name <- NULL
+    data$state_abb  <- make_state_abb(data$state)
+    data$year       <- fix_years(data$year)
+    data            <- combine_rename_shr(data, crosswalk)
+    shr             <- rbind(shr, data, fill = TRUE)
+  }
+
+  # Until FBI sends me the ASCII files for all years, will use NACJD data
+  # for years 1976-1985!
   setwd(here::here("raw_data/nacjd_data/SHR"))
-  source(here::here('R/utils/SHR_utils.R'))
-  for (year in 1976:2017) {
-    data <- read_ascii_setup(data = paste0("ucr_shr_", year, ".txt"),
+  for (year in 1976:1984) {
+    data <- read_ascii_setup(data       = paste0("ucr_shr_", year, ".txt"),
                              setup_file = paste0("ucr_shr_", year, ".sps"))
+    names(data) <- gsub("^AGENCY_CODE$", "ORI", names(data))
     names(data) <- str_replace_all(names(data), shr_names)
-    data$ORI <- NULL
-    data$STATE_NAME <- NULL
 
 
-    # Adds ORI codes cause some years choose to value-label them
-    ori_col <- "ORI_CODE"
-    if (year %in% c(1976:1979, 1984:1988)) ori_col <- "AGENCY_CODE"
-
-    ORIs <- read_ascii_setup(data = paste0("ucr_shr_", year, ".txt"),
-                             setup_file     = paste0("ucr_shr_", year, ".sps"),
-                             select_columns = ori_col,
-                             use_value_labels = FALSE)
-    names(ORIs) <- "ORI"
-
-    data <- bind_cols(ORIs, data)
-    data <- data[, !grepl("ICPSR", names(data))]
-
-    data <- clean_shr(data)
-    data <- left_join(data, crosswalk)
-    char_cols <- sapply(data, is.character)
-    data[char_cols] <- sapply(data[char_cols],
-                              function(x) tolower(x))
-    data$ori <- toupper(data$ori)
-    data$ori9 <- toupper(data$ori9)
-    data$state_abb <- toupper(data$state_abb)
-
-    data <- data.table::data.table(data)
-    shr <- rbind(shr, data, fill = TRUE)
-
-
-    message(year); rm(data); rm(ORIs); gc(); Sys.sleep(1)
+    data                 <- clean_shr(data)
+    data$sub_group       <- NULL
+    data$state_name      <- NULL
+    data <- combine_rename_shr(data, crosswalk)
+    shr  <- rbind(shr, data, fill = TRUE)
+    message(year);
   }
   shr <- data.frame(shr)
+  shr <- reorder_shr_columns(shr, cross_names)
   return(shr)
+}
+
+combine_rename_shr <- function(data, crosswalk) {
+  data <-
+    data %>%
+    left_join(crosswalk) %>%
+    mutate_if(is.character, tolower) %>%
+    mutate(ori = toupper(ori),
+           ori9 = toupper(ori9),
+           state_abb = toupper(state_abb))
+  names(data) <- gsub("^geographic_division$", "country_division", names(data))
+  names(data) <- gsub("^group$", "population_group", names(data))
+  names(data) <- gsub("^msa_indication$", "suburban_indicator", names(data))
+  data <- data.table::data.table(data)
+  return(data)
 }
 
 
 
 clean_shr <- function(data) {
-  source(here::here('R/utils/global_utils.R'))
   race_cols            <- names(data[grepl("RACE", names(data))])
   ethnic_cols          <- names(data[grepl("ETHNIC", names(data))])
   weapon_cols          <- names(data[grepl("WEAPON", names(data))])
@@ -76,9 +88,7 @@ clean_shr <- function(data) {
                             "MSA_INDICATION",
                             "AGENCY_NAME")
 
-  data$state_abb <- state.abb[match(toupper(data$STATE),toupper(state.name))]
-  data$YEAR <- str_replace_all(data$YEAR, year_fix)
-  data$YEAR <- as.numeric(data$YEAR)
+  data$YEAR                    <- fix_years(data$YEAR)
   data[, race_cols]            <- sapply(data[, race_cols],
                                          str_replace_all_lower, race)
   data[, ethnic_cols]          <- sapply(data[, ethnic_cols],
@@ -103,26 +113,15 @@ clean_shr <- function(data) {
                                                         situation)
   data$GROUP                   <- str_replace_all_lower(data$GROUP,
                                                         group_number_fix)
-  if ("SUB_GROUP" %in% names(data)) {
-    data$SUB_GROUP               <- str_replace_all_lower(data$SUB_GROUP,
-                                                          sub_group)
-  }
   data$GEOGRAPHIC_DIVISION     <- str_replace_all_lower(data$GEOGRAPHIC_DIVISION,
-                                                        division)
+                                                        country_division_fix)
+  data$GEOGRAPHIC_DIVISION     <- gsub(" States$", "", data$GEOGRAPHIC_DIVISION,
+                                       ignore.case = TRUE)
   data$POPULATION     <- str_replace_all_lower(data$POPULATION,
                                                population)
-  data$POPULATION     <- as.numeric(data$POPULATION)
+  data$POPULATION     <- parse_number(data$POPULATION)
   data$COUNTY         <- gsub("Inapplicable", NA, data$COUNTY)
 
-  # Reorder columns so state_abb is 3rd column
-  other_cols <- names(data)[!names(data) %in% c("ORI", "STATE", "state_abb")]
-  data       <- data[,  c("ORI", "STATE", "state_abb", other_cols)]
-
-  # Reorder so victim 11 is with other victims
-  vic_11_cols <- names(data)[grepl("^VICTIM_11", names(data))]
-  off_cols    <- names(data)[grepl("^OFFENDER", names(data))]
-  other_cols  <- names(data)[!names(data) %in% c(vic_11_cols, off_cols)]
-  data        <- data[, c(other_cols, vic_11_cols, off_cols)]
 
   data        <- fix_additionals(data)
   names(data) <- tolower(names(data))
@@ -130,6 +129,8 @@ clean_shr <- function(data) {
   names(data) <- gsub("offender_(.*)_relation_to_victim_1",
                       "victim_1_relation_to_offender_\\1",
                       names(data))
+  data$state <- gsub("^washington, d.c$", "district of columbia", data$state)
+  data$state_abb  <- make_state_abb(data$state)
 
   return(data)
 }
@@ -153,7 +154,7 @@ fix_additionals <- function(data) {
   return(data)
 }
 
-reorder_SHR_columns <- function(data) {
+reorder_shr_columns <- function(data, cross_names) {
   starting_cols <- c("ori", "ori9", "year", "state", "state_abb")
   offenders     <- grep("^offender",        names(data), value = TRUE)
   vic_age       <- grep("victim.*age",      names(data), value = TRUE)
@@ -170,9 +171,9 @@ reorder_SHR_columns <- function(data) {
                             vic_race,
                             vic_ethnic,
                             vic_relation)]
+  others <- others[-grep("icpsr|identifier_code", others)]
   data <-
     data %>%
-    dplyr::select(-contains("icpsr")) %>%
     dplyr::select(starting_cols,
                   cross_names,
                   others,
@@ -186,5 +187,19 @@ reorder_SHR_columns <- function(data) {
                    ori)
   return(data)
 
+}
+
+shr_checks <- function(data, age = FALSE) {
+  victim_offender_columns   <- grep("^victim|^offender", names(data), value = TRUE)
+  if (age) {
+    victim_offender_columns <- grep("age$", names(data), value = TRUE)
+  } else {
+    victim_offender_columns <- victim_offender_columns[-grep("age", victim_offender_columns)]
+  }
+
+  for (col in victim_offender_columns) {
+    message(col)
+    print(sort(unique(data[, col])))
+  }
 }
 
