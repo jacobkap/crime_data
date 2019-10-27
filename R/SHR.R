@@ -10,7 +10,7 @@ shr_1976_2018 <- agg_shr(crosswalk, cross_names)
 global_checks(shr_1976_2018)
 shr_checks(shr_1976_2018, age = FALSE)
 shr_checks(shr_1976_2018, age = TRUE)
-setwd("clean_data/SHR")
+setwd(here::here("clean_data/SHR"))
 save_files(data = shr_1976_2018,
            year = "1976_2018",
            file_name = "shr_",
