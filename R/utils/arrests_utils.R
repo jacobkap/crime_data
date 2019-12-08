@@ -1,5 +1,3 @@
-
-
 make_arrest_category_cols <- function(data, arrest_cols) {
   arrest_code_cols <- grep("arrest_code", names(data), value = TRUE)
   arrest_code_cols <- readr::parse_number(arrest_code_cols)
@@ -23,9 +21,8 @@ make_arrest_category_cols <- function(data, arrest_cols) {
 get_agency_header <- function(file, sps_years) {
   agency_header <-
     read_ascii_setup(file,
-                     paste0("arrests_agency_header_",
-                            sps_years,
-                            ".sps")) %>%
+                     here::here(paste0("setup_files/arrests_agency_header_",
+                                       sps_years,  ".sps"))) %>%
     dplyr::filter(agency_header_designation %in% "agency header",
                   !is.na(ori)) %>%
     dplyr::select(-state_name,
@@ -44,13 +41,13 @@ get_agency_header <- function(file, sps_years) {
   return(agency_header)
 }
 
+
 # Monthly Header code
 get_monthly_header <- function(file, sps_years) {
   monthly_header <-
     read_ascii_setup(file,
-                     paste0("arrests_monthly_header_",
-                            sps_years,
-                            ".sps")) %>%
+                     here::here(paste0("setup_files/arrests_monthly_header_",
+                                       sps_years,  ".sps"))) %>%
     dplyr::filter(monthly_header_designation %in% "monthly header",
                   !is.na(ori)) %>%
     dplyr::select(-identifier_code,
@@ -82,9 +79,8 @@ get_detail_header <- function(file, sps_years) {
 
   detail_header <-
     read_ascii_setup(file,
-                     paste0("arrests_detail_header_",
-                            sps_years,
-                            ".sps"),
+                     here::here(paste0("setup_files/arrests_detail_header_",
+                                       sps_years,  ".sps")),
                      coerce_numeric = FALSE) %>%
     dplyr::filter(!month %in% "00",
                   !offense_code %in% "monthly header",
@@ -95,7 +91,6 @@ get_detail_header <- function(file, sps_years) {
                   -country_division,
                   -state,
                   -year) %>%
-    # dplyr::mutate(year = fix_years(year)) %>%
     dplyr::mutate_at(vars(contains("arrest_counter")), fix_negatives)
 
   detail_header <- make_arrest_category_cols(detail_header, arrest_columns)
@@ -103,8 +98,8 @@ get_detail_header <- function(file, sps_years) {
   if (sps_years == "1974_1979") {
     detail_header <-
       detail_header %>%
-      dplyr::mutate(adult_asian     = adult_chinese    + adult_japanese,
-                    juv_asian       = juv_chinese      + juv_japanese,
+      dplyr::mutate(adult_asian     = adult_chinese + adult_japanese,
+                    juv_asian       = juv_chinese + juv_japanese,
                     female_under_10 = female_under_11,
                     male_under_10   = male_under_11,
                     female_10_12    = female_11_12,
@@ -122,12 +117,30 @@ get_detail_header <- function(file, sps_years) {
   # Combine a few age columns
   detail_header <-
     detail_header %>%
-    dplyr::mutate(female_40_49    = female_40_44    + female_45_49,
-                  male_40_49      = male_40_44      + male_45_49,
-                  female_over_49  = female_50_54    + female_55_59 + female_60_64 + female_over_64,
-                  male_over_49    = male_50_54      + male_55_59   + male_60_64   + male_over_64,
-                  female_under_15 = female_under_10 + female_10_12 + female_13_14,
-                  male_under_15   = male_under_10   + male_10_12   + male_13_14) %>%
+    dplyr::mutate(female_40_49    =
+                    female_40_44 +
+                    female_45_49,
+                  male_40_49      =
+                    male_40_44 +
+                    male_45_49,
+                  female_over_49  =
+                    female_50_54 +
+                    female_55_59 +
+                    female_60_64 +
+                    female_over_64,
+                  male_over_49    =
+                    male_50_54 +
+                    male_55_59 +
+                    male_60_64 +
+                    male_over_64,
+                  female_under_15 =
+                    female_under_10 +
+                    female_10_12 +
+                    female_13_14,
+                  male_under_15 =
+                    male_under_10 +
+                    male_10_12 +
+                    male_13_14) %>%
     dplyr::select(-female_under_10,
                   -female_10_12,
                   -female_13_14,
@@ -224,8 +237,8 @@ make_long_to_wide <- function(data, type) {
   }
   data <-
     data %>%
-    data.table::melt(id.vars = id_vars,
-                     measure.vars = measure_cols) %>%
+    reshape2::melt(id.vars = id_vars,
+                   measure.vars = measure_cols) %>%
     unite(temp, offense_code, variable) %>%
     spread(temp, value)
   names(data) <- gsub("heroin_coke_tot_female_adult",

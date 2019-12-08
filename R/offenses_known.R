@@ -42,8 +42,10 @@ get_all_return_a_monthly <- function(crosswalk) {
                     -covered_by_population_group,
                     -contains("blank"),
                     -population_group_in_previous_year) %>%
-      dplyr::mutate_at(dplyr::vars(tidyselect::matches("card")), remove_special_characters) %>%
-      dplyr::mutate_at(dplyr::vars(tidyselect::matches("mail")), crime_remove_special_characters) %>%
+      dplyr::mutate_at(dplyr::vars(tidyselect::matches("card")),
+                       remove_special_characters) %>%
+      dplyr::mutate_at(dplyr::vars(tidyselect::matches("mail")),
+                       crime_remove_special_characters) %>%
       dplyr::mutate_if(is.character, tolower) %>%
       dplyr::mutate(year           = fix_years(year),
                     population     =  rowSums(.[, grepl("population_[1-3]",

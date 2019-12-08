@@ -6,7 +6,7 @@ setwd(here::here("raw_data/asr_from_fbi"))
 files = list.files(pattern = "DAT|dat|TXT|txt")
 
 files
-#get_temp_arrest_files(files[34:43])
+# get_temp_arrest_files(files)
 
 combine_arrest_years()
 setwd(here::here("clean_data/arrests"))
@@ -57,7 +57,7 @@ get_temp_arrest_files <- function(files) {
                           agency_header,
                           number_of_months_reported,
                           type = "yearly")
-    message(file); gc(); Sys.sleep(5)
+    message(file); gc(); Sys.sleep(5); gc(); Sys.sleep(5)
   }
 }
 
@@ -98,8 +98,10 @@ long_to_wide_and_save <- function(detail_header,
                                   monthly_header,
                                   agency_header,
                                   number_of_months_reported,
-                                  type) {
+                                  type,
+                                  replace = TRUE) {
   source(here::here('R/crosswalk.R'))
+  setwd(here::here("clean_data/arrests_temp"))
   crosswalk <- read_merge_crosswalks()
   cross_names <- names(crosswalk)
   cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
@@ -118,12 +120,18 @@ long_to_wide_and_save <- function(detail_header,
 
 
   for (i in 1:length(combined_crimes)) {
-    #  message(names(combined_crimes)[i])
     for (n in 1:nrow(matches_types)) {
       file_name <- paste0("ucr_arrests_",
                           type, "_",
                           names(combined_crimes)[i], "_",
                           matches_types$name[n], "_")
+
+      # Skips if file already made
+      if (paste0(file_name, unique(agency_header$year), ".rda") %in% list.files() &&
+          replace == TRUE) {
+        next
+      }
+
       if (names(combined_crimes)[i] == "all_crimes" &&
           matches_types$name[n] %in% c("age_by_sex",
                                        "totals_age")) {
@@ -131,8 +139,8 @@ long_to_wide_and_save <- function(detail_header,
         # so my laptop doesn't crash
       }
       if (names(combined_crimes)[i] != "all_crimes" &&
-          matches_types$name[n] %in% c("totals_race",
-                                       "totals_sex")) {
+          matches_types$name[n] %in% c("totals_sex",
+                                       "totals_race")) {
         next
       }
 
@@ -181,13 +189,10 @@ long_to_wide_and_save <- function(detail_header,
                       covered_by,
                       everything()) %>%
         dplyr::select(-agency_type,
-                      -agency_subtype_1,
-                      -agency_subtype_2,
                       -crosswalk_agency_name,
                       -census_name)
 
 
-      setwd(here::here("clean_data/arrests_temp"))
       save_files(data = wide_data,
                  year = unique(wide_data$year),
                  file_name = file_name,
@@ -204,13 +209,14 @@ combine_arrest_years <- function() {
   all_files <- list.files()
   all_files <- gsub(".....rda$", "", all_files)
   all_files <- unique(all_files)
-  all_files <- all_files[grepl("yearly.*age|yearly_all_crime|monthly.*all_crimes", all_files)]
+  all_files <- all_files[grepl("yearly|monthly.*all_crimes", all_files)]
 
-  for (file in all_files) {
-    files <- list.files(pattern = file)
+  for (temp_file in all_files) {
+    setwd(here::here("clean_data/arrests_temp"))
+    files <- list.files(pattern = temp_file)
 
     # If monthly, save each year individually
-    if (grepl("monthly", file)) {
+    if (grepl("monthly", files[1])) {
       for (file in files) {
         combine_and_save(file)
       }
@@ -222,26 +228,41 @@ combine_arrest_years <- function() {
 }
 
 combine_and_save <- function(files) {
-  data <- data.frame(stringsAsFactors = FALSE)
-  for (file in files) {
-    load(file)
-    assign("temp", get(gsub(".rda", "", file))) # Change name
-    do.call("rm", list(as.name(gsub(".rda", "", file)))); gc()
-    temp$state_abb <- toupper(temp$state_abb)
-    temp$suburban <- NULL
-    data <- dplyr::bind_rows(data, temp)
-  }
-  file_name <- gsub(".....rda$", "", file)
-  years <- paste0(min(data$year), "_", max(data$year))
-  if (min(data$year) == max(data$year)) {
-    years <- unique(data$year)
-  }
   setwd(here::here("clean_data/arrests"))
-  save_files(data = data,
-             year = years,
-             file_name = file_name,
-             save_name = file_name)
-  rm(data); gc();
-  setwd(here::here("clean_data/arrests_temp"))
+  file_name <- gsub(".....rda$", "", files[1])
+  years <- paste0(min(readr::parse_number(files)), "_",
+                  max(readr::parse_number(files)))
+  if (length(files) == 1) {
+    years <- paste0(readr::parse_number(files))
+  }
+
+  # If file doesn't already exist, then make file
+  setwd(here::here("clean_data/arrests"))
+  if (!paste0(file_name, years, ".rda") %in% list.files()) {
+
+
+    data <- data.frame(stringsAsFactors = FALSE)
+    setwd(here::here("clean_data/arrests_temp"))
+    for (file in files) {
+      load(file)
+      assign("temp", get(gsub(".rda", "", file))) # Change name
+      do.call("rm", list(as.name(gsub(".rda", "", file)))); gc()
+      temp$state_abb <- toupper(temp$state_abb)
+      temp$suburban <- NULL
+      data <- dplyr::bind_rows(data, temp)
+    }
+    #  file_name <- gsub(".....rda$", "", file)
+    #  years <- paste0(min(data$year), "_", max(data$year))
+    setwd(here::here("clean_data/arrests"))
+    if (min(data$year) == max(data$year)) {
+      years <- unique(data$year)
+    }
+    save_files(data = data,
+               year = years,
+               file_name = file_name,
+               save_name = file_name)
+    rm(data); gc();
+    setwd(here::here("clean_data/arrests_temp"))
+  }
 }
 

@@ -1,13 +1,17 @@
 matches_types <- data.frame(matches =
-                              c("^(fe)?male|tot_arrest",  # Age by sex
-                                "tot_.*[0-9]|tot_arrest", # Totals - age
-                                "tot_(fe)?male|tot_juv|tot_adult|tot_arrest", # Totals - sex
-                                "black|white|asian|ind|tot_arrest" # Totals - race
+                              c(# Age by sex
+                                "(fe)?male|tot_arrest|tot_juv|tot_adult",
+                                # Totals - age
+                                "tot_.*[0-9]|tot_arrest|tot_juv|tot_adult",
+                                # Totals - race
+                                "black|white|asian|ind|tot_arrest",
+                                # Totals - sex
+                                "tot_(fe)?male|tot_arrest"
                               ),
                             name = c("age_by_sex",
                                      "totals_age",
-                                     "totals_sex",
-                                     "totals_race"),
+                                     "totals_race",
+                                     "totals_sex"),
                             stringsAsFactors = FALSE)
 
 index_crimes <- c("murder",
@@ -37,26 +41,12 @@ alcohol_or_property_crimes <- c("forgery",
                                 "stolen_prop",
                                 "dui",
                                 "liquor",
-                                "drunkenness")
-
-financial_crimes <- c("embezzlement",
-                      "gamble_total",
-                      "gamble_other",
-                      "gamble_bookmake",
-                      "gamble_lottery")
-
-
-sex_or_family_crimes <- c("prostitution",
-                          "oth_sex_off",
-                          "rape",
-                          "family_off")
-
-violent_crimes <- c("murder",
-                    "robbery",
-                    "agg_assault",
-                    "oth_assault",
-                    "weapons",
-                    "manslaught_neg")
+                                "drunkenness",
+                                "embezzlement",
+                                "gamble_total",
+                                "gamble_other",
+                                "gamble_bookmake",
+                                "gamble_lottery")
 
 other_crimes <- c("vandalism",
                   "disorder_cond",
@@ -64,29 +54,27 @@ other_crimes <- c("vandalism",
                   "curfew_loiter",
                   "vagrancy",
                   "runaways",
-                  "suspicion")
+                  "suspicion",
+                  "prostitution",
+                  "oth_sex_off",
+                  "family_off",
+                  "oth_assault",
+                  "weapons",
+                  "manslaught_neg")
 
 all_crimes <- unique(c(index_crimes,
-                       financial_crimes,
                        alcohol_or_property_crimes,
-                       violent_crimes,
-                       sex_or_family_crimes,
                        drug_crimes,
                        other_crimes))
 
 combined_crimes <- list(index_crimes,
-                        financial_crimes,
                         alcohol_or_property_crimes,
-                        violent_crimes,
-                        sex_or_family_crimes,
                         drug_crimes,
                         other_crimes,
                         all_crimes)
+
 names(combined_crimes) <- c("index_crimes",
-                            "financial_crimes",
                             "alcohol_or_property_crimes",
-                            "violent_crimes",
-                            "sex_or_family_crimes",
                             "drug_crimes",
                             "other_crimes",
                             "all_crimes")
