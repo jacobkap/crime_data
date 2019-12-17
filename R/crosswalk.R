@@ -62,7 +62,7 @@ read_merge_crosswalks <- function(pop = FALSE) {
   names(crosswalk2005)      <- stringr::str_replace_all(names(crosswalk2005),
                                                         name_fixes)
   crosswalk2005$AGENCY_TYPE <- stringr::str_replace_all(crosswalk2005$AGENCY_TYPE,
-                                                        name_fixes)
+                                                        agency_type2005)
   names(crosswalk2012)      <- stringr::str_replace_all(names(crosswalk2012),
                                                         name_fixes)
   names(crosswalk2012_temp) <- stringr::str_replace_all(names(crosswalk2012_temp),
@@ -143,15 +143,14 @@ read_merge_crosswalks <- function(pop = FALSE) {
   crosswalk$fips_place_code[crosswalk$ori        == "IN04940"] <- "36003"
 
   # Fix issue where Clinton Tennessee has wrong county FIPS code
-  crosswalk$fips_state_code[crosswalk$ori        == "IN04940"] <- "47"
-  crosswalk$fips_county_code[crosswalk$ori       == "IN04940"] <- "001"
-  crosswalk$fips_state_county_code[crosswalk$ori == "IN04940"] <- "47001"
-  crosswalk$fips_place_code[crosswalk$ori        == "IN04940"] <- "15580"
+  crosswalk$fips_state_code[crosswalk$ori        == "TN00101"] <- "47"
+  crosswalk$fips_county_code[crosswalk$ori       == "TN00101"] <- "001"
+  crosswalk$fips_state_county_code[crosswalk$ori == "TN00101"] <- "47001"
+  crosswalk$fips_place_code[crosswalk$ori        == "TN00101"] <- "15580"
 
   # These ORIs have Washinton D.C. or Illinois FIPS codes but are in other states
   crosswalk <- crosswalk[!crosswalk$ori %in% c("MDPPD00",
-                                               "VAPPD00",
-                                               "IN04940"),]
+                                               "VAPPD00"),]
 
   crosswalk <-
     crosswalk %>%
