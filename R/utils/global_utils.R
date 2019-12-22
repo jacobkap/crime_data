@@ -37,6 +37,10 @@ reorder_columns <- function(data, crosswalk, type = "month") {
                                   "zip_code",
                                   "date_of_last_update",
                                   "month_included_in")
+  population_cols <- grep("population", names(data), value = TRUE)
+
+  months_reported_cols <- grep("number_of_months_reported|missing|last_month_reported",
+                               names(data), value = TRUE)
 
   # Reorder columns
   data <-
@@ -48,10 +52,11 @@ reorder_columns <- function(data, crosswalk, type = "month") {
                   state_abb,
                   year,
                   time_cols,
-                  number_of_months_reported,
+                  months_reported_cols,
                   crosswalk_cols,
-                  population,
-                  population_group,
+                  population_cols,
+                 # population,
+                 # population_group,
                   country_division,
                   dplyr::one_of(offenses_known_unique_cols),
                   covered_by_ori,
@@ -102,6 +107,8 @@ get_data_yearly <- function(folder, years, name_to_save, crosswalk) {
   }
 
   data <- reorder_columns(data, crosswalk, type = "year")
+  data$month_missing <- NULL
+  data$date_of_last_update <- NULL
 
   # Save the data in various formats
   setwd(here::here(paste0("clean_data/", folder)))
@@ -240,10 +247,8 @@ global_checks <- function(data) {
   message("State abbreviations")
   print(table(data$state_abb))
   message("All ORIs in right state")
-  print(table(substr(data$ori[!data$state %in% c("nebraska",
-                                                      "guam")], 1, 2) ==
-                     data$state_abb[!data$state %in% c("nebraska",
-                                                       "guam")]))
+  print(table(substr(data$ori[!data$state %in% c("nebraska", "guam")], 1, 2) ==
+                     data$state_abb[!data$state %in% c("nebraska", "guam")]))
   message("Country divisions")
   print(table(data$country_division))
   message("Population groups")
@@ -260,6 +265,8 @@ global_checks <- function(data) {
 
   message("Names longer than 28 characters")
   print(names(data)[nchar(names(data)) > 28])
+  message("Names longer than 32 characters!!!!!!!!!!")
+  print(names(data)[nchar(names(data)) > 32])
   print(summary(data))
 
 }

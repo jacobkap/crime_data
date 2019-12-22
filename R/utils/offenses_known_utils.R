@@ -60,6 +60,9 @@ fix_outliers <- function(data) {
                data$population_1 %in% "446963"] <- "VA02901"
   }
 
+  # Incorrect ORI
+  data <- data[!data$ori %in% "OKDI001",]
+
   # Impossible numbers of officers killed.
   if (data$year[1] == 1974) {
     data$nov_officers_killed_by_accident[data$ori %in% "MA01301"] <- NA
@@ -83,6 +86,34 @@ fix_outliers <- function(data) {
   if (data$year[1] %in% 2014:2016) {
     data[data$ori %in% "LANPD00", grep("unfound_", names(data))] <- NA
   }
+  return(data)
+}
+
+fix_number_of_months_reported <- function(data) {
+  months_reported_fix <- c("no months reported", tolower(month.name))
+  names(months_reported_fix) <- paste0("^", as.character(0:12), "$")
+
+
+  data$last_month_reported <- str_replace_all(data$number_of_months_reported,
+                                              months_reported_fix)
+
+  data$month_missing <- 0
+  data$month_missing[data$card_actual_pt %in% "missing" | is.na(data$card_actual_pt)] <- 1
+
+  return(data)
+}
+
+get_months_missing_annual <- function(data) {
+  number_months_missing <-
+    data %>%
+    group_by(ori) %>%
+    summarize(number_of_months_missing = sum(month_missing))
+
+  data <-
+    data %>%
+    left_join(number_months_missing, by = "ori") %>%
+    select(number_of_months_missing,
+           everything())
   return(data)
 }
 

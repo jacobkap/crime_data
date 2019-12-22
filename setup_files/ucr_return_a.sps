@@ -1,6 +1,6 @@
 ucr_return_a
 
-This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-13 17:37:34. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.2.0) on 2019-12-21 21:38:18. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -3206,6 +3206,15 @@ V5
 '7'        "West South Central"
 '8'        "Mountain"
 '9'        "Pacific"
+'A'        "New England"
+'B'        "Middle Atlantic"
+'C'        "East North Central"
+'D'        "West North Central"
+'E'        "South Atlantic"
+'F'        "East South Central"
+'G'        "West South Central"
+'H'        "Mountain"
+'I'        "Pacific"
 V43        
 '0'        "not updated"
 '2'        "adjustment"

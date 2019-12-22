@@ -174,18 +174,18 @@ get_detail_header <- function(file, sps_years) {
 get_number_months_reported <- function(data) {
   number_months_reported <-
     data %>%
-    dplyr::mutate(temp = paste(ori,
+    mutate(temp = paste(ori,
                                month)) %>%
-    dplyr::distinct(temp, .keep_all = TRUE) %>%
-    dplyr::select(ori, month) %>%
-    dplyr::mutate(dummy = 1)
+    distinct(temp, .keep_all = TRUE) %>%
+    select(ori, month) %>%
+    mutate(dummy = 1)
   number_months_reported$dummy[is.na(number_months_reported$month)] <- 0
 
   data <-
     number_months_reported %>%
-    dplyr::group_by(ori) %>%
-    dplyr::summarize(number_of_months_reported = sum(dummy)) %>%
-    dplyr::right_join(data)
+    group_by(ori) %>%
+    summarize(number_of_months_reported = sum(dummy)) %>%
+    right_join(data)
   gc()
   return(data)
 }

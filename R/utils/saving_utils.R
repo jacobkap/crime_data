@@ -37,15 +37,18 @@ save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
                               path = paste0(save_name,
                                             year, ".dta")))
 
-    # do.call("write_csv", list(as.name(paste0(file_name, year)),
-    #                           path = paste0(save_name,
-    #                                         year, ".csv")))
+    do.call("write_csv", list(as.name(paste0(file_name, year)),
+                              path = paste0(save_name,
+                                            year, ".csv")))
+    do.call("write_sav", list(as.name(paste0(file_name, year)),
+                              path = paste0(save_name,
+                                            year, ".sav")))
 
     do.call("rm", list(as.name(paste0(file_name, year))))
   }
 }
 
-save_as_zip <- function(file_name, pattern = NULL) {
+  save_as_zip <- function(file_name, pattern = NULL) {
   file_ext <- c("rda", "dta", "csv", "sav")
   all_files <- list.files()
   if (!is.null(pattern)) {
