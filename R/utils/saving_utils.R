@@ -11,11 +11,11 @@ convert_codebook_to_pdf <- function(file_name) {
 }
 
 save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
- data <-
-   data %>%
-   dplyr::mutate_if(is.Date, as.character)
- data <- ungroup(data)
- data <- as.data.frame(data)
+  data <-
+    data %>%
+    dplyr::mutate_if(is.Date, as.character)
+  data <- ungroup(data)
+  data <- as.data.frame(data)
 
   if (any(nchar(names(data)) > 31)) {
     print(names(data)[nchar(names(data)) > 31])
@@ -48,7 +48,7 @@ save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
   }
 }
 
-  save_as_zip <- function(file_name, pattern = NULL) {
+save_as_zip <- function(file_name, pattern = NULL) {
   file_ext <- c("rda", "dta", "csv", "sav")
   all_files <- list.files()
   if (!is.null(pattern)) {
@@ -66,8 +66,8 @@ save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
     zip_files <- sort(zip_files)
 
     zip::zipr(zipfile = paste0(file_name,
-                              file_ext[i], ".zip"),
-             files = zip_files)
+                               file_ext[i], ".zip"),
+              files = zip_files)
   }
 }
 

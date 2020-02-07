@@ -22,6 +22,22 @@ supplement_remove_missing <- function(column) {
   return(column)
 }
 
+make_num_months_reported <- function(data) {
+  status_cols <- grep("status", names(data), value = TRUE)
+
+  data$number_of_months_reported <- 0
+  for (col in status_cols) {
+    # Some old years (1966-1973) have a 2 option which seems to
+    # be they report offenses but not value.
+    value <- data[, col]
+    value[value %in% "not reported"]  <- 0
+    value[value %in% c("regular", 2)] <- 1
+    value <- as.numeric(value)
+
+    data$number_of_months_reported <- data$number_of_months_reported + value
+  }
+  return(data)
+}
 
 agency_desc_cols <- c(
   "ori9",

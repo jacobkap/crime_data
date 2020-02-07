@@ -27,18 +27,18 @@ get_temp_arrest_files <- function(files) {
     monthly_header <- get_monthly_header(file, sps_years)
     detail_header  <- get_detail_header(file,  sps_years)
 
-    monthly_data <-
-      detail_header %>%
-      dplyr::left_join(monthly_header) %>%
-      dplyr::full_join(agency_header) %>%
-      get_number_months_reported()
+    # number_of_months_reported2 <-
+    #   detail_header %>%
+    #   dplyr::left_join(monthly_header) %>%
+    #   dplyr::full_join(agency_header) %>%
+    #   get_number_months_reported()
 
 
-    number_of_months_reported <-
-      monthly_data %>%
-      dplyr::select(number_of_months_reported,
-                    ori) %>%
-      dplyr::distinct(ori, .keep_all = TRUE)
+    number_of_months_reported <- get_number_months_reported(detail_header)
+      # monthly_data %>%
+      # dplyr::select(number_of_months_reported,
+      #               ori) %>%
+      # dplyr::distinct(ori, .keep_all = TRUE)
 
     yearly_monthly_header <- make_arrests_yearly(monthly_header, "monthly")
     yearly_detail_header  <- make_arrests_yearly(detail_header, "offenses")
@@ -160,6 +160,12 @@ long_to_wide_and_save <- function(detail_header,
           dplyr::distinct(ori, offense_code, month, .keep_all = TRUE)
       }
 
+      number_of_months_reported_temp <-
+        number_of_months_reported %>%
+        dplyr::select(ori,
+                      number_of_months_reported,
+                      one_of(paste0("num_months_", combined_crimes[[i]])))
+
       wide_data <-
         wide_data %>%
         make_long_to_wide(type = type) %>%
@@ -168,7 +174,7 @@ long_to_wide_and_save <- function(detail_header,
         # Combine everything together
         dplyr::full_join(monthly_header, by = first_join_by) %>%
         dplyr::full_join(agency_header, by = "ori") %>%
-        dplyr::left_join(number_of_months_reported, by = "ori") %>%
+        dplyr::left_join(number_of_months_reported_temp, by = "ori") %>%
         dplyr::left_join(crosswalk, by = "ori") %>%
         dplyr::mutate_if(is.character, tolower) %>%
         dplyr::mutate(ori  = toupper(ori),
@@ -177,6 +183,7 @@ long_to_wide_and_save <- function(detail_header,
         dplyr::select(ori,
                       ori9,
                       number_of_months_reported,
+                      paste0("num_months_", combined_crimes[[i]]),
                       population,
                       agency_name,
                       one_of(time_vars),

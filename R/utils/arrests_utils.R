@@ -172,20 +172,36 @@ get_detail_header <- function(file, sps_years) {
 }
 
 get_number_months_reported <- function(data) {
-  number_months_reported <-
+  data <-
     data %>%
-    mutate(temp = paste(ori,
-                               month)) %>%
+    filter(!is.na(offense_code)) %>%
+    mutate(temp = paste(ori, month, offense_code)) %>%
     distinct(temp, .keep_all = TRUE) %>%
-    select(ori, month) %>%
+    select(ori, month, offense_code) %>%
     mutate(dummy = 1)
-  number_months_reported$dummy[is.na(number_months_reported$month)] <- 0
+  data$dummy[is.na(data$month)] <- 0
 
   data <-
-    number_months_reported %>%
-    group_by(ori) %>%
+    data %>%
+    group_by(ori,
+             offense_code) %>%
     summarize(number_of_months_reported = sum(dummy)) %>%
-    right_join(data)
+    ungroup()
+
+  data <- data.table::dcast(data, ori ~ offense_code,
+                            value.var = "number_of_months_reported")
+  data[is.na(data)] <- 0
+  names(data)[2:ncol(data)] <-
+    paste0("num_months_", names(data)[2:ncol(data)])
+
+  # Gets largest value of offenses monthly reporting columns
+  data$number_of_months_reported <- apply(data[, 2:ncol(data)], 1, max)
+  data <-
+    data %>%
+    select(ori,
+           number_of_months_reported,
+           everything()) #%>%
+  #  right_join(data)
   gc()
   return(data)
 }
