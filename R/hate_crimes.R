@@ -6,9 +6,12 @@ hate_crimes <- get_hate_crimes()
 names(hate_crimes)
 summary(hate_crimes$population)
 sort(unique(hate_crimes$bias_motivation_offense_1))
+table(hate_crimes$bias_motivation_offense_1)
+table(hate_crimes$bias_motivation_offense_1[hate_crimes$year == 2018])
 sort(unique(hate_crimes$location_code_offense_1))
 sort(unique(hate_crimes$ucr_offense_code_1))
 table(hate_crimes$hate_crime_incident_present_flag)
+table(hate_crimes$hate_crime_incident_present_flag, hate_crimes$year)
 table(hate_crimes$state)
 table(hate_crimes$state_abb)
 table(hate_crimes$year)
@@ -27,10 +30,10 @@ table(hate_crimes$hate_crime_incident_present_flag, hate_crimes$year)
 #
 setwd(here::here("clean_data/hate_crimes"))
 save_files(data = hate_crimes,
-           year = "1991_2017",
+           year = "1991_2018",
            file_name = "ucr_hate_crimes_",
            save_name = "ucr_hate_crimes_")
-save_as_zip("ucr_hate_crimes_1991_2017_")
+save_as_zip("ucr_hate_crimes_1991_2018_")
 
 get_hate_crimes <- function() {
 
@@ -82,7 +85,9 @@ get_hate_crimes <- function() {
       dplyr::left_join(incident_report, by = "ori9") %>%
       dplyr::mutate_if(is.character, tolower) %>%
       dplyr::mutate_at(vars(matches("[0-9]$")), as.character)
+    data$state[data$state %in% c("69", "98", "99")] <- NA
     hate_crimes <- dplyr::bind_rows(hate_crimes, data)
+    message(file)
   }
 
   source(here::here("R/crosswalk.R"))

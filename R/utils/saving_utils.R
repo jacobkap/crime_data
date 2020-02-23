@@ -10,15 +10,20 @@ convert_codebook_to_pdf <- function(file_name) {
   file.remove(file_name)
 }
 
-save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
+save_files <- function(data,
+                       year,
+                       file_name,
+                       save_name,
+                       rda_only = FALSE,
+                       rda_and_stata_only = FALSE) {
   data <-
     data %>%
     dplyr::mutate_if(is.Date, as.character)
   data <- ungroup(data)
   data <- as.data.frame(data)
 
-  if (any(nchar(names(data)) > 31)) {
-    print(names(data)[nchar(names(data)) > 31])
+  if (any(nchar(names(data)) > 32)) {
+    print(names(data)[nchar(names(data)) > 32])
   }
 
   assign(paste0(file_name, year), data) # Change name
@@ -37,12 +42,16 @@ save_files <- function(data, year, file_name, save_name, rda_only = FALSE) {
                               path = paste0(save_name,
                                             year, ".dta")))
 
-    do.call("write_csv", list(as.name(paste0(file_name, year)),
-                              path = paste0(save_name,
-                                            year, ".csv")))
-    do.call("write_sav", list(as.name(paste0(file_name, year)),
-                              path = paste0(save_name,
-                                            year, ".sav")))
+    if (rda_and_stata_only == FALSE) {
+
+      do.call("write_csv", list(as.name(paste0(file_name, year)),
+                                path = paste0(save_name,
+                                              year, ".csv")))
+      do.call("write_sav", list(as.name(paste0(file_name, year)),
+                                path = paste0(save_name,
+                                              year, ".sav")))
+
+    }
 
     do.call("rm", list(as.name(paste0(file_name, year))))
   }

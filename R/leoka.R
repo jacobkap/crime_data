@@ -4,22 +4,22 @@ source(here::here('R/utils/global_utils.R'))
 crosswalk <- read_merge_crosswalks()
 source(here::here('R/utils/leoka_utils.R'))
 
-get_all_leoka_monthly()
+#get_all_leoka_monthly()
 leoka_yearly <- get_all_leoka_yearly()
 global_checks(leoka_yearly)
 
 setwd(here::here("clean_data/LEOKA"))
-save_as_zip("ucr_leoka_monthly_1960_2017_", pattern = "month")
-save_as_zip("ucr_leoka_yearly_1960_2017_",  pattern = "year")
+save_as_zip("ucr_leoka_monthly_1960_2018_", pattern = "month")
+save_as_zip("ucr_leoka_yearly_1960_2018_",  pattern = "year")
 
-get_all_leoka_monthly <- function() {
+4get_all_leoka_monthly <- function() {
   setwd(here::here("raw_data/leoka_from_fbi"))
   files <- list.files()
   files <- files[!grepl("sps", files)]
   for (file in files) {
     setwd(here::here("raw_data/leoka_from_fbi"))
     data <- asciiSetupReader::spss_ascii_reader(file,
-                                                "ucr_leoka.sps")
+                                                here::here("setup_files/ucr_leoka.sps"))
     data <- make_number_of_months_reporting(data)
 
     data <-
@@ -57,6 +57,8 @@ get_all_leoka_monthly <- function() {
     data <- dplyr::left_join(data, crosswalk)
     data <- reorder_leoka_columns(data, crosswalk)
 
+    data$state[data$state %in% c("69", "98", "99")] <- NA
+
     # Save the data in various formats
     setwd(here::here("clean_data/LEOKA"))
     save_files(data = data,
@@ -85,6 +87,7 @@ get_all_leoka_yearly <- function() {
 
     data <- agg_yearly(data, month_cols)
     data <- reorder_leoka_columns(data, crosswalk, type = "year")
+    data$msa <- as.character(data$msa)
     leoka_yearly <- dplyr::bind_rows(leoka_yearly, data)
     message(data$year[1]); rm(data); gc(); Sys.sleep(3)
   }
@@ -97,7 +100,7 @@ get_all_leoka_yearly <- function() {
   # Save the data in various formats
   setwd(here::here("clean_data/LEOKA"))
   save_files(data = leoka_yearly,
-             year = "1960_2017",
+             year = "1960_2018",
              file_name = "leoka_yearly_",
              save_name = "leoka_yearly_")
 

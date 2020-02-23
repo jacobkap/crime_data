@@ -102,13 +102,17 @@ get_data_yearly <- function(folder, years, name_to_save, crosswalk) {
                        names(temp), value = TRUE)
     temp <- agg_yearly(temp, month_cols)
 
+    temp$date_of_last_update <- NULL
+    temp$last_update         <- NULL
+
     data <- dplyr::bind_rows(data, temp)
     message(temp$year[1]); rm(temp); gc(); Sys.sleep(3)
   }
 
   data <- reorder_columns(data, crosswalk, type = "year")
-  data$month_missing <- NULL
+  data$month_missing       <- NULL
   data$date_of_last_update <- NULL
+  data$last_update         <- NULL
 
   # Save the data in various formats
   setwd(here::here(paste0("clean_data/", folder)))

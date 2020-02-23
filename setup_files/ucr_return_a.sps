@@ -1,6 +1,6 @@
 ucr_return_a
 
-This setup file was created using the R package asciiSetupReader(version 2.2.0) on 2019-12-22 10:31:56. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.3.1) on 2020-02-18 21:32:15. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list

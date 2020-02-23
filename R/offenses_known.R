@@ -6,13 +6,13 @@ crosswalk <- read_merge_crosswalks()
 
 #get_all_return_a_monthly(crosswalk)
 offenses_known_yearly <- get_data_yearly("offenses_known",
-                                         "1960_2017",
+                                         "1960_2018",
                                          "offenses_known_yearly_",
                                          crosswalk)
-global_checks(offenses_known_yearly)
+global_checks(offenses_known_yearly[offenses_known_yearly$year == 2018, ])
 setwd(here::here("clean_data/offenses_known"))
-save_as_zip("ucr_offenses_known_monthly_1960_2017_", pattern = "month")
-save_as_zip("ucr_offenses_known_yearly_1960_2017_", pattern = "year")
+save_as_zip("ucr_offenses_known_monthly_1960_2018_", pattern = "month")
+save_as_zip("ucr_offenses_known_yearly_1960_2018_",  pattern = "year")
 
 get_all_return_a_monthly <- function(crosswalk) {
   setwd(here::here("raw_data/offenses_known_from_fbi"))
@@ -56,7 +56,7 @@ get_all_return_a_monthly <- function(crosswalk) {
 
     if (data$year[1] == 2017) {
       data$unfound_burg_attempted[data$ori %in% "LANPD00"] <- NA
-      data$unfound_burg_total[data$ori %in% "LANPD00"] <- NA
+      data$unfound_burg_total[data$ori     %in% "LANPD00"] <- NA
     }
 
 
@@ -72,9 +72,7 @@ get_all_return_a_monthly <- function(crosswalk) {
     data <- reorder_columns(data, crosswalk)
     data$population_group[data$population_group %in% "7b"] <- NA
 
-    data$last_update         <- mdy(data$last_update)
-    data$date_of_last_update <- mdy(data$date_of_last_update)
-
+    data$state[data$state %in% c("69", "98", "99")] <- NA
 
     # Save the data in various formats
     setwd(here::here("clean_data/offenses_known"))

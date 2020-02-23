@@ -39,6 +39,7 @@ agency_type2005 <- c("^1$"  = 'Sheriffs office',              # Sheriff
 # for 2012 or 2005. The crosswalk for 1996 has 36 unique ORIs not in 2012
 # or 2005
 read_merge_crosswalks <- function(pop = FALSE) {
+  old_dir <- getwd()
   setwd(here::here("clean_data/crosswalk"))
   crosswalk1996      <- asciiSetupReader::read_ascii_setup("crosswalk1996.txt",
                                                            "crosswalk1996.sps",
@@ -158,6 +159,7 @@ read_merge_crosswalks <- function(pop = FALSE) {
     dplyr::mutate(ori = toupper(ori),
                   ori9 = toupper(ori9))
 
+  setwd(old_dir)
   return(crosswalk)
 
 }

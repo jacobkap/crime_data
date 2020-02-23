@@ -60,6 +60,13 @@ fix_outliers <- function(data) {
                data$population_1 %in% "446963"] <- "VA02901"
   }
 
+
+  # Impossibly high number of unfounded crimes in New Orleans in 2018
+  # Incorrect ORI
+  if (data$year[1] == 2018) {
+    data[data$ori %in% "LANPD00", grep("unfound", names(data))] <- NA
+  }
+
   # Incorrect ORI
   data <- data[!data$ori %in% "OKDI001",]
 

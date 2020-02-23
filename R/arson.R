@@ -4,11 +4,11 @@ source(here::here('R/crosswalk.R'))
 crosswalk <- read_merge_crosswalks()
 
 get_arson(crosswalk)
-arson_yearly <- get_data_yearly("arson", "1979_2017", "ucr_arson_yearly_", crosswalk)
+arson_yearly <- get_data_yearly("arson", "1979_2018", "ucr_arson_yearly_", crosswalk)
 global_checks(arson_yearly)
 setwd(here::here("clean_data/arson"))
-save_as_zip("ucr_arson_monthly_1979_2017_", pattern = "month")
-save_as_zip("ucr_arson_yearly_1979_2017_", pattern = "year")
+save_as_zip("ucr_arson_monthly_1979_2018_", pattern = "month")
+save_as_zip("ucr_arson_yearly_1979_2018_",  pattern = "year")
 
 get_arson <- function(crosswalk) {
   setwd(here::here("raw_data/arson_from_fbi"))
@@ -17,7 +17,7 @@ get_arson <- function(crosswalk) {
   for (file in files) {
     setwd(here::here("raw_data/arson_from_fbi"))
     message(file)
-    data <- read_ascii_setup(file, "ucr_arson.sps")
+    data <- read_ascii_setup(file, here::here("setup_files/ucr_arson.sps"))
 
     data <-
       data %>%
@@ -77,6 +77,7 @@ get_arson <- function(crosswalk) {
                                     data$month %in% "april"] <- NA
     }
 
+    data$state[data$state %in% c("69", "98", "99")] <- NA
 
   # Save the data in various formats
   setwd(here::here("clean_data/arson"))

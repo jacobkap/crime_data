@@ -1,6 +1,6 @@
 ucr_leoka
 
-This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-14 13:25:57. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.3.1) on 2020-02-19 00:43:25. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -4630,6 +4630,15 @@ V5
 '7'        "West South Central"
 '8'        "Mountain"
 '9'        "Pacific"
+'A'        "New England"
+'B'        "Middle Atlantic"
+'C'        "East North Central"
+'D'        "West North Central"
+'E'        "South Atlantic"
+'F'        "East South Central"
+'G'        "West South Central"
+'H'        "Mountain"
+'I'        "Pacific"
 V51        
 '0'        "for all reports"
 '1'        "city list and assault tabulations only"

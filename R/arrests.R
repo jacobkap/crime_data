@@ -6,12 +6,12 @@ setwd(here::here("raw_data/asr_from_fbi"))
 files = list.files(pattern = "DAT|dat|TXT|txt")
 
 files
-# get_temp_arrest_files(files)
+#get_temp_arrest_files(files)
 
-combine_arrest_years()
+#combine_arrest_years()
 setwd(here::here("clean_data/arrests"))
-save_as_zip("ucr_arrests_yearly_1974_2016_",  pattern = "yearly")
-save_as_zip("ucr_arrests_monthly_1974_2016_", pattern = "monthly")
+save_as_zip("ucr_arrests_yearly_1974_2018_",  pattern = "yearly")
+save_as_zip("ucr_arrests_monthly_1974_2018_", pattern = "monthly")
 
 get_temp_arrest_files <- function(files) {
   print(files)
@@ -27,21 +27,18 @@ get_temp_arrest_files <- function(files) {
     monthly_header <- get_monthly_header(file, sps_years)
     detail_header  <- get_detail_header(file,  sps_years)
 
-    # number_of_months_reported2 <-
-    #   detail_header %>%
-    #   dplyr::left_join(monthly_header) %>%
-    #   dplyr::full_join(agency_header) %>%
-    #   get_number_months_reported()
-
 
     number_of_months_reported <- get_number_months_reported(detail_header)
-      # monthly_data %>%
-      # dplyr::select(number_of_months_reported,
-      #               ori) %>%
-      # dplyr::distinct(ori, .keep_all = TRUE)
 
     yearly_monthly_header <- make_arrests_yearly(monthly_header, "monthly")
     yearly_detail_header  <- make_arrests_yearly(detail_header, "offenses")
+
+    # Some agency header rows have the wrong year and appear to be
+    # just bad data (e.g. state = 0, ori is not in right format)
+    # Keeps just most common year
+    agency_header <- agency_header[agency_header$year %in%
+                                     as.numeric(names(sort(table(agency_header$year),
+                                                           decreasing = TRUE)[1])), ]
 
 
     # Monthly
@@ -166,6 +163,10 @@ long_to_wide_and_save <- function(detail_header,
                       number_of_months_reported,
                       one_of(paste0("num_months_", combined_crimes[[i]])))
 
+
+      monthly_cols <- paste0("num_months_", combined_crimes[[i]])
+      monthly_cols <- names(number_of_months_reported_temp)[names(number_of_months_reported_temp) %in% monthly_cols]
+
       wide_data <-
         wide_data %>%
         make_long_to_wide(type = type) %>%
@@ -183,7 +184,7 @@ long_to_wide_and_save <- function(detail_header,
         dplyr::select(ori,
                       ori9,
                       number_of_months_reported,
-                      paste0("num_months_", combined_crimes[[i]]),
+                      monthly_cols,
                       population,
                       agency_name,
                       one_of(time_vars),
@@ -197,8 +198,9 @@ long_to_wide_and_save <- function(detail_header,
                       everything()) %>%
         dplyr::select(-agency_type,
                       -crosswalk_agency_name,
-                      -census_name)
-
+                      -census_name) %>%
+        filter(!is.na(year)) %>%
+        mutate_at(c("number_of_months_reported", monthly_cols), na_to_0)
 
       save_files(data = wide_data,
                  year = unique(wide_data$year),
@@ -216,21 +218,31 @@ combine_arrest_years <- function() {
   all_files <- list.files()
   all_files <- gsub(".....rda$", "", all_files)
   all_files <- unique(all_files)
-  all_files <- all_files[grepl("yearly|monthly.*all_crimes", all_files)]
+  all_files <- all_files[grepl("yearly_all",
+                               all_files)]
+  print(all_files)
 
   for (temp_file in all_files) {
     setwd(here::here("clean_data/arrests_temp"))
     files <- list.files(pattern = temp_file)
-
     # If monthly, save each year individually
     if (grepl("monthly", files[1])) {
       for (file in files) {
         combine_and_save(file)
       }
     } else {
-      combine_and_save(files)
+      if (grepl("all_crimes", files[1])) {
+        files_1974_1989 <- files[readr::parse_number(files) %in% 1974:1989]
+        files_1990_2018 <- files[readr::parse_number(files) %in% 1990:2018]
+        combine_and_save(files_1974_1989)
+        combine_and_save(files_1990_2018)
+      } else {
+        combine_and_save(files)
+      }
     }
     Sys.sleep(5)
+    print("\n\n\n\n")
+    message(temp_file)
   }
 }
 
@@ -242,6 +254,7 @@ combine_and_save <- function(files) {
   if (length(files) == 1) {
     years <- paste0(readr::parse_number(files))
   }
+
 
   # If file doesn't already exist, then make file
   setwd(here::here("clean_data/arrests"))
@@ -257,9 +270,9 @@ combine_and_save <- function(files) {
       temp$state_abb <- toupper(temp$state_abb)
       temp$suburban <- NULL
       data <- dplyr::bind_rows(data, temp)
+      message(file)
     }
-    #  file_name <- gsub(".....rda$", "", file)
-    #  years <- paste0(min(data$year), "_", max(data$year))
+
     setwd(here::here("clean_data/arrests"))
     if (min(data$year) == max(data$year)) {
       years <- unique(data$year)
@@ -267,7 +280,8 @@ combine_and_save <- function(files) {
     save_files(data = data,
                year = years,
                file_name = file_name,
-               save_name = file_name)
+               save_name = file_name,
+               rda_and_stata_only = TRUE)
     rm(data); gc();
     setwd(here::here("clean_data/arrests_temp"))
   }

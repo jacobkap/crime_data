@@ -1,3 +1,8 @@
+na_to_0 <- function(x) {
+  x[is.na(x)] <- 0
+  return(x)
+}
+
 make_arrest_category_cols <- function(data, arrest_cols) {
   arrest_code_cols <- grep("arrest_code", names(data), value = TRUE)
   arrest_code_cols <- readr::parse_number(arrest_code_cols)
@@ -117,7 +122,7 @@ get_detail_header <- function(file, sps_years) {
   # Combine a few age columns
   detail_header <-
     detail_header %>%
-    dplyr::mutate(female_40_49    =
+    dplyr::mutate(female_40_49 =
                     female_40_44 +
                     female_45_49,
                   male_40_49      =
