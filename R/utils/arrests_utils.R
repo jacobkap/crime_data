@@ -205,8 +205,7 @@ get_number_months_reported <- function(data) {
     data %>%
     select(ori,
            number_of_months_reported,
-           everything()) #%>%
-  #  right_join(data)
+           everything())
   gc()
   return(data)
 }

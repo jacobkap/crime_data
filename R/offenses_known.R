@@ -17,7 +17,6 @@ save_as_zip("ucr_offenses_known_yearly_1960_2018_",  pattern = "year")
 get_all_return_a_monthly <- function(crosswalk) {
   setwd(here::here("raw_data/offenses_known_from_fbi"))
   files <- list.files()
-  files <- files[!grepl("sps", files)]
 
   for (file in files) {
     setwd(here::here("raw_data/offenses_known_from_fbi"))

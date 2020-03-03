@@ -6,6 +6,7 @@ library(asciiSetupReader)
 library(haven)
 library(lubridate)
 library(data.table)
+library(dplyr)
 
 remove_special_characters <- function(col) {
   col[!col %in% c("assaults not reported",
@@ -39,7 +40,7 @@ reorder_columns <- function(data, crosswalk, type = "month") {
                                   "month_included_in")
   population_cols <- grep("population", names(data), value = TRUE)
 
-  months_reported_cols <- grep("number_of_months_reported|missing|last_month_reported",
+  months_reported_cols <- grep("number_of_months_reported|missing|last_month_reported|month_reported_indicator",
                                names(data), value = TRUE)
 
   # Reorder columns
@@ -55,8 +56,6 @@ reorder_columns <- function(data, crosswalk, type = "month") {
                   months_reported_cols,
                   crosswalk_cols,
                   population_cols,
-                 # population,
-                 # population_group,
                   country_division,
                   dplyr::one_of(offenses_known_unique_cols),
                   covered_by_ori,
@@ -84,11 +83,15 @@ reorder_columns <- function(data, crosswalk, type = "month") {
       dplyr::arrange(ori,
                      desc(year))
   }
+  data$month_reported <- NULL
 
   return(data)
 }
 
-get_data_yearly <- function(folder, years, name_to_save, crosswalk) {
+get_data_yearly <- function(folder,
+                            years,
+                            name_to_save,
+                            crosswalk) {
   setwd(here::here(paste0("clean_data/", folder)))
   files <- list.files(pattern = "monthly_.*.rda$")
 
@@ -98,9 +101,17 @@ get_data_yearly <- function(folder, years, name_to_save, crosswalk) {
     file_name <- gsub(".rda", "", file)
     assign("temp", get(file_name))
     do.call(rm, list(file_name))
-    month_cols <- grep("^reported|unfound|actual|clear|uninhab|est_dam|tot_clr|clr_18|unfound|officer",
+    month_cols <- grep("^reported|unfound|actual|clear|uninhab|est_dam|tot_clr|clr_18|officer",
                        names(temp), value = TRUE)
-    temp <- agg_yearly(temp, month_cols)
+
+    temp1 <- data.frame()
+    for (year in unique(temp$year)) {
+      temp2 <- agg_yearly(temp[temp$year %in% year, ], month_cols)
+      temp1 <- bind_rows(temp1, temp2)
+    }
+    temp <- temp1
+    rm(temp1, temp2)
+
 
     temp$date_of_last_update <- NULL
     temp$last_update         <- NULL
@@ -114,12 +125,15 @@ get_data_yearly <- function(folder, years, name_to_save, crosswalk) {
   data$date_of_last_update <- NULL
   data$last_update         <- NULL
 
-  # Save the data in various formats
-  setwd(here::here(paste0("clean_data/", folder)))
-  save_files(data = data,
-             year = years,
-             file_name = name_to_save,
-             save_name = name_to_save)
+    # Save the data in various formats
+    setwd(here::here(paste0("clean_data/", folder)))
+    save_files(data               = data,
+               year               = years,
+               file_name          = name_to_save,
+               save_name          = name_to_save,
+               rda_and_stata_only = FALSE,
+               codebook           = FALSE)
+
 
   return(data)
 }

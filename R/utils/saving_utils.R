@@ -15,7 +15,9 @@ save_files <- function(data,
                        file_name,
                        save_name,
                        rda_only = FALSE,
-                       rda_and_stata_only = FALSE) {
+                       stata_only = FALSE,
+                       rda_and_stata_only = TRUE,
+                       codebook = TRUE) {
   data <-
     data %>%
     dplyr::mutate_if(is.Date, as.character)
@@ -25,18 +27,23 @@ save_files <- function(data,
   if (any(nchar(names(data)) > 32)) {
     print(names(data)[nchar(names(data)) > 32])
   }
+  if (stata_only == FALSE) {
+    assign(paste0(file_name, year), data) # Change name
+    save( list = paste0(file_name, year),
+          file = paste0(save_name, year, ".rda"))
 
-  assign(paste0(file_name, year), data) # Change name
-  save( list = paste0(file_name, year),
-        file = paste0(save_name, year, ".rda"))
+  }
 
   if (rda_only == FALSE) {
-    codebook_name <- paste0(file_name, "_codebook_", year, ".txt")
-    codebook_name <- gsub("__", "_", codebook_name)
-    codebook_name <- gsub("_\\.", "\\.", codebook_name)
-    memisc::Write(memisc::codebook(data),
-                  file = codebook_name)
-    convert_codebook_to_pdf(codebook_name)
+    if (codebook) {
+      codebook_name <- paste0(file_name, "_codebook_", year, ".txt")
+      codebook_name <- gsub("__", "_", codebook_name)
+      codebook_name <- gsub("_\\.", "\\.", codebook_name)
+      memisc::Write(memisc::codebook(data),
+                    file = codebook_name)
+      convert_codebook_to_pdf(codebook_name)
+    }
+
 
     do.call("write_dta", list(as.name(paste0(file_name, year)),
                               path = paste0(save_name,
@@ -58,12 +65,20 @@ save_files <- function(data,
 }
 
 save_as_zip <- function(file_name, pattern = NULL) {
-  file_ext <- c("rda", "dta", "csv", "sav")
+  file_ext  <- c("rda", "dta", "csv", "sav")
   all_files <- list.files()
+
+
+  all_file_extentions <- gsub(".*\\.", "", all_files)
+  file_ext <- file_ext[file_ext %in% unique(all_file_extentions)]
   if (!is.null(pattern)) {
     sps_files <- all_files[grep("maltz|manual|sps$|record description", all_files, ignore.case = TRUE)]
     all_files <- list.files(pattern = pattern)
     all_files <- c(sps_files, all_files)
+  }
+
+  if (any(grepl(".zip$", all_files))) {
+    all_files <- all_files[-grep(".zip$", all_files)]
   }
 
   codebooks <- all_files[grep("maltz|manual|codebook|pdf$|sps$",
