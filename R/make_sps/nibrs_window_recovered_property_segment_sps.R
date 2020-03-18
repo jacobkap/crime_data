@@ -23,7 +23,7 @@ nibrs_window_property_segment_value_labels <-
                                  1:10))
 
 setwd(here::here("setup_files"))
-make_sps_setup(file_name     = "nibrs_window_property_segment",
+make_sps_setup(file_name     = "nibrs_window_recovered_property_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels  = nibrs_window_property_segment_value_labels)

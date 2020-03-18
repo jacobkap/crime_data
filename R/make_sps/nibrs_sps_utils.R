@@ -24,7 +24,29 @@ location_type_value_labels <- c("location_type = ",
                                 "22 = school/college",
                                 "23 = service/gas station",
                                 "24 = specialty store (tv, fur, etc.)",
-                                "25 = other/unknown")
+                                "25 = other/unknown",
+                                # From NACJD 2016 offense segment file
+                                "37 = abandoned/condemned structure",
+                                "38 = amusement park",
+                                "39 = arena/stadium/fairgrounds/coliseum",
+                                "40 = ATM separate from bank",
+                                "41 = auto dealership new/used",
+                                "42 = camp/campground",
+                                "44 = daycare facility",
+                                "45 = dock/wharf/freight/model terminal",
+                                "46 = farm facility",
+                                "47 = gambling facility/casino/race track",
+                                "48 = industrial site",
+                                "49 = military installation",
+                                "50 = park/playground",
+                                "51 = rest area",
+                                "52 = school - college/university",
+                                "53 = school - elementary/secondary",
+                                "54 = shelter - mission/homeless",
+                                "55 = shopping mall",
+                                "56 = tribal lands",
+                                "57 = community center",
+                                "58 = cyberspace")
 location_type_value_labels_replace <- gsub("^location_type",
                                            "location_type_replace",
                                            location_type_value_labels)
@@ -78,10 +100,10 @@ ucr_offense_code_value_labels = c("ucr_offense_code = ",
 
                                   "120 = robbery",
                                   # Sex offenses, forcible
-                                  "11A = forcible rape",
-                                  "11B = forcible sodomy",
+                                  "11A = rape",
+                                  "11B = sodomy",
                                   "11C = sexual assault with an object",
-                                  "11D = forcible fondling (incident liberties/child molest)",
+                                  "11D = fondling (incident liberties/child molest)",
                                   # Sex offenses, nonforcible
                                   "36A = incest",
                                   "36B = statutory rape",
@@ -99,7 +121,14 @@ ucr_offense_code_value_labels = c("ucr_offense_code = ",
                                   "90H = peeping tom",
                                   "90I = runaway",
                                   "90J = trespass of real property",
-                                  "90Z = all other offenses")
+                                  "90Z = all other offenses",
+                                  # From NACJD 2016 offense segment file
+                                  "26F = identity theft",
+                                  "26G = hacking/computer invasion",
+                                  "40C = purchasing prostitution",
+                                  "64A = human trafficking - commercial sex acts",
+                                  "64B = human trafficking - involuntary servitude",
+                                  "720 = animal cruelty")
 ucr_offense_code_value_labels_replace <- gsub("^ucr_offense_code",
                                               "ucr_offense_code_replace",
                                               ucr_offense_code_value_labels)
@@ -113,7 +142,7 @@ suspected_drug_type_value_labels <- c("suspected_drug_type = ",
                                       "E = marijuana",
                                       "F = morphine",
                                       "G = opium",
-                                      "H = other narcotics: codeine, demerol dihydromorphinone or dilaudid, hydrocodone or percodan, methadone, etc.",
+                                      "H = other narcotics: codeine, demerol, dihydromorphinone or dilaudid, hydrocodone or percodan, methadone, etc.",
                                       "I = LSD",
                                       "P = PCP",
                                       "K = other hallucinogrens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc.",
@@ -121,16 +150,39 @@ suspected_drug_type_value_labels <- c("suspected_drug_type = ",
                                       "M = other stimulants: adipex, fastine and ionamin (derivatives of phentermine), benzedrine, didrex, methylphenidate or ritalin, phenmetrazine or preludin, tenuate, etc.",
                                       "N = barbiturates",
                                       "O = other depressants: glutethimide or doriden, methaqualone or quaalude, pentazocine or talwin, etc.",
-                                      "P = other drugs: antidepressants (elavil, triavil, tofranil, etc.), etc.",
+                                      "P = other drugs: antidepressants (elavil, triavil, tofranil, etc.), aromatic hydrocarbons, propoxyphene or darvon, tranquilizers (chlordiazepoxide or librium, diazepam or valium, etc.), etc.",
                                       "U = unknown type drug",
-                                      "X = over 3 drug types")
+                                      "X = over 3 drug types",
+                                      # From NACJD 2016 property segment file,
+                                      "J = PCP")
 suspected_drug_type_value_labels_replace <- gsub("^suspected_drug_type",
                                                  "suspected_drug_type_replace",
                                                  suspected_drug_type_value_labels)
 
 
 
-
+age_sex_race_ethnicity <- c("age_of_replace = ",
+                            "00 = unknown",
+                            "99 = over 98 years old",
+                            "NN = under 24 hours (neonate)",
+                            "NB = 1-6 days old",
+                            "BB = 7-364 days old",
+                            "sex_of_replace = ",
+                            "M = male",
+                            "F = female",
+                            "U = unknown",
+                            "race_of_replace = ",
+                            "W = white",
+                            "B = black",
+                            "I = american indian/alaskan native",
+                            "A = asian/pacific islander",
+                            "U = unknown",
+                            "P = native hawaiian or other pacific islander",
+                            "M = unknown",
+                            "ethnicity_of_replace = ",
+                            "H = hispanic origin",
+                            "N = not of hispanic origin",
+                            "U = unknown")
 
 
 

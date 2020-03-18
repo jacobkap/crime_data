@@ -23,21 +23,10 @@ col_labels <- c("segment_level",
                 "sex_of_offender",
                 "race_of_offender")
 
-nibrs_offender_value_labels <- c("offender_sequence_number = ",
+nibrs_offender_value_labels <- c(state_value_labels,
+                                 "offender_sequence_number = ",
                                  "00 = unknown",
-                                 "age_of_offender = ",
-                                 "00 = unknown",
-                                 "99 = over 98 years old",
-                                 "sex_of_offender = ",
-                                 "M = male",
-                                 "F = female",
-                                 "U = unknown",
-                                 "race_of_offender = ",
-                                 "W = white",
-                                 "B = black",
-                                 "I = american indian/alaskan native",
-                                 "A = asian/pacific islander",
-                                 "U = unknown")
+                                 gsub("replace", "offender", age_sex_race_ethnicity[1:18]))
 
 setwd(here::here("setup_files"))
 make_sps_setup(file_name = "nibrs_offender_segment",

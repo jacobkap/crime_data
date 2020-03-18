@@ -17,7 +17,7 @@ save_files <- function(data,
                        rda_only = FALSE,
                        stata_only = FALSE,
                        rda_and_stata_only = TRUE,
-                       codebook = TRUE) {
+                       codebook = FALSE) {
   data <-
     data %>%
     dplyr::mutate_if(is.Date, as.character)
@@ -72,7 +72,8 @@ save_as_zip <- function(file_name, pattern = NULL) {
   all_file_extentions <- gsub(".*\\.", "", all_files)
   file_ext <- file_ext[file_ext %in% unique(all_file_extentions)]
   if (!is.null(pattern)) {
-    sps_files <- all_files[grep("maltz|manual|sps$|record description", all_files, ignore.case = TRUE)]
+    sps_files <- all_files[grep("maltz|manual|sps$|record description",
+                                all_files, ignore.case = TRUE)]
     all_files <- list.files(pattern = pattern)
     all_files <- c(sps_files, all_files)
   }
@@ -81,9 +82,10 @@ save_as_zip <- function(file_name, pattern = NULL) {
     all_files <- all_files[-grep(".zip$", all_files)]
   }
 
-  codebooks <- all_files[grep("maltz|manual|codebook|pdf$|sps$",
-                              all_files,
-                              ignore.case = TRUE)]
+  codebooks <- list.files(pattern = "maltz|manual|codebook|pdf$|sps$")
+  # codebooks <- all_files[grep("maltz|manual|codebook|pdf$|sps$",
+  #                             all_files,
+  #                             ignore.case = TRUE)]
   for (i in seq_along(file_ext)) {
     zip_files <- all_files[grep(file_ext[i], all_files)]
     zip_files <- c(zip_files, codebooks)

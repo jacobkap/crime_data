@@ -25,7 +25,7 @@ col_positions <- c("1-2",
 col_labels <- c("segment_level",
                 "state",
                 "ori",
-                "arrest_transaction_incident_number",
+                "arrest_transaction_incident_num",
                 "arrest_date",
                 "arrestee_sequence_number",
                 "city_submission",
@@ -45,7 +45,8 @@ col_labels <- c("segment_level",
 
 
 setwd(here::here("setup_files"))
-make_sps_setup(file_name = "nibrs_group_b_arrest_segment_segment",
+make_sps_setup(file_name = "nibrs_group_b_arrest_report_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
-               value_labels = nibrs_arrestee_value_labels)
+               value_labels = c(nibrs_arrestee_value_labels[1:177],
+                                state_value_labels))
