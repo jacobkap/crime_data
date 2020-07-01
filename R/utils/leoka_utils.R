@@ -2,6 +2,16 @@ make_number_of_months_reporting <- function(data) {
   month_indicators <- grep("month_indicator", names(data), value = TRUE)
 
   data$number_of_months_reported <- 0
+
+  # Years 1960-1971 all have jan_month_indicator as 'not reported'
+  # which seems incorrect. I am setting the number_of_months_reported
+  # for these years to 1 to fix this issue. All months other than
+  # January seem normal.
+  if (fix_years(data$year)[1] %in% 1960:1971) {
+    data$number_of_months_reported <- 1
+  }
+  #
+  #
   # Months that are 'reported, no data' are considered to be non-reports!!!!!!
   for (col in month_indicators) {
     adder <- rep(0, nrow(data))
@@ -15,8 +25,15 @@ make_number_of_months_reporting <- function(data) {
     # }
 
   }
+
+  # If year 1960-1971 and only month is one I added, turn it to 0
+  if (fix_years(data$year)[1] %in% 1960:1971) {
+    data$number_of_months_reported[data$number_of_months_reported == 1] <- 0
+  }
+
   return(data)
 }
+
 
 reorder_leoka_columns <- function(data, crosswalk, type = "month") {
   time_cols <- c("year",
@@ -57,6 +74,7 @@ reorder_leoka_columns <- function(data, crosswalk, type = "month") {
                   total_employees_civilians,
                   ends_with("employees_total"),
                   total_employees_total,
+                  officers_killed_total,
                   officers_killed_by_felony,
                   officers_killed_by_accident,
                   starts_with("assaults_with_injury"),
@@ -135,3 +153,4 @@ fix_outliers <- function(data) {
 
   return(data)
 }
+

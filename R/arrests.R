@@ -6,22 +6,22 @@ setwd(here::here("raw_data/asr_from_fbi"))
 files = list.files(pattern = "DAT|dat|TXT|txt")
 
 files
-#get_temp_arrest_files(files[2:length(files)])
-#combine_arrest_yearly()
+get_temp_arrest_files(files)
+combine_arrest_yearly()
 save_files_monthly()
 
 
 setwd("D:/ucr_data_storage/clean_data/arrests")
-# save_as_zip("ucr_arrests_monthly_other_crimes_1974_2018_",
-#             pattern = "monthly_other_crimes")
-# save_as_zip("ucr_arrests_monthly_alcohol_or_property_1974_2018_",
-#             pattern = "monthly_alcohol")
-# save_as_zip("ucr_arrests_monthly_drug_1974_2018_",
-#             pattern = "monthly_drug")
-# save_as_zip("ucr_arrests_monthly_index_1974_2018_",
-#             pattern = "monthly_index")
-# save_as_zip("ucr_arrests_monthly_all_crimes_race_sex_1974_2018_",
-#             pattern = "monthly_all")
+save_as_zip("ucr_arrests_monthly_other_crimes_1974_2018_",
+            pattern = "monthly_other_crimes")
+save_as_zip("ucr_arrests_monthly_alcohol_or_property_1974_2018_",
+            pattern = "monthly_alcohol")
+save_as_zip("ucr_arrests_monthly_drug_1974_2018_",
+            pattern = "monthly_drug")
+save_as_zip("ucr_arrests_monthly_index_1974_2018_",
+            pattern = "monthly_index")
+save_as_zip("ucr_arrests_monthly_all_crimes_race_sex_1974_2018_",
+            pattern = "monthly_all")
 save_as_zip("ucr_arrests_yearly_data_1974_2018_",
             pattern = "yearly")
 
@@ -191,8 +191,8 @@ long_to_wide_and_save <- function(detail_header,
         dplyr::left_join(number_of_months_reported_temp, by = "ori") %>%
         dplyr::left_join(crosswalk, by = "ori") %>%
         dplyr::mutate_if(is.character, tolower) %>%
-        dplyr::mutate(ori  = toupper(ori),
-                      ori9 = toupper(ori9),
+        dplyr::mutate(ori       = toupper(ori),
+                      ori9      = toupper(ori9),
                       state_abb = toupper(state_abb)) %>%
         dplyr::select(ori,
                       ori9,

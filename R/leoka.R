@@ -4,15 +4,16 @@ source(here::here('R/utils/global_utils.R'))
 crosswalk <- read_merge_crosswalks()
 source(here::here('R/utils/leoka_utils.R'))
 
-#get_all_leoka_monthly()
+get_all_leoka_monthly()
 leoka_yearly <- get_all_leoka_yearly()
 global_checks(leoka_yearly)
+sapply(leoka_yearly, function(x) max(x))
 
 setwd(here::here("clean_data/LEOKA"))
 save_as_zip("ucr_leoka_monthly_1960_2018_", pattern = "month")
 save_as_zip("ucr_leoka_yearly_1960_2018_",  pattern = "year")
 
-4get_all_leoka_monthly <- function() {
+get_all_leoka_monthly <- function() {
   setwd(here::here("raw_data/leoka_from_fbi"))
   files <- list.files()
   files <- files[!grepl("sps", files)]
@@ -47,26 +48,27 @@ save_as_zip("ucr_leoka_yearly_1960_2018_",  pattern = "year")
       dplyr::rename(total_employees_total    = total_employees)
 
     data <- fix_all_negatives(data)
-
     data$population[data$population > 200000000] <- NA
-
-
 
     data <- fix_outliers(data)
     data <- month_wide_to_long(data)
-    data <- dplyr::left_join(data, crosswalk)
+    data <- dplyr::left_join(data, crosswalk, by = "ori")
+    data$officers_killed_total <- data$officers_killed_by_felony +
+      data$officers_killed_by_accident
     data <- reorder_leoka_columns(data, crosswalk)
 
     data$state[data$state %in% c("69", "98", "99")] <- NA
+    data$population_group[data$population_group %in% c("2c", "7b")] <- NA
 
     # Save the data in various formats
     setwd(here::here("clean_data/LEOKA"))
     save_files(data = data,
                year = data$year[1],
                file_name = "leoka_monthly_",
-               save_name = "leoka_monthly_")
+               save_name = "leoka_monthly_",
+               rda_and_stata_only = FALSE)
+    message(unique(data$year))
     rm(data); gc(); Sys.sleep(3)
-
   }
 }
 
@@ -102,7 +104,8 @@ get_all_leoka_yearly <- function() {
   save_files(data = leoka_yearly,
              year = "1960_2018",
              file_name = "leoka_yearly_",
-             save_name = "leoka_yearly_")
+             save_name = "leoka_yearly_",
+             rda_and_stata_only = FALSE)
 
   return(leoka_yearly)
 }

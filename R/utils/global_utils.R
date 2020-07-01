@@ -148,7 +148,7 @@ fix_all_negatives <- function(data) {
 
   data <-
     data %>%
-    dplyr::mutate_at(vars(crime_char_cols),
+    dplyr::mutate_at(vars((crime_char_cols)),
                      fix_negatives)
 
 
@@ -183,6 +183,7 @@ fix_negatives <- function(column) {
 }
 
 fix_years <- function(year) {
+  year <- year[!is.na(year)]
   year <- as.numeric(year)
   year[year < 10] <- paste0("200", year[year < 10])
   year <- as.numeric(year)
@@ -226,6 +227,8 @@ month_wide_to_long <- function(data) {
   month_cols <- grep(paste(tolower(month.abb), collapse = "|"),
                      names(data),
                      value = TRUE)
+
+  data[, grep("indicator", names(data), value = TRUE)] <- sapply(data[, grep("indicator", names(data), value = TRUE)], as.character)
 
   month_only_data <-
     data %>%
@@ -286,6 +289,9 @@ global_checks <- function(data) {
   message("Names longer than 32 characters!!!!!!!!!!")
   print(names(data)[nchar(names(data)) > 32])
   print(summary(data))
+
+  message("Year and months reported")
+  print(table(data$year, data$number_of_months_reported))
 
 }
 

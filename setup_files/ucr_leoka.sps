@@ -1,6 +1,6 @@
 ucr_leoka
 
-This setup file was created using the R package asciiSetupReader(version 2.3.1) on 2020-02-19 00:43:25. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.3.1) on 2020-06-22 11:42:33. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
