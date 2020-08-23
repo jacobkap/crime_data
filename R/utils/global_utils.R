@@ -7,6 +7,40 @@ library(haven)
 library(lubridate)
 library(data.table)
 library(dplyr)
+library(here)
+
+fix_number_of_months_reported <- function(data, type = "offenses") {
+  column <- "card_actual_pt"
+  if (type == "arson") {
+    column <- "column_2_type"
+  }
+  months_reported_fix <- c("no months reported", tolower(month.name))
+  names(months_reported_fix) <- paste0("^", as.character(0:12), "$")
+
+
+  data$last_month_reported <- str_replace_all(data$number_of_months_reported,
+                                              months_reported_fix)
+
+  data$month_missing <- 0
+  # In arson data, 4 == 'not available', 0 = 'not updated'
+  data$month_missing[data[, column] %in% c("missing", 0, 4) | is.na(data[, column])] <- 1
+
+  return(data)
+}
+
+get_months_missing_annual <- function(data) {
+  number_months_missing <-
+    data %>%
+    group_by(ori) %>%
+    summarize(number_of_months_missing = sum(month_missing))
+
+  data <-
+    data %>%
+    left_join(number_months_missing, by = "ori") %>%
+    select(number_of_months_missing,
+           everything())
+  return(data)
+}
 
 remove_special_characters <- function(col) {
   col[!col %in% c("assaults not reported",
@@ -142,6 +176,10 @@ fix_all_negatives <- function(data) {
   crime_char_cols <- grep(paste(tolower(month.abb), collapse = "|"),
                           names(data),
                           value = TRUE)
+  if (any(grepl("column", crime_char_cols))) {
+    crime_char_cols <- crime_char_cols[-grep("column", crime_char_cols)]
+  }
+
   crime_char_type <- sapply(data[, crime_char_cols], typeof)
   crime_char_cols <- crime_char_cols[crime_char_type == "character"]
   crime_char_cols <- crime_char_cols[!grepl("indicator|card", crime_char_cols)]
@@ -290,8 +328,9 @@ global_checks <- function(data) {
   print(names(data)[nchar(names(data)) > 32])
   print(summary(data))
 
-  message("Year and months reported")
-  print(table(data$year, data$number_of_months_reported))
+  message("Year and months missing")
+  message("\n")
+  print(table(data$year, data$number_of_months_missing))
 
 }
 
@@ -346,3 +385,4 @@ check_raw_files_nchar <- function(folder) {
     print(table(nchar(z)))
   }
 }
+

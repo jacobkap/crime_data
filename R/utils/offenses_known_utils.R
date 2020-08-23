@@ -37,10 +37,19 @@ make_index_crimes <- function(data) {
       data[, paste0(type, "_assault_aggravated")] +
       data[, paste0(type, "_robbery_total")]
 
+    if (data$year[1] >= 1979) {
+
     data[, paste0(type, "_index_property")] <-
       data[, paste0(type, "_theft_total")] +
       data[, paste0(type, "_burg_total")] +
-      data[, paste0(type, "_mtr_veh_theft_total")]
+      data[, paste0(type, "_mtr_veh_theft_total")] +
+      data[, paste0(type, "_arson_grand_total")]
+    } else {
+      data[, paste0(type, "_index_property")] <-
+        data[, paste0(type, "_theft_total")] +
+        data[, paste0(type, "_burg_total")] +
+        data[, paste0(type, "_mtr_veh_theft_total")]
+    }
 
     data[, paste0(type, "_index_total")] <-
       data[, paste0(type, "_index_violent")] +
@@ -96,33 +105,7 @@ fix_outliers <- function(data) {
   return(data)
 }
 
-fix_number_of_months_reported <- function(data) {
-  months_reported_fix <- c("no months reported", tolower(month.name))
-  names(months_reported_fix) <- paste0("^", as.character(0:12), "$")
 
-
-  data$last_month_reported <- str_replace_all(data$number_of_months_reported,
-                                              months_reported_fix)
-
-  data$month_missing <- 0
-  data$month_missing[data$card_actual_pt %in% "missing" | is.na(data$card_actual_pt)] <- 1
-
-  return(data)
-}
-
-get_months_missing_annual <- function(data) {
-  number_months_missing <-
-    data %>%
-    group_by(ori) %>%
-    summarize(number_of_months_missing = sum(month_missing))
-
-  data <-
-    data %>%
-    left_join(number_months_missing, by = "ori") %>%
-    select(number_of_months_missing,
-           everything())
-  return(data)
-}
 
 crime_remove_special_characters <- function(col) {
   col <- iconv(col, "UTF-8", "ASCII", sub = "")

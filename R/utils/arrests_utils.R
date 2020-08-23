@@ -119,51 +119,6 @@ get_detail_header <- function(file, sps_years) {
                     -female_11_12)
 
   }
-  # # Combine a few age columns
-  # detail_header <-
-  #   detail_header %>%
-  #   dplyr::mutate(female_40_49 =
-  #                   female_40_44 +
-  #                   female_45_49,
-  #                 male_40_49      =
-  #                   male_40_44 +
-  #                   male_45_49,
-  #                 female_over_49  =
-  #                   female_50_54 +
-  #                   female_55_59 +
-  #                   female_60_64 +
-  #                   female_over_64,
-  #                 male_over_49    =
-  #                   male_50_54 +
-  #                   male_55_59 +
-  #                   male_60_64 +
-  #                   male_over_64,
-  #                 female_under_15 =
-  #                   female_under_10 +
-  #                   female_10_12 +
-  #                   female_13_14,
-  #                 male_under_15 =
-  #                   male_under_10 +
-  #                   male_10_12 +
-  #                   male_13_14) %>%
-  #   dplyr::select(-female_under_10,
-  #                 -female_10_12,
-  #                 -female_13_14,
-  #                 -female_40_44,
-  #                 -female_45_49,
-  #                 -female_50_54,
-  #                 -female_55_59,
-  #                 -female_60_64,
-  #                 -female_over_64,
-  #                 -male_under_10,
-  #                 -male_10_12,
-  #                 -male_13_14,
-  #                 -male_40_44,
-  #                 -male_45_49,
-  #                 -male_50_54,
-  #                 -male_55_59,
-  #                 -male_60_64,
-  #                 -male_over_64)
 
   detail_header <- make_simple_columns(detail_header)
 
@@ -231,6 +186,7 @@ make_simple_columns <- function(data) {
   data$tot_asian    <- rowSums(data[, grep("asian", names(data))])
   data$tot_black    <- rowSums(data[, grep("black", names(data))])
   data$tot_white    <- rowSums(data[, grep("white", names(data))])
+  data$tot_hispanic    <- rowSums(data[, grep("hisp", names(data))])
 
   data <-
     data %>%
