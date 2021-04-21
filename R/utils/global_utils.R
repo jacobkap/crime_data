@@ -14,6 +14,9 @@ fix_number_of_months_reported <- function(data, type = "offenses") {
   if (type == "arson") {
     column <- "column_2_type"
   }
+  # if (type == "offenses" & unique(data$year) >= 2018) {
+  #   column <- "card_actual_type"
+  # }
   months_reported_fix <- c("no months reported", tolower(month.name))
   names(months_reported_fix) <- paste0("^", as.character(0:12), "$")
 
@@ -165,8 +168,7 @@ get_data_yearly <- function(folder,
                year               = years,
                file_name          = name_to_save,
                save_name          = name_to_save,
-               rda_and_stata_only = FALSE,
-               codebook           = FALSE)
+               rda_and_stata_only = FALSE)
 
 
   return(data)

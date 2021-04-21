@@ -1,6 +1,6 @@
 ucr_shr
 
-This setup file was created using the R package asciiSetupReader(version 2.2.0) on 2019-10-26 21:03:10. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2021-04-13 07:55:02. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -433,6 +433,7 @@ V18
 'F'       "multiple victims/unknown offender(s)"
 V19       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"
@@ -452,6 +453,7 @@ V22
 'U'       "unknown"
 V33       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"
@@ -471,6 +473,7 @@ V36
 'U'       "unknown"
 V37       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"
@@ -490,6 +493,7 @@ V40
 'U'       "unknown"
 V41       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"
@@ -509,6 +513,7 @@ V44
 'U'       "unknown"
 V45       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"
@@ -528,6 +533,7 @@ V48
 'U'       "unknown"
 V49       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"
@@ -547,6 +553,7 @@ V52
 'U'       "unknown"
 V53       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"
@@ -566,6 +573,7 @@ V56
 'U'       "unknown"
 V57       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"
@@ -585,6 +593,7 @@ V60
 'U'       "unknown"
 V61       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"
@@ -604,6 +613,7 @@ V64
 'U'       "unknown"
 V65       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"
@@ -623,6 +633,7 @@ V68
 'U'       "unknown"
 V69       
 'NB'      "birth to 6 days, including abandoned infant"
+'NN'      "birth to 6 days, including abandoned infant"
 'BB'      "7 days to 364 days"
 '00'      "unknown"
 '99'      "99 years or older"

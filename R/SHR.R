@@ -5,17 +5,26 @@ source(here::here('R/utils/SHR_utils.R'))
 crosswalk <- read_merge_crosswalks()
 cross_names <- names(crosswalk)
 cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
-shr_1976_2018 <- agg_shr(crosswalk, cross_names)
+shr_1976_2019 <- agg_shr(crosswalk, cross_names)
 
-global_checks(shr_1976_2018)
-shr_checks(shr_1976_2018, age = FALSE)
-shr_checks(shr_1976_2018, age = TRUE)
+global_checks(shr_1976_2019)
+
+table(shr_1976_2019$victim_1_race[shr_1976_2019$year %in% 2018])
+table(shr_1976_2019$victim_1_race[shr_1976_2019$year %in% 2019])
+table(shr_1976_2019$offender_1_sex[shr_1976_2019$year %in% 2018])
+table(shr_1976_2019$offender_1_sex[shr_1976_2019$year %in% 2019])
+table(shr_1976_2019$offender_1_circumstance[shr_1976_2019$year %in% 2018])
+table(shr_1976_2019$offender_1_circumstance[shr_1976_2019$year %in% 2019])
+
+shr_checks(shr_1976_2019, age = FALSE)
+shr_checks(shr_1976_2019, age = TRUE)
 setwd(here::here("clean_data/SHR"))
-save_files(data = shr_1976_2018,
-           year = "1976_2018",
+save_files(data = shr_1976_2019,
+           year = "1976_2019",
            file_name = "shr_",
-           save_name = "shr_")
-save_as_zip("shr_1976_2018_")
+           save_name = "shr_",
+           rda_and_stata_only = FALSE)
+save_as_zip("shr_1976_2019_")
 
 agg_shr <- function(crosswalk, cross_names) {
   source(here::here('R/utils/global_utils.R'))
@@ -52,6 +61,8 @@ agg_shr <- function(crosswalk, cross_names) {
   }
   shr <- data.frame(shr)
   shr <- reorder_shr_columns(shr, cross_names)
+
+  shr$state[shr$state %in% c("69", "98", "99")] <- NA
   return(shr)
 }
 
@@ -101,7 +112,11 @@ clean_shr <- function(data) {
                                          str_replace_all_lower, circumstance)
   data[, subcircumstance_cols] <- sapply(data[, subcircumstance_cols],
                                          str_replace_all_lower, subcircumstance)
-  data[, age_cols]             <- sapply(data[, age_cols],
+  data[, age_cols]             <- sapply(data[, age_cols],shr_1976_2018 %>%
+                                           filter(!offender_1_race %in% "p") %>%
+                                           mutate(offender_1_race = capitalize_words(offender_1_race)) %>%
+                                           crimeutils::make_barplots("offender_1_race", count = "FALSE") +
+                                           ggplot2::scale_y_continuous(labels = scales::percent)
                                          str_replace_all_lower, age)
   data[, sex_cols]             <- sapply(data[, sex_cols],
                                          str_replace_all_lower, sex)

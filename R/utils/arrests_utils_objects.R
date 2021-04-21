@@ -4,7 +4,7 @@ matches_types <- data.frame(matches =
                                 # Totals - age
                              #   "tot_.*[0-9]|tot_arrest|tot_juv|tot_adult",
                                 # Totals - race
-                                "black|white|asian|ind|tot_arrest",
+                                "black|white|asian|ind|tot_arrest|hisp",
                                 # Totals - sex
                                 "tot_(fe)?male|tot_arrest|tot_juv|tot_adult"
                               ),
@@ -84,13 +84,13 @@ arrest_cols <- c("adult_amer_ind",
                  "adult_black",
                  "adult_white",
                  "adult_hispanic",
-                 "adult_non_hispanic",
+                 "adult_non_hisp",
                  "juv_amer_ind",
                  "juv_asian",
                  "juv_black",
                  "juv_white",
-                 "juvenile_hispanic",
-                 "juvenile_non_hispanic",
+                 "juv_hispanic",
+                 "juv_non_hisp",
                  "female_under_10",
                  "female_10_12",
                  "female_13_14",

@@ -1,6 +1,6 @@
 ucr_arson
 
-This setup file was created using the R package asciiSetupReader(version 2.3.1) on 2020-08-22 15:41:22. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.3.1) on 2020-10-20 20:03:12. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list

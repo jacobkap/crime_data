@@ -4,17 +4,29 @@ source(here('R/make_sps/make_offenses_known_sps.R'))
 source(here('R/utils/offenses_known_utils.R'))
 crosswalk <- read_merge_crosswalks()
 
-get_all_return_a_monthly(crosswalk)
+# get_all_return_a_monthly(crosswalk)
 offenses_known_yearly <- get_data_yearly("offenses_known",
-                                         "1960_2018",
+                                         "1960_2019",
                                          "offenses_known_yearly_",
                                          crosswalk)
 global_checks(offenses_known_yearly)
 table(offenses_known_yearly$number_of_months_missing == offenses_known_yearly$arson_number_of_months_missing)
 table(offenses_known_yearly$number_of_months_missing == offenses_known_yearly$arson_number_of_months_missing) / nrow(offenses_known_yearly) * 100
+
+summary(offenses_known_yearly$tot_clr_rape_total[offenses_known_yearly$year %in% 2018])
+summary(offenses_known_yearly$tot_clr_rape_total[offenses_known_yearly$year %in% 2019])
+summary(offenses_known_yearly$actual_robbery_total[offenses_known_yearly$year %in% 2018])
+summary(offenses_known_yearly$actual_robbery_total[offenses_known_yearly$year %in% 2019])
+summary(offenses_known_yearly$officers_assaulted[offenses_known_yearly$year %in% 2018])
+summary(offenses_known_yearly$officers_assaulted[offenses_known_yearly$year %in% 2019])
+summary(offenses_known_yearly$clr_18_burg_total[offenses_known_yearly$year %in% 2018])
+summary(offenses_known_yearly$clr_18_burg_total[offenses_known_yearly$year %in% 2019])
+summary(offenses_known_yearly$actual_murder[offenses_known_yearly$year %in% 2018])
+summary(offenses_known_yearly$actual_murder[offenses_known_yearly$year %in% 2019])
+
 setwd(here("clean_data/offenses_known"))
-save_as_zip("ucr_offenses_known_monthly_1960_2018_", pattern = "month")
-save_as_zip("ucr_offenses_known_yearly_1960_2018_",  pattern = "year")
+save_as_zip("ucr_offenses_known_monthly_1960_2019_", pattern = "month")
+save_as_zip("ucr_offenses_known_yearly_1960_2019_",  pattern = "year")
 
 get_all_return_a_monthly <- function(crosswalk) {
   setwd(here("raw_data/offenses_known_from_fbi"))
@@ -28,7 +40,7 @@ get_all_return_a_monthly <- function(crosswalk) {
     data <-
       data %>%
       filter(!is.na(ori)) %>%
-      select(-identifier_code,
+      dplyr::select(-identifier_code,
              -population_source,
              -contains("last_population"),
              -contains("under50"),
@@ -55,7 +67,7 @@ get_all_return_a_monthly <- function(crosswalk) {
       # rows
       distinct(ori, .keep_all = TRUE)
 
-    data <- fix_all_negatives(data)
+    data <- fix_all_negatives(data); Sys.sleep(3)
     data <- fix_outliers(data)
     data <- month_wide_to_long(data)
 

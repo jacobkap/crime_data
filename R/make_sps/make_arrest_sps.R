@@ -186,9 +186,9 @@ arrest_code_values_1980 <- c("arrest_code_num = ",
                              "051 = juv_amer_ind",
                              "052 = juv_asian",
                              "053 = adult_hispanic",
-                             "054 = adult_non_hispanic",
-                             "055 = juvenile_hispanic",
-                             "056 = juvenile_non_hispanic")
+                             "054 = adult_non_hisp",
+                             "055 = juv_hispanic",
+                             "056 = juv_non_hisp")
 arrest_code_values_1980_final <- c()
 for (i in 1:55) {
   arrest_code_values_1980_final <- c(arrest_code_values_1980_final,

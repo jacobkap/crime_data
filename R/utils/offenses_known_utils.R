@@ -28,7 +28,7 @@ make_agg_assault <- function(data) {
 }
 make_index_crimes <- function(data) {
   crime_type <- c("actual", "clr_18", "tot_clr", "unfound")
-  index_crimes <- c("index_violent", "index_property", "index_total")
+  #index_crimes <- c("index_violent", "index_property", "index_total")
 
   for (type in crime_type) {
     data[, paste0(type, "_index_violent")] <-

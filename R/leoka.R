@@ -4,14 +4,27 @@ source(here::here('R/utils/global_utils.R'))
 crosswalk <- read_merge_crosswalks()
 source(here::here('R/utils/leoka_utils.R'))
 
-get_all_leoka_monthly()
+#get_all_leoka_monthly()
 leoka_yearly <- get_all_leoka_yearly()
 global_checks(leoka_yearly)
-sapply(leoka_yearly, function(x) max(x))
+sapply(leoka_yearly, function(x) max(x, na.rm = TRUE))
+
+summary(leoka_yearly$one_man_veh_day_shift[leoka_yearly$year %in% 2018])
+summary(leoka_yearly$one_man_veh_day_shift[leoka_yearly$year %in% 2019])
+summary(leoka_yearly$traffic_assaults_cleared[leoka_yearly$year %in% 2018])
+summary(leoka_yearly$traffic_assaults_cleared[leoka_yearly$year %in% 2019])
+summary(leoka_yearly$male_employees_officers[leoka_yearly$year %in% 2018])
+summary(leoka_yearly$male_employees_officers[leoka_yearly$year %in% 2019])
+summary(leoka_yearly$officers_killed_total[leoka_yearly$year %in% 2018])
+summary(leoka_yearly$officers_killed_total[leoka_yearly$year %in% 2019])
+summary(leoka_yearly$assaults_no_injury_total[leoka_yearly$year %in% 2018])
+summary(leoka_yearly$assaults_no_injury_total[leoka_yearly$year %in% 2019])
+
+table(leoka_yearly$year, leoka_yearly$number_of_months_reported)
 
 setwd(here::here("clean_data/LEOKA"))
-save_as_zip("ucr_leoka_monthly_1960_2018_", pattern = "month")
-save_as_zip("ucr_leoka_yearly_1960_2018_",  pattern = "year")
+save_as_zip("ucr_leoka_monthly_1960_2019_", pattern = "month")
+save_as_zip("ucr_leoka_yearly_1960_2019_",  pattern = "year")
 
 get_all_leoka_monthly <- function() {
   setwd(here::here("raw_data/leoka_from_fbi"))
@@ -102,7 +115,7 @@ get_all_leoka_yearly <- function() {
   # Save the data in various formats
   setwd(here::here("clean_data/LEOKA"))
   save_files(data = leoka_yearly,
-             year = "1960_2018",
+             year = "1960_2019",
              file_name = "leoka_yearly_",
              save_name = "leoka_yearly_",
              rda_and_stata_only = FALSE)

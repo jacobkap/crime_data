@@ -43,8 +43,14 @@ segment_levels <- data.frame(names = c("batch_header_1",
 
 for (n in 1:nrow(files)) {
   setwd("D:/ucr_data_storage/raw_data/nibrs_from_fbi")
-  data <- read_lines(files$file[n])
-  for (i in 1:nrow(files)) {
+print(files$file[n])
+  #data <- read_lines(files$file[n])
+  data <- data.table::fread(files$file[n], sep = NULL, header = FALSE)
+  data <- data$V1
+  print(table(substr(data, 1, 2)))
+
+  for (i in 1:nrow(segment_levels)) {
+
 
     temp <- data[substr(data, 1, 2) %in% segment_levels$levels[i]]
     if (length(temp) > 0) {
@@ -54,4 +60,21 @@ for (n in 1:nrow(files)) {
     }
   }
   message(files$file[n])
+}
+
+
+keep_going <- TRUE
+skip <- 0
+n_max <- 1000000
+while(keep_going) {
+  temp <- read_lines(files$file[n], skip = skip, n_max = n_max)
+  data <- data.table::fread(files$file[n], sep = NULL, header = FALSE, skip = skip, nrows = n_max)
+  data <- data$V1
+  print(table(substr(data, 1, 2)))
+  skip <- skip + 1000000
+  print(length(data))
+  if (nrow(data) == 0) {
+    keep_going <- FALSE
+  }
+  gc()
 }

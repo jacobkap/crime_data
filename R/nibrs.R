@@ -18,16 +18,26 @@ save_nibrs_as_zip(nibrs_segments)
 save_nibrs_as_zip <- function(segments) {
   for (segment in segments) {
     setwd("D:/ucr_data_storage/clean_data/nibrs")
-    save_as_zip(paste0("nibrs_1991_2018_", segment, "_"), pattern = segment)
+    save_as_zip(paste0("nibrs_1991_2019_", segment, "_"), pattern = segment)
+    message(segment)
   }
 }
 
-read_and_save_nibrs_segments <- function(segments) {
-  for (segment in segments) {
+
+read_and_save_nibrs_segments(nibrs_segments, years = 2019)
+read_and_save_nibrs_segments(arrestee_segment)
+read_and_save_nibrs_segments <- function(segments, years = NULL) {
+  for (segment in nibrs_segments) {
+
 
     source(here::here(paste0("R/make_sps/nibrs_", segment, "_sps.R")))
     setwd("D:/ucr_data_storage/raw_data/nibrs_master_files_parsed")
     files <- list.files(pattern = paste0("^", segment))
+
+
+    if (!is.null(years)) {
+      files <- files[readr::parse_number(files) %in% years]
+    }
     print(files)
 
 
@@ -64,25 +74,23 @@ read_and_save_nibrs_segments <- function(segments) {
 
 
 
+
       setwd("D:/ucr_data_storage/clean_data/nibrs")
       save_files(data = data,
                  year = unique(data$year),
                  file_name = paste0("nibrs_", segment, "_segment_"),
                  save_name = paste0("nibrs_", segment, "_segment_"))
       message(file)
+      print(names(data))
+      check_nibrs_data(data)
+      print(summary(data$incident_date))
+      print(summary(data$arrest_date))
+      rm(data); gc(); Sys.sleep(5)
     }
   }
 }
 
-
-# Check data
-
-files <- list.files(pattern = "2018.rda")
-for (file in files) {
-  load(file)
-  assign("data", get(gsub(".rda", "", file)))
-  rm(list = gsub(".rda", "", file))
-  message(file)
+check_nibrs_data <- function(data) {
   data$incident_number                 <- NULL
   data$ori                             <- NULL
   data$incident_date                   <- NULL
@@ -92,7 +100,17 @@ for (file in files) {
   data$arrestee_sequence_number        <- NULL
   data$exceptional_clearance_date      <- NULL
   data$date_recovered                  <- NULL
-  print(sapply(data, unique))
-  message("\n\n\n\n\n")
-
+  print(sapply(data, function(x) sort(unique(x), na.last = TRUE)))
+  message("\n\n\n\n")
 }
+
+# Check data
+# files <- list.files(pattern = "2018.rda")
+# for (file in files) {
+#   load(file)
+#   assign("data", get(gsub(".rda", "", file)))
+#   rm(list = gsub(".rda", "", file))
+#   message(file)
+#   check_nibrs_file(data)
+#
+# }

@@ -29,7 +29,7 @@ nibrs_offender_value_labels <- c(state_value_labels,
                                  gsub("replace", "offender", age_sex_race_ethnicity[1:18]))
 
 setwd(here::here("setup_files"))
-make_sps_setup(file_name = "nibrs_offender_segment",
+make_sps_setup(file_name     = "nibrs_offender_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
-               value_labels = nibrs_offender_value_labels)
+               value_labels  = nibrs_offender_value_labels)

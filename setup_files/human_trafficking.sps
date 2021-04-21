@@ -1,6 +1,6 @@
 human_trafficking
 
-This setup file was created using the R package asciiSetupReader(version 2.3.1) on 2020-02-28 16:25:43. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.3.1) on 2020-10-20 16:19:56. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -426,7 +426,7 @@ V208      "dec_clr_18_total"
 .
 
 value labels
-V2
+V2        
 '50'      "Alaska"
 '01'      "Alabama"
 '03'      "Arkansas"
@@ -483,7 +483,7 @@ V2
 '48'      "Wisconsin"
 '47'      "West Virginia"
 '49'      "Wyoming"
-V4
+V4        
 '0 '      "possessions"
 '1 '      "city 250,000+"
 '1A'      "city 1,000,000+"
@@ -507,7 +507,7 @@ V4
 '9C'      "msa-county 10,000 thru 24,999"
 '9D'      "msa-county under 10,000"
 '9E'      "msa state police"
-V5
+V5        
 '0'       "Possessions"
 '1'       "New England"
 '2'       "Middle Atlantic"
@@ -527,10 +527,10 @@ V5
 'G'       "West South Central"
 'H'       "Mountain"
 'I'       "Pacific"
-V8
+V8        
 'Y'       "core city of MSA"
 'N'       "not core city of MSA"
-V10
+V10       
 '0 '      "possessions"
 '1 '      "city 250,000+"
 '1A'      "city 1,000,000+"
@@ -554,51 +554,51 @@ V10
 '9C'      "msa-county 10,000 thru 24,999"
 '9D'      "msa-county under 10,000"
 '9E'      "msa state police"
-V17
+V17       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V18
+V18       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V19
+V19       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V20
+V20       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V21
+V21       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V22
+V22       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V23
+V23       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V24
+V24       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V25
+V25       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V26
+V26       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V27
+V27       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"
-V28
+V28       
 'X'       "no human trafficking information reported"
 'Q'       "type 14, no report"
 'N'       "data received"

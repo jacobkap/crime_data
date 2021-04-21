@@ -1,6 +1,6 @@
 nibrs_arrestee_segment
 
-This setup file was created using the R package asciiSetupReader(version 2.3.1) on 2020-03-17 11:18:56. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2021-03-15 21:26:24. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -207,6 +207,8 @@ V16
 'BB'       "7-364 days old"
 V17        
 'M'        "male"
+'m'        "male"
+'f'        "female"
 'F'        "female"
 'U'        "unknown"
 V18        

@@ -148,7 +148,7 @@ get_number_months_reported <- function(data) {
     summarize(number_of_months_reported = sum(dummy)) %>%
     ungroup()
 
-  data <- data.table::dcast(data, ori ~ offense_code,
+  data <- reshape2::dcast(data, ori ~ offense_code,
                             value.var = "number_of_months_reported")
   data[is.na(data)] <- 0
   names(data)[2:ncol(data)] <-
@@ -186,7 +186,8 @@ make_simple_columns <- function(data) {
   data$tot_asian    <- rowSums(data[, grep("asian", names(data))])
   data$tot_black    <- rowSums(data[, grep("black", names(data))])
   data$tot_white    <- rowSums(data[, grep("white", names(data))])
-  data$tot_hispanic    <- rowSums(data[, grep("hisp", names(data))])
+  data$tot_hispanic <- rowSums(data[, grep("hispanic", names(data))])
+  data$tot_non_hisp <- rowSums(data[, grep("non_hisp", names(data))])
 
   data <-
     data %>%

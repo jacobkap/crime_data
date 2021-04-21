@@ -4,11 +4,29 @@ source(here('R/crosswalk.R'))
 crosswalk <- read_merge_crosswalks()
 
 get_arson(crosswalk)
-arson_yearly <- get_data_yearly("arson", "1979_2018", "ucr_arson_yearly_", crosswalk)
+arson_yearly <- get_data_yearly("arson", "1979_2019", "ucr_arson_yearly_", crosswalk)
+
+table(arson_yearly$year)
+table(arson_yearly$number_of_months_missing)
+
+table(arson_yearly$number_of_months_missing[arson_yearly$year %in% 2018])
+table(arson_yearly$number_of_months_missing[arson_yearly$year %in% 2019])
+
+
+summary(arson_yearly$est_damage_storage[arson_yearly$year %in% 2018])
+summary(arson_yearly$est_damage_storage[arson_yearly$year %in% 2019])
+summary(arson_yearly$cleared_18_grand_total[arson_yearly$year %in% 2018])
+summary(arson_yearly$cleared_18_grand_total[arson_yearly$year %in% 2019])
+summary(arson_yearly$actual_all_other[arson_yearly$year %in% 2018])
+summary(arson_yearly$actual_all_other[arson_yearly$year %in% 2019])
+
+
+summary(arson_yearly[arson_yearly$year %in% 2019, ])
+
 global_checks(arson_yearly)
 setwd(here("clean_data/arson"))
-save_as_zip("ucr_arson_monthly_1979_2018_", pattern = "month")
-save_as_zip("ucr_arson_yearly_1979_2018_",  pattern = "year")
+save_as_zip("ucr_arson_monthly_1979_2019_", pattern = "month")
+save_as_zip("ucr_arson_yearly_1979_2019_",  pattern = "year")
 
 get_arson <- function(crosswalk) {
   setwd(here("raw_data/arson_from_fbi"))
@@ -97,8 +115,9 @@ get_arson <- function(crosswalk) {
     save_files(data = data,
                year = data$year[1],
                file_name = "ucr_arson_monthly_",
-               save_name = "ucr_arson_monthly_")
-    rm(data); gc(); Sys.sleep(3)
+               save_name = "ucr_arson_monthly_",
+               rda_and_stata_only = FALSE)
+    rm(data); gc(); #Sys.sleep(3)
   }
 }
 

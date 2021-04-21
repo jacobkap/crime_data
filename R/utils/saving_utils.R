@@ -14,10 +14,7 @@ save_files <- function(data,
                        year,
                        file_name,
                        save_name,
-                       rda_only = FALSE,
-                       stata_only = FALSE,
-                       rda_and_stata_only = TRUE,
-                       codebook = FALSE) {
+                       rda_only = FALSE) {
   data <-
     data %>%
     dplyr::mutate_if(is.Date, as.character)
@@ -27,45 +24,20 @@ save_files <- function(data,
   if (any(nchar(names(data)) > 32)) {
     print(names(data)[nchar(names(data)) > 32])
   }
-  if (stata_only == FALSE) {
     assign(paste0(file_name, year), data) # Change name
-    save( list = paste0(file_name, year),
-          file = paste0(save_name, year, ".rda"))
+    save(list = paste0(file_name, year),
+         file = paste0(save_name, year, ".rda"))
 
-  }
-
-  if (rda_only == FALSE) {
-    if (codebook) {
-      codebook_name <- paste0(file_name, "_codebook_", year, ".txt")
-      codebook_name <- gsub("__", "_", codebook_name)
-      codebook_name <- gsub("_\\.", "\\.", codebook_name)
-      memisc::Write(memisc::codebook(data),
-                    file = codebook_name)
-      convert_codebook_to_pdf(codebook_name)
-    }
-
-
+  if (!rda_only) {
     do.call("write_dta", list(as.name(paste0(file_name, year)),
                               path = paste0(save_name,
                                             year, ".dta")))
-
-    if (rda_and_stata_only == FALSE) {
-
-      do.call("write_csv", list(as.name(paste0(file_name, year)),
-                                path = paste0(save_name,
-                                              year, ".csv")))
-      do.call("write_sav", list(as.name(paste0(file_name, year)),
-                                path = paste0(save_name,
-                                              year, ".sav")))
-
-    }
-
-    do.call("rm", list(as.name(paste0(file_name, year))))
   }
+  do.call("rm", list(as.name(paste0(file_name, year))))
 }
 
 save_as_zip <- function(file_name, pattern = NULL) {
-  file_ext  <- c("rda", "dta", "csv", "sav")
+  file_ext  <- c("rda", "dta", "csv")
   all_files <- list.files()
 
 
@@ -82,10 +54,7 @@ save_as_zip <- function(file_name, pattern = NULL) {
     all_files <- all_files[-grep(".zip$", all_files)]
   }
 
-  codebooks <- list.files(pattern = "maltz|manual|codebook|pdf$|sps$")
-  # codebooks <- all_files[grep("maltz|manual|codebook|pdf$|sps$",
-  #                             all_files,
-  #                             ignore.case = TRUE)]
+  codebooks <- list.files(pattern = "maltz|manual|codebook|pdf$|sps$|doc$|docx$")
   for (i in seq_along(file_ext)) {
     zip_files <- all_files[grep(file_ext[i], all_files)]
     zip_files <- c(zip_files, codebooks)

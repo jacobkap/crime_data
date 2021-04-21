@@ -2,27 +2,28 @@ source(here::here('R/utils/arrests_utils_objects.R'))
 source(here::here('R/utils/arrests_utils.R'))
 source(here::here('R/utils/global_utils.R'))
 source(here::here('R/make_sps/make_arrest_sps.R'))
-setwd(here::here("raw_data/asr_from_fbi"))
+setwd("D:/ucr_data_storage/raw_data/asr_from_fbi")
+#setwd(here::here("raw_data/asr_from_fbi"))
 files = list.files(pattern = "DAT|dat|TXT|txt")
 
 files
-get_temp_arrest_files(files)
-combine_arrest_yearly()
-save_files_monthly()
+#get_temp_arrest_files(files)
+#combine_arrest_yearly()
+#save_files_monthly()
 
 
 setwd("D:/ucr_data_storage/clean_data/arrests")
-save_as_zip("ucr_arrests_monthly_other_crimes_1974_2018_",
+save_as_zip("ucr_arrests_monthly_other_crimes_1974_2019_",
             pattern = "monthly_other_crimes")
-save_as_zip("ucr_arrests_monthly_alcohol_or_property_1974_2018_",
+save_as_zip("ucr_arrests_monthly_alcohol_or_property_1974_2019_",
             pattern = "monthly_alcohol")
-save_as_zip("ucr_arrests_monthly_drug_1974_2018_",
+save_as_zip("ucr_arrests_monthly_drug_1974_2019_",
             pattern = "monthly_drug")
-save_as_zip("ucr_arrests_monthly_index_1974_2018_",
+save_as_zip("ucr_arrests_monthly_index_1974_2019_",
             pattern = "monthly_index")
-save_as_zip("ucr_arrests_monthly_all_crimes_race_sex_1974_2018_",
+save_as_zip("ucr_arrests_monthly_all_crimes_race_sex_1974_2019_",
             pattern = "monthly_all")
-save_as_zip("ucr_arrests_yearly_data_1974_2018_",
+save_as_zip("ucr_arrests_yearly_data_1974_2019_",
             pattern = "yearly")
 
 
@@ -36,7 +37,8 @@ get_temp_arrest_files <- function(files) {
       sps_years <- "1974_1979"
     }
 
-    setwd(here::here("raw_data/asr_from_fbi"))
+    setwd("D:/ucr_data_storage/raw_data/asr_from_fbi")
+    #setwd(here::here("raw_data/asr_from_fbi"))
     agency_header  <- get_agency_header(file,  sps_years)
     monthly_header <- get_monthly_header(file, sps_years)
     detail_header  <- get_detail_header(file,  sps_years)
@@ -112,7 +114,8 @@ long_to_wide_and_save <- function(detail_header,
                                   type,
                                   replace = TRUE) {
   source(here::here('R/crosswalk.R'))
-  setwd(here::here("clean_data/arrests_temp"))
+  setwd("D:/ucr_data_storage/clean_data/arrests_temp")
+  #setwd(here::here("clean_data/arrests_temp"))
   crosswalk <- read_merge_crosswalks()
   cross_names <- names(crosswalk)
   cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
@@ -220,6 +223,7 @@ long_to_wide_and_save <- function(detail_header,
                  file_name = file_name,
                  save_name = file_name,
                  rda_only  = TRUE)
+      gc(); Sys.sleep(5); gc()
 
     }
   }
@@ -227,14 +231,16 @@ long_to_wide_and_save <- function(detail_header,
 
 
 save_files_monthly <- function() {
-  setwd(here::here("clean_data/arrests_temp"))
+  setwd("D:/ucr_data_storage/clean_data/arrests_temp")
+  #setwd(here::here("clean_data/arrests_temp"))
   all_files <- list.files()
   all_files <- all_files[grepl("monthly", all_files)]
   print(all_files)
 
   for (file in all_files) {
-    setwd(here::here("clean_data/arrests_temp"))
-
+    setwd("D:/ucr_data_storage/clean_data/arrests_temp")
+    # setwd(here::here("clean_data/arrests_temp"))
+    print(file)
     file.copy(file, "D:/ucr_data_storage/clean_data/arrests",
               overwrite = TRUE)
 
@@ -245,13 +251,15 @@ save_files_monthly <- function() {
     setwd("D:/ucr_data_storage/clean_data/arrests")
 
     haven::write_dta(data, path = paste0(file_name, ".dta"))
-
+    rm(data); gc();
+    Sys.sleep(20)
   }
 
 }
 
 combine_arrest_yearly <- function() {
-  setwd(here::here("clean_data/arrests_temp"))
+  setwd("D:/ucr_data_storage/clean_data/arrests_temp")
+ # setwd(here::here("clean_data/arrests_temp"))
   all_files <- list.files()
   all_files <- gsub(".....rda$", "", all_files)
   all_files <- unique(all_files)
@@ -259,16 +267,17 @@ combine_arrest_yearly <- function() {
   print(all_files)
 
   for (temp_file in all_files) {
-    setwd(here::here("clean_data/arrests_temp"))
+    setwd("D:/ucr_data_storage/clean_data/arrests_temp")
+   # setwd(here::here("clean_data/arrests_temp"))
     files <- list.files(pattern = temp_file)
 
     files_1974_1994 <- files[readr::parse_number(files) %in% 1974:1994]
-    files_1995_2018 <- files[readr::parse_number(files) %in% 1995:2018]
+    files_1995_2019 <- files[readr::parse_number(files) %in% 1995:2019]
     combine_and_save(files_1974_1994)
-    combine_and_save(files_1995_2018)
+    combine_and_save(files_1995_2019)
   }
   Sys.sleep(5)
-  print("\n\n\n\n")
+  message("\n\n\n\n")
   message(temp_file)
 }
 
@@ -287,7 +296,8 @@ combine_and_save <- function(files) {
 
 
     data <- data.frame(stringsAsFactors = FALSE)
-    setwd(here::here("clean_data/arrests_temp"))
+    setwd("D:/ucr_data_storage/clean_data/arrests_temp")
+    # setwd(here::here("clean_data/arrests_temp"))
     for (file in files) {
       load(file)
       assign("temp", get(gsub(".rda", "", file))) # Change name
@@ -303,11 +313,10 @@ combine_and_save <- function(files) {
     save_files(data = data,
                year = years,
                file_name = file_name,
-               save_name = file_name,
-               rda_and_stata_only = TRUE,
-               codebook = FALSE)
+               save_name = file_name)
     rm(data); gc();
-    setwd(here::here("clean_data/arrests_temp"))
+    setwd("D:/ucr_data_storage/clean_data/arrests_temp")
+    #setwd(here::here("clean_data/arrests_temp"))
   }
 }
 

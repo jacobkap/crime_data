@@ -7,39 +7,49 @@ cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
 
 #save_supplement_data_monthly()
 ucr_property_stolen_recovered_yearly <- get_supplement_yearly()
+ucr_property_stolen_recovered_yearly <- data.frame(ucr_property_stolen_recovered_yearly)
 
+summary(ucr_property_stolen_recovered_yearly$value_stolen_total[ucr_property_stolen_recovered_yearly$year %in% 2006])
+summary(ucr_property_stolen_recovered_yearly$value_stolen_total[ucr_property_stolen_recovered_yearly$year %in% 2018])
+summary(ucr_property_stolen_recovered_yearly$value_stolen_total[ucr_property_stolen_recovered_yearly$year %in% 2019])
+summary(ucr_property_stolen_recovered_yearly$offenses_theft_all_other[ucr_property_stolen_recovered_yearly$year %in% 2006])
+summary(ucr_property_stolen_recovered_yearly$offenses_theft_all_other[ucr_property_stolen_recovered_yearly$year %in% 2018])
+summary(ucr_property_stolen_recovered_yearly$offenses_theft_all_other[ucr_property_stolen_recovered_yearly$year %in% 2019])
+summary(ucr_property_stolen_recovered_yearly$value_stolen_local_mtr_veh[ucr_property_stolen_recovered_yearly$year %in% 2006])
+summary(ucr_property_stolen_recovered_yearly$value_stolen_local_mtr_veh[ucr_property_stolen_recovered_yearly$year %in% 2018])
+summary(ucr_property_stolen_recovered_yearly$value_stolen_local_mtr_veh[ucr_property_stolen_recovered_yearly$year %in% 2019])
 
-table(ucr_property_stolen_recovered_yearly$state)
-table(ucr_property_stolen_recovered_yearly$country_division)
-table(ucr_property_stolen_recovered_yearly$population_group)
-table(ucr_property_stolen_recovered_yearly$year)
-summary(ucr_property_stolen_recovered_yearly$population)
 table(ucr_property_stolen_recovered_yearly$number_of_months_reported)
 table(ucr_property_stolen_recovered_yearly$number_of_months_reported,
       ucr_property_stolen_recovered_yearly$year)
 summary(ucr_property_stolen_recovered_yearly)
-head(ucr_property_stolen_recovered_yearly$ori)
-head(ucr_property_stolen_recovered_yearly$ori9)
+global_checks(ucr_property_stolen_recovered_yearly)
+
+summary(ucr_property_stolen_recovered_yearly[ucr_property_stolen_recovered_yearly$year %in% 2019, ])
 
 save_files(data = ucr_property_stolen_recovered_yearly,
-           year = "1960_2018",
+           year = "1960_2019",
            file_name = "ucr_property_stolen_recovered_yearly_",
            save_name = "ucr_property_stolen_recovered_yearly_")
-save_as_zip("ucr_property_stolen_recovered_yearly_1960_2018_", "yearly")
-save_as_zip("ucr_property_stolen_recovered_monthly_1960_2018_", "monthly")
+
+
+setwd(here::here("clean_data/supplement_return_a"))
+save_as_zip("ucr_property_stolen_recovered_yearly_1960_2019_", "yearly")
+save_as_zip("ucr_property_stolen_recovered_monthly_1960_2019_", "monthly")
 
 
 save_supplement_data_monthly <- function() {
 
-  setwd(here::here("raw_data/supplement_to_offenses_known_from_fbi"))
+ # setwd(here::here("raw_data/supplement_to_offenses_known_from_fbi"))
+  setwd("D:/ucr_data_storage/raw_data/supplement_to_offenses_known_from_fbi")
   files <- list.files(pattern = ".DAT|.TXT|.txt")
   for (file in files) {
-    setwd(here::here("raw_data/supplement_to_offenses_known_from_fbi"))
+   # setwd(here::here("raw_data/supplement_to_offenses_known_from_fbi"))
+    setwd("D:/ucr_data_storage/raw_data/supplement_to_offenses_known_from_fbi")
     data <- read_ascii_setup(data       = file,
                              setup_file = here::here("setup_files/supplement_to_return_a.sps"))
     # The last row is blank, this removes it
     data <- data[!is.na(data$ori), ]
-
 
 
     data <-
@@ -113,8 +123,13 @@ save_supplement_data_monthly <- function() {
       dplyr::rename(report_indicator = status)
 
     data$state[data$state %in% c("69", "98", "99")] <- NA
+    data$population_group[data$population_group %in% "2c"] <- NA
 
-    setwd(here::here("clean_data/supplement_return_a"))
+    # Drops Tulare, CA which has impossible high number of thefts
+    data <- data[!data$ori %in% "CA05400", ]
+
+    setwd("D:/ucr_data_storage/clean_data/supplement_return_a")
+ #   setwd(here::here("clean_data/supplement_return_a"))
     save_files(data = data,
                year = data$year[1],
                file_name = "ucr_property_stolen_recovered_monthly_",
@@ -126,7 +141,8 @@ save_supplement_data_monthly <- function() {
 }
 
 get_supplement_yearly <- function() {
-  setwd(here::here("clean_data/supplement_return_a"))
+  setwd("D:/ucr_data_storage/clean_data/supplement_return_a")
+ # setwd(here::here("clean_data/supplement_return_a"))
   files <- list.files(pattern = "monthly.*.rda$")
   supplement_yearly <- data.frame(stringsAsFactors = FALSE)
   for (file in files) {

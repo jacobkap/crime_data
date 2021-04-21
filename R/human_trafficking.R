@@ -5,11 +5,40 @@ crosswalk <- read_merge_crosswalks()
 
 human_trafficking_monthly <- get_human_trafficking_monthly()
 human_trafficking_yearly  <- get_data_yearly("human_trafficking",
-                                            "2013_2018",
+                                            "2013_2019",
                                             "human_trafficking_yearly_",
                                             crosswalk)
+table(human_trafficking_yearly$year)
+table(human_trafficking_yearly$number_of_months_reported)
+
+table(human_trafficking_yearly$number_of_months_reported[human_trafficking_yearly$year %in% 2018])
+table(human_trafficking_yearly$number_of_months_reported[human_trafficking_yearly$year %in% 2019])
+
+
+summary(human_trafficking_yearly$actual_commercial_sex_acts[human_trafficking_yearly$year %in% 2018])
+summary(human_trafficking_yearly$actual_commercial_sex_acts[human_trafficking_yearly$year %in% 2019])
+summary(human_trafficking_yearly$reported_involuntary_serv[human_trafficking_yearly$year %in% 2018])
+summary(human_trafficking_yearly$reported_involuntary_serv[human_trafficking_yearly$year %in% 2019])
+summary(human_trafficking_yearly$tot_clr_total[human_trafficking_yearly$year %in% 2018])
+summary(human_trafficking_yearly$tot_clr_total[human_trafficking_yearly$year %in% 2019])
+
+summary(human_trafficking_monthly$actual_commercial_sex_acts[human_trafficking_monthly$year %in% 2018])
+summary(human_trafficking_monthly$actual_commercial_sex_acts[human_trafficking_monthly$year %in% 2019])
+summary(human_trafficking_monthly$reported_involuntary_serv[human_trafficking_monthly$year %in% 2018])
+summary(human_trafficking_monthly$reported_involuntary_serv[human_trafficking_monthly$year %in% 2019])
+summary(human_trafficking_monthly$tot_clr_total[human_trafficking_monthly$year %in% 2018])
+summary(human_trafficking_monthly$tot_clr_total[human_trafficking_monthly$year %in% 2019])
+
+summary(human_trafficking_monthly)
+summary(human_trafficking_yearly)
+
+table(human_trafficking_monthly$state)
+table(human_trafficking_monthly$population_group)
+table(human_trafficking_monthly$country_division  )
+
+
 setwd(here::here("clean_data/human_trafficking"))
-save_as_zip("human_trafficking_2013_2018_")
+save_as_zip("human_trafficking_2013_2019_")
 
 get_human_trafficking_monthly <- function() {
   setwd(here::here("raw_data/human_trafficking"))
@@ -58,8 +87,7 @@ get_human_trafficking_monthly <- function() {
              year      = paste0(min(final$year), "_", max(final$year)),
              file_name = "human_trafficking_monthly_",
              save_name = "human_trafficking_monthly_",
-             rda_and_stata_only = FALSE,
-             codebook  = FALSE)
+             rda_and_stata_only = FALSE)
 
   return(final)
 }
