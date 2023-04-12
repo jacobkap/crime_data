@@ -1,39 +1,41 @@
+library(here)
 source(here('R/utils/global_utils.R'))
 source(here('R/make_sps/make_arson_sps.R'))
 source(here('R/crosswalk.R'))
 crosswalk <- read_merge_crosswalks()
 
-get_arson(crosswalk)
-arson_yearly <- get_data_yearly("arson", "1979_2019", "ucr_arson_yearly_", crosswalk)
-
+get_arson_monthly(crosswalk)
+arson_yearly <- get_data_yearly("arson", "1979_2021", "ucr_arson_yearly_", crosswalk)
+names(arson_yearly)
 table(arson_yearly$year)
 table(arson_yearly$number_of_months_missing)
 
-table(arson_yearly$number_of_months_missing[arson_yearly$year %in% 2018])
-table(arson_yearly$number_of_months_missing[arson_yearly$year %in% 2019])
+table(arson_yearly$last_month_reported[arson_yearly$year %in% 2019])
+table(arson_yearly$last_month_reported[arson_yearly$year %in% 2020])
 
 
-summary(arson_yearly$est_damage_storage[arson_yearly$year %in% 2018])
 summary(arson_yearly$est_damage_storage[arson_yearly$year %in% 2019])
-summary(arson_yearly$cleared_18_grand_total[arson_yearly$year %in% 2018])
+summary(arson_yearly$est_damage_storage[arson_yearly$year %in% 2021])
 summary(arson_yearly$cleared_18_grand_total[arson_yearly$year %in% 2019])
-summary(arson_yearly$actual_all_other[arson_yearly$year %in% 2018])
+summary(arson_yearly$cleared_18_grand_total[arson_yearly$year %in% 2021])
 summary(arson_yearly$actual_all_other[arson_yearly$year %in% 2019])
+summary(arson_yearly$actual_all_other[arson_yearly$year %in% 2021])
 
 
-summary(arson_yearly[arson_yearly$year %in% 2019, ])
+summary(arson_yearly[arson_yearly$year %in% 2021, ])
 
 global_checks(arson_yearly)
-setwd(here("clean_data/arson"))
-save_as_zip("ucr_arson_monthly_1979_2019_", pattern = "month")
-save_as_zip("ucr_arson_yearly_1979_2019_",  pattern = "year")
+setwd(here("E:/ucr_data_storage/clean_data/arson"))
+save_as_zip("ucr_arson_monthly_1979_2021_", pattern = "month")
+save_as_zip("ucr_arson_yearly_1979_2021_",  pattern = "year")
 
-get_arson <- function(crosswalk) {
-  setwd(here("raw_data/arson_from_fbi"))
+get_arson_monthly <- function(crosswalk) {
+  setwd(here("D:/ucr_data_storage/raw_data/arson_from_fbi"))
   files <- list.files()
   files <- files[grepl(".txt|.dat", files, ignore.case = TRUE)]
+  print(files)
   for (file in files) {
-    setwd(here("raw_data/arson_from_fbi"))
+    setwd(here("D:/ucr_data_storage/raw_data/arson_from_fbi"))
     message(file)
     data <- read_ascii_setup(file, here("setup_files/ucr_arson.sps"))
 
@@ -55,7 +57,7 @@ get_arson <- function(crosswalk) {
              -msa,
              -sequence_number,
              -core_city_indicator) %>%
-      # for some reason in 2018 there are a bunch of agencies with duplicate
+      # for some reason in 2019 there are a bunch of agencies with duplicate
       # rows
       distinct(ori, .keep_all = TRUE)
     data <- fix_all_negatives(data)
@@ -111,12 +113,11 @@ get_arson <- function(crosswalk) {
     data$state[data$state %in% c("69", "98", "99")] <- NA
 
     # Save the data in various formats
-    setwd(here("clean_data/arson"))
+    setwd(here("D:/ucr_data_storage/clean_data/arson"))
     save_files(data = data,
                year = data$year[1],
                file_name = "ucr_arson_monthly_",
-               save_name = "ucr_arson_monthly_",
-               rda_and_stata_only = FALSE)
+               save_name = "ucr_arson_monthly_")
     rm(data); gc(); #Sys.sleep(3)
   }
 }

@@ -1,4 +1,3 @@
-devtools::install_github("jacobkap/asciiSetupReader")
 library(asciiSetupReader)
 library(readr)
 
@@ -150,3 +149,5 @@ state_group_division_value_labels <- c(state_value_labels,
                                        "G = West South Central",
                                        "H = Mountain",
                                        "I = Pacific")
+
+

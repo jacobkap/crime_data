@@ -1,6 +1,6 @@
 nibrs_window_exceptional_clearance_segment
 
-This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2021-03-15 21:24:29. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.0) on 2022-10-06 05:18:10. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -28,6 +28,7 @@ V21      77-79
 V22      80-82
 V23      83-85
 V24      86-88
+V25      89
 .
 
 variable labels
@@ -55,6 +56,7 @@ V21      "ucr_offense_code_7"
 V22      "ucr_offense_code_8"
 V23      "ucr_offense_code_9"
 V24      "ucr_offense_code_10"
+V25      "cargo_theft_indicator"
 .
 
 value labels
@@ -168,6 +170,7 @@ V15
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -232,6 +235,7 @@ V16
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -296,6 +300,7 @@ V17
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -360,6 +365,7 @@ V18
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -424,6 +430,7 @@ V19
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -488,6 +495,7 @@ V20
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -552,6 +560,7 @@ V21
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -616,6 +625,7 @@ V22
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -680,6 +690,7 @@ V23
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -744,6 +755,7 @@ V24
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -790,6 +802,9 @@ V24
 '64A'      "human trafficking - commercial sex acts"
 '64B'      "human trafficking - involuntary servitude"
 '720'      "animal cruelty"
+V25        
+'Y'        "yes"
+'N'        "no"
 .
 
 

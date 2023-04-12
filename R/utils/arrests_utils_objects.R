@@ -1,18 +1,10 @@
 matches_types <- data.frame(matches =
                               c(# Age by sex
                                 "(fe)?male|tot_arrest|tot_juv|tot_adult|tot_.*[0-9]",
-                                # Totals - age
-                             #   "tot_.*[0-9]|tot_arrest|tot_juv|tot_adult",
-                                # Totals - race
-                                "black|white|asian|ind|tot_arrest|hisp",
-                                # Totals - sex
-                                "tot_(fe)?male|tot_arrest|tot_juv|tot_adult"
-                              ),
+                                #"Totals race, sex"
+                                "black|white|asian|ind|tot_arrest|hisp|tot_(fe)?male|tot_arrest|tot_juv|tot_adult"),
                             name = c("age",
-                                    # "totals_age",
-                                     "race",
-                                     "sex"),
-                            stringsAsFactors = FALSE)
+                                    "race_sex"))
 
 index_crimes <- c("murder",
                   "rape",

@@ -413,9 +413,9 @@ sex <- c(".*inap.*" = NA,
          "^$"         = "")
 
 
-homicide_type <- c("murder nonneglig" = "murder and non-negligent manslaughter",
+homicide_type <- c("murder nonneglig" = "murder and nonnegligent manslaughter",
                    "mansl by neglig" = "manslaughter by negligence",
-                   "mrdr/nn-nglgt mnsltr" = "murder and non-negligent manslaughter")
+                   "mrdr/nn-nglgt mnsltr" = "murder and nonnegligent manslaughter")
 
 situation <- c("singl vic-mul of"     = "single victim/multiple offenders",
                "single vict-offe"     = "single victim/single offender",

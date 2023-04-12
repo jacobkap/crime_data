@@ -1,6 +1,6 @@
 ucr_leoka
 
-This setup file was created using the R package asciiSetupReader(version 2.3.1) on 2020-10-20 23:51:09. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.0) on 2022-10-06 22:48:57. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -4538,7 +4538,7 @@ V2264      "dec_time_of_assault_2201_to_0000"
 .
 
 value labels
-V2
+V2         
 '50'       "Alaska"
 '01'       "Alabama"
 '03'       "Arkansas"
@@ -4595,7 +4595,7 @@ V2
 '48'       "Wisconsin"
 '47'       "West Virginia"
 '49'       "Wyoming"
-V4
+V4         
 '0 '       "possessions"
 '1 '       "city 250,000+"
 '1A'       "city 1,000,000+"
@@ -4619,7 +4619,7 @@ V4
 '9C'       "msa-county 10,000 thru 24,999"
 '9D'       "msa-county under 10,000"
 '9E'       "msa state police"
-V5
+V5         
 '0'        "Possessions"
 '1'        "New England"
 '2'        "Middle Atlantic"
@@ -4639,176 +4639,176 @@ V5
 'G'        "West South Central"
 'H'        "Mountain"
 'I'        "Pacific"
-V51
+V51        
 '0'        "for all reports"
 '1'        "city list and assault tabulations only"
 '2'        "city list only"
-V52
+V52        
 '0'        "police employee data has been updated for current year"
 '1'        "not updated, no police employee data"
 '2'        "containts police employee data from previous year"
-V66
+V66        
 '0'        "no, it is not covered by another agency"
 '1'        "yes, it is covered by another agency"
-V67
+V67        
 '0'        "reported"
 '1'        "reported, no data"
 '2'        "not reported"
-V69
+V69        
 '0'        "normal"
 '1'        "no breakdowns, all data will be in the 'male employees' area"
-V70
+V70        
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V71
+V71        
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V53
+V53        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V253
+V253       
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V254
+V254       
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V54
+V54        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V436
+V436       
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V437
+V437       
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V55
+V55        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V619
+V619       
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V620
+V620       
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V56
+V56        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V802
+V802       
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V803
+V803       
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V57
+V57        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V985
+V985       
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V986
+V986       
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V58
+V58        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V1168
+V1168      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V1169
+V1169      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V59
+V59        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V1351
+V1351      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V1352
+V1352      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V60
+V60        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V1534
+V1534      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V1535
+V1535      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V61
+V61        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V1717
+V1717      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V1718
+V1718      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V62
+V62        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V1900
+V1900      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V1901
+V1901      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V63
+V63        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"
 '3'        "deleted"
-V2083
+V2083      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V2084
+V2084      
 '0'        "information complete"
 '1'        "assaults not reported"
 '2'        "assaults reported but no breakdowns"
-V64
+V64        
 '0'        "normal update"
 '1'        "not reported"
 '2'        "reported, no data"

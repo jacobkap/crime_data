@@ -1,37 +1,40 @@
 source(here::here('R/crosswalk.R'))
 source(here::here('R/utils/global_utils.R'))
 source(here::here('R/utils/SHR_utils.R'))
+source(here::here('R/make_sps/make_shr_sps.R'))
 
-crosswalk <- read_merge_crosswalks()
-cross_names <- names(crosswalk)
-cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
-shr_1976_2019 <- agg_shr(crosswalk, cross_names)
+crosswalk     <- read_merge_crosswalks()
+cross_names   <- names(crosswalk)
+cross_names   <- cross_names[!cross_names %in% c("ori", "ori9")]
+shr_1976_2021 <- agg_shr(crosswalk, cross_names)
 
-global_checks(shr_1976_2019)
+global_checks(shr_1976_2021)
+table(shr_1976_2021$month_of_offense)
+table(shr_1976_2021$victim_1_race[shr_1976_2021$year %in% 2019])
+table(shr_1976_2021$victim_1_race[shr_1976_2021$year %in% 2021])
+table(shr_1976_2021$offender_1_sex[shr_1976_2021$year %in% 2019])
+table(shr_1976_2021$offender_1_sex[shr_1976_2021$year %in% 2021])
+table(shr_1976_2021$offender_1_circumstance[shr_1976_2021$year %in% 2019])
+table(shr_1976_2021$offender_1_circumstance[shr_1976_2021$year %in% 2021])
+table(shr_1976_2021$month_of_offense[shr_1976_2021$year %in% 2019])
+table(shr_1976_2021$month_of_offense[shr_1976_2021$year %in% 2021])
 
-table(shr_1976_2019$victim_1_race[shr_1976_2019$year %in% 2018])
-table(shr_1976_2019$victim_1_race[shr_1976_2019$year %in% 2019])
-table(shr_1976_2019$offender_1_sex[shr_1976_2019$year %in% 2018])
-table(shr_1976_2019$offender_1_sex[shr_1976_2019$year %in% 2019])
-table(shr_1976_2019$offender_1_circumstance[shr_1976_2019$year %in% 2018])
-table(shr_1976_2019$offender_1_circumstance[shr_1976_2019$year %in% 2019])
-
-shr_checks(shr_1976_2019, age = FALSE)
-shr_checks(shr_1976_2019, age = TRUE)
-setwd(here::here("clean_data/SHR"))
-save_files(data = shr_1976_2019,
-           year = "1976_2019",
+shr_checks(shr_1976_2021, age = FALSE)
+shr_checks(shr_1976_2021, age = TRUE)
+setwd(here::here("E:/ucr_data_storage/clean_data/SHR"))
+save_files(data = shr_1976_2021,
+           year = "1976_2021",
            file_name = "shr_",
-           save_name = "shr_",
-           rda_and_stata_only = FALSE)
-save_as_zip("shr_1976_2019_")
+           save_name = "shr_")
+save_as_zip("shr_1976_2021_")
 
 agg_shr <- function(crosswalk, cross_names) {
   source(here::here('R/utils/global_utils.R'))
   shr <- data.table()
 
-  setwd(here::here("raw_data/shr_from_fbi"))
+  setwd(here::here("D:/ucr_data_storage/raw_data/shr_from_fbi"))
   files <- list.files()
+  print(files)
   for (file in files) {
     data <- read_ascii_setup(file, here::here("setup_files/ucr_shr.sps"))
     data <- data[!is.na(data$ori), ]
@@ -40,11 +43,12 @@ agg_shr <- function(crosswalk, cross_names) {
     data$year       <- fix_years(data$year)
     data            <- combine_rename_shr(data, crosswalk)
     shr             <- rbind(shr, data, fill = TRUE)
+    message(file)
   }
 
   # Until FBI sends me the ASCII files for all years, will use NACJD data
   # for years 1976-1985!
-  setwd(here::here("raw_data/nacjd_data/SHR"))
+  setwd(here::here("D:/ucr_data_storage/raw_data/nacjd_data/SHR"))
   for (year in 1976:1984) {
     data <- read_ascii_setup(data       = paste0("ucr_shr_", year, ".txt"),
                              setup_file = paste0("ucr_shr_", year, ".sps"))
@@ -60,6 +64,11 @@ agg_shr <- function(crosswalk, cross_names) {
     message(year);
   }
   shr <- data.frame(shr)
+  month_number_name        <- tolower(month.name)
+  names(month_number_name) <- paste0("^", 1:12, "$")
+
+
+  shr$month_of_offense <- str_replace_all(shr$month_of_offense, month_number_name)
   shr <- reorder_shr_columns(shr, cross_names)
 
   shr$state[shr$state %in% c("69", "98", "99")] <- NA
@@ -69,7 +78,7 @@ agg_shr <- function(crosswalk, cross_names) {
 combine_rename_shr <- function(data, crosswalk) {
   data <-
     data %>%
-    left_join(crosswalk) %>%
+    left_join(crosswalk, by = "ori") %>%
     mutate_if(is.character, tolower) %>%
     mutate(ori = toupper(ori),
            ori9 = toupper(ori9),
@@ -112,11 +121,7 @@ clean_shr <- function(data) {
                                          str_replace_all_lower, circumstance)
   data[, subcircumstance_cols] <- sapply(data[, subcircumstance_cols],
                                          str_replace_all_lower, subcircumstance)
-  data[, age_cols]             <- sapply(data[, age_cols],shr_1976_2018 %>%
-                                           filter(!offender_1_race %in% "p") %>%
-                                           mutate(offender_1_race = capitalize_words(offender_1_race)) %>%
-                                           crimeutils::make_barplots("offender_1_race", count = "FALSE") +
-                                           ggplot2::scale_y_continuous(labels = scales::percent)
+  data[, age_cols]             <- sapply(data[, age_cols],
                                          str_replace_all_lower, age)
   data[, sex_cols]             <- sapply(data[, sex_cols],
                                          str_replace_all_lower, sex)
@@ -150,6 +155,7 @@ clean_shr <- function(data) {
   return(data)
 }
 
+
 # For victim/offender columns where there is no additional victim/offender,
 # makes all values NA
 fix_additionals <- function(data) {
@@ -170,7 +176,12 @@ fix_additionals <- function(data) {
 }
 
 reorder_shr_columns <- function(data, cross_names) {
-  starting_cols <- c("ori", "ori9", "year", "state", "state_abb")
+  starting_cols <- c("ori",
+                     "ori9",
+                     "year",
+                     "state",
+                     "state_abb",
+                     "month_of_offense")
   offenders     <- grep("^offender",        names(data), value = TRUE)
   vic_age       <- grep("victim.*age",      names(data), value = TRUE)
   vic_sex       <- grep("victim.*sex",      names(data), value = TRUE)
@@ -178,14 +189,14 @@ reorder_shr_columns <- function(data, cross_names) {
   vic_ethnic    <- grep("victim.*origin",   names(data), value = TRUE)
   vic_relation  <- grep("victim.*relation", names(data), value = TRUE)
   others <- names(data)[!names(data) %in%
-                          c(cross_names,
-                            starting_cols,
-                            offenders,
-                            vic_age,
-                            vic_sex,
-                            vic_race,
-                            vic_ethnic,
-                            vic_relation)]
+                          c(all_of(cross_names),
+                            all_of(starting_cols),
+                            all_of(offenders),
+                            all_of(vic_age),
+                            all_of(vic_sex),
+                            all_of(vic_race),
+                            all_of(vic_ethnic),
+                            all_of(vic_relation))]
   others <- others[-grep("icpsr|identifier_code", others)]
   data <-
     data %>%

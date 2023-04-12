@@ -1,6 +1,6 @@
 ucr_hate_crimes_incident_report
 
-This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-27 10:29:26. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2023-04-03 22:54:36. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -204,7 +204,7 @@ V10
 'A'        "Asian or Pacific Islander"
 'M'        "Multi-racial Group"
 'U'        "Unknown"
-'P'        "Unknown"
+'P'        "Native Hawaiian/Other Pacific Islander"
 V11        
 '200'      "Arson"
 '13A'      "Aggravated Assault"
@@ -258,6 +258,9 @@ V11
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
+'720'      "Unknown"
+'61A'      "Unknown"
+'101'      "Unknown"
 V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
@@ -403,6 +406,9 @@ V16
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
+'720'      "Unknown"
+'61A'      "Unknown"
+'101'      "Unknown"
 V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
@@ -548,6 +554,9 @@ V21
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
+'720'      "Unknown"
+'61A'      "Unknown"
+'101'      "Unknown"
 V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
@@ -693,6 +702,9 @@ V26
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
+'720'      "Unknown"
+'61A'      "Unknown"
+'101'      "Unknown"
 V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
@@ -838,6 +850,9 @@ V31
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
+'720'      "Unknown"
+'61A'      "Unknown"
+'101'      "Unknown"
 V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
@@ -983,6 +998,9 @@ V36
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
+'720'      "Unknown"
+'61A'      "Unknown"
+'101'      "Unknown"
 V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
@@ -1128,6 +1146,9 @@ V41
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
+'720'      "Unknown"
+'61A'      "Unknown"
+'101'      "Unknown"
 V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
@@ -1273,6 +1294,9 @@ V46
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
+'720'      "Unknown"
+'61A'      "Unknown"
+'101'      "Unknown"
 V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
@@ -1418,6 +1442,9 @@ V51
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
+'720'      "Unknown"
+'61A'      "Unknown"
+'101'      "Unknown"
 V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"
@@ -1563,6 +1590,9 @@ V56
 '120'      "Robbery"
 '280'      "Stolen Property Offenses - Receiving, Selling, etc."
 '520'      "Weapon Law Violations"
+'720'      "Unknown"
+'61A'      "Unknown"
+'101'      "Unknown"
 V13        
 '01'       "Air/Bus/Train Terminal"
 '02'       "Bank/Savings and Loan"

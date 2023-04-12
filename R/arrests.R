@@ -2,33 +2,145 @@ source(here::here('R/utils/arrests_utils_objects.R'))
 source(here::here('R/utils/arrests_utils.R'))
 source(here::here('R/utils/global_utils.R'))
 source(here::here('R/make_sps/make_arrest_sps.R'))
-setwd("D:/ucr_data_storage/raw_data/asr_from_fbi")
-#setwd(here::here("raw_data/asr_from_fbi"))
+source(here::here("R/make_sps/make_arrest_post_2020_sps.R"))
+setwd("E:/ucr_data_storage/raw_data/asr_from_fbi")
 files = list.files(pattern = "DAT|dat|TXT|txt")
-
+files <- files[files != "2021_ASR12MON_NATIONAL_MASTER_FILE.txt"] # 2021 data does not follow setup file
 files
-#get_temp_arrest_files(files)
-#combine_arrest_yearly()
-#save_files_monthly()
+get_post_2020_arrests("2021_ASR12MON_NATIONAL_MASTER_FILE.txt")
+#clean_arrest_files(files[35:length(files)])
+combine_arrest_yearly()
 
 
-setwd("D:/ucr_data_storage/clean_data/arrests")
-save_as_zip("ucr_arrests_monthly_other_crimes_1974_2019_",
+setwd("E:/ucr_data_storage/clean_data/arrests")
+save_as_zip("ucr_arrests_monthly_other_crimes_1974_2020_",
             pattern = "monthly_other_crimes")
-save_as_zip("ucr_arrests_monthly_alcohol_or_property_1974_2019_",
+save_as_zip("ucr_arrests_monthly_alcohol_or_property_1974_2020_",
             pattern = "monthly_alcohol")
-save_as_zip("ucr_arrests_monthly_drug_1974_2019_",
+save_as_zip("ucr_arrests_monthly_drug_1974_2020_",
             pattern = "monthly_drug")
-save_as_zip("ucr_arrests_monthly_index_1974_2019_",
+save_as_zip("ucr_arrests_monthly_index_1974_2020_",
             pattern = "monthly_index")
-save_as_zip("ucr_arrests_monthly_all_crimes_race_sex_1974_2019_",
+save_as_zip("ucr_arrests_monthly_all_crimes_race_sex_1974_2020_",
             pattern = "monthly_all")
-save_as_zip("ucr_arrests_yearly_data_1974_2019_",
-            pattern = "yearly")
+save_as_zip("ucr_arrests_yearly_data_1974_2021_",
+            pattern = "yearly.*_1974_2021")
+
+
+get_post_2020_arrests <- function(files) {
+  setwd("E:/ucr_data_storage/clean_data/arrests")
+  file_categories <- list.files(pattern = "yearly.*2020.rds")
+  file_categories <- gsub(".....rds$", "", file_categories)
+
+  for (file in files) {
+    setwd("E:/ucr_data_storage/raw_data/asr_from_fbi")
+    agency_header <- read_ascii_setup(file,
+                                      here::here("setup_files/arrests_agency_header_post_2020.sps")) %>%
+      filter(offense %in% 0) %>%
+      dplyr::select(-offense,
+                    -not_used1,
+                    -not_used2,
+                    -not_used3,
+                    -not_used4,
+                    -agency_count,
+                    -identifier_code,
+                    -sequence_number,
+                    -county) %>%
+      distinct(ori, .keep_all = TRUE) %>%
+      mutate(year = fix_years(year),
+             state_abb  = make_state_abb(state))
+
+    detail_header <- read_ascii_setup(file,
+                                      here::here("setup_files/arrests_detail_header_post_2020.sps")) %>%
+      filter(!offense_code %in% "header record") %>%
+      dplyr::select(-identifier_code,
+                    -state,
+                    -population_group,
+                    -country_division,
+                    -msa,
+                    -not_used,
+                    -year,
+                    -card_1_indicator,
+                    -card_2_indicator,
+                    -card_3_indicator,
+                    -adjustment) %>%
+      distinct(ori, offense_code, .keep_all = TRUE)
+    detail_header <- fastDummies::dummy_rows(detail_header,
+                                             select_columns = c("ori",
+                                                                "offense_code"),
+                                             dummy_value = 0)
+    # Make columns numeric
+    for (i in 3:ncol(detail_header)) {
+      detail_header[, i] <- as.numeric(detail_header[, i])
+    }
+    detail_header <- make_simple_columns(detail_header)
+    arrestee_info <- names(detail_header)
+    arrestee_info <- arrestee_info[!arrestee_info %in% c("ori", "offense_code")]
+
+    detail_header <-
+      detail_header %>%
+      pivot_wider(names_from = offense_code,
+                  values_from = arrestee_info,
+                  names_glue = "{offense_code}_{.value}")
+    detail_header <- data.frame(detail_header)
 
 
 
-get_temp_arrest_files <- function(files) {
+    source(here::here('R/crosswalk.R'))
+    crosswalk <- read_merge_crosswalks()
+    agency_header <-
+      agency_header %>%
+      filter(ori %in% detail_header$ori) %>%
+      left_join(crosswalk) %>%
+      left_join(detail_header)
+
+    names(agency_header) <- gsub("poss_drug_total_tot_female_adult",
+                                 "poss_drug_total_tot_female_adul", names(agency_header))
+    names(agency_header) <- gsub("poss_heroin_coke_tot_female_adult",
+                                 "poss_heroin_coke_tot_female_adu", names(agency_header))
+    names(agency_header) <- gsub("poss_other_drug_tot_female_adult",
+                                 "poss_other_drug_tot_female_adul", names(agency_header))
+
+    names(agency_header) <- gsub("poss_synth_narc_tot_female_adult",
+                                 "poss_synth_narc_tot_female_adul", names(agency_header))
+    names(agency_header) <- gsub("sale_drug_total_tot_female_adult",
+                                 "sale_drug_total_tot_female_adul", names(agency_header))
+    names(agency_header) <- gsub("sale_heroin_coke_tot_female_adult",
+                                 "sale_heroin_coke_tot_female_adu", names(agency_header))
+
+    names(agency_header) <- gsub("sale_other_drug_tot_female_adult",
+                                 "sale_other_drug_tot_female_adul", names(agency_header))
+    names(agency_header) <- gsub("sale_synth_narc_tot_female_adult",
+                                 "sale_synth_narc_tot_female_adul", names(agency_header))
+
+    names(agency_header) <- gsub("poss_heroin_coke_female_under_10",
+                                 "poss_heroin_coke_female_under10", names(agency_header))
+    names(agency_header) <- gsub("sale_heroin_coke_female_under_10",
+                                 "sale_heroin_coke_female_under10", names(agency_header))
+
+
+
+    names(agency_header) <- gsub("prostitution_pro_tot_female_adult", "prostitution_pro_tot_female_adul", names(agency_header))
+    names(agency_header) <- gsub("prostitution_ass_tot_female_adult", "prostitution_ass_tot_female_adul", names(agency_header))
+    names(agency_header) <- gsub("prostitution_pur_tot_female_adult", "prostitution_pur_tot_female_adul", names(agency_header))
+
+    setwd("E:/ucr_data_storage/clean_data/arrests")
+    for (file_category in file_categories) {
+      temp2020 <- readRDS(paste0(file_category, "2020.rds"))
+      temp_new <- agency_header[, names(agency_header) %in% names(temp2020)]
+      saveRDS(temp_new, file =  paste0(file_category,
+                                       unique(agency_header$year), ".rds"))
+      write_dta(temp_new, path = paste0(file_category,
+                                        unique(agency_header$year), ".dta"))
+    }
+
+  }
+}
+
+
+
+
+clean_arrest_files <- function(files) {
   print(files)
   for (file in files) {
 
@@ -37,8 +149,7 @@ get_temp_arrest_files <- function(files) {
       sps_years <- "1974_1979"
     }
 
-    setwd("D:/ucr_data_storage/raw_data/asr_from_fbi")
-    #setwd(here::here("raw_data/asr_from_fbi"))
+    setwd("E:/ucr_data_storage/raw_data/asr_from_fbi")
     agency_header  <- get_agency_header(file,  sps_years)
     monthly_header <- get_monthly_header(file, sps_years)
     detail_header  <- get_detail_header(file,  sps_years)
@@ -50,27 +161,31 @@ get_temp_arrest_files <- function(files) {
     yearly_detail_header  <- make_arrests_yearly(detail_header, "offenses")
 
     # Some agency header rows have the wrong year and appear to be
-    # just bad data (e.g. state = 0, ori is not in right format)
+    # just bad data (e.g. state = 0, ORI is not in right format)
     # Keeps just most common year
     agency_header <- agency_header[agency_header$year %in%
                                      as.numeric(names(sort(table(agency_header$year),
                                                            decreasing = TRUE)[1])), ]
 
 
+    source(here::here('R/crosswalk.R'))
+    crosswalk <- read_merge_crosswalks()
+
     # Monthly
     long_to_wide_and_save(detail_header,
                           monthly_header,
                           agency_header,
                           number_of_months_reported,
-                          type = "monthly")
-    Sys.sleep(5)
+                          type = "monthly",
+                          crosswalk)
     # Yearly
     long_to_wide_and_save(yearly_detail_header,
                           yearly_monthly_header,
                           agency_header,
                           number_of_months_reported,
-                          type = "yearly")
-    message(file); gc(); Sys.sleep(5); gc(); Sys.sleep(5)
+                          type = "yearly",
+                          crosswalk)
+    message(file); gc();
   }
 }
 
@@ -101,7 +216,7 @@ make_arrests_yearly <- function(data, type) {
 
   data <-
     constant_data %>%
-    dplyr::left_join(agg_data)
+    dplyr::left_join(agg_data, by = "ori")
 
   return(data)
 }
@@ -112,11 +227,8 @@ long_to_wide_and_save <- function(detail_header,
                                   agency_header,
                                   number_of_months_reported,
                                   type,
-                                  replace = TRUE) {
-  source(here::here('R/crosswalk.R'))
-  setwd("D:/ucr_data_storage/clean_data/arrests_temp")
-  #setwd(here::here("clean_data/arrests_temp"))
-  crosswalk <- read_merge_crosswalks()
+                                  crosswalk) {
+  setwd("E:/ucr_data_storage/clean_data/arrests")
   cross_names <- names(crosswalk)
   cross_names <- cross_names[!cross_names %in% c("ori", "ori9")]
 
@@ -140,20 +252,15 @@ long_to_wide_and_save <- function(detail_header,
                           names(combined_crimes)[i], "_",
                           matches_types$name[n], "_")
 
-      # Skips if file already made
-      if (paste0(file_name, unique(agency_header$year), ".rda") %in% list.files() &&
-          replace == TRUE) {
-        next
-      }
+
 
       if (names(combined_crimes)[i] == "all_crimes" &&
-          matches_types$name[n] %in% c("age")) {
+          matches_types$name[n] %in% "age") {
         next # Skips over the age categories for the all_crimes one -
         # so my laptop doesn't crash
       }
       if (names(combined_crimes)[i] != "all_crimes" &&
-          matches_types$name[n] %in% c("sex",
-                                       "race")) {
+          matches_types$name[n] %in% "race_sex") {
         next
       }
 
@@ -186,11 +293,29 @@ long_to_wide_and_save <- function(detail_header,
       wide_data <-
         wide_data %>%
         make_long_to_wide(type = type) %>%
-        # Changes NA to 0s in numeric columns
-        dplyr::mutate_if(is.numeric, list(~replace(., is.na(.), 0))) %>%
         # Combine everything together
-        dplyr::full_join(monthly_header, by = first_join_by) %>%
-        dplyr::full_join(agency_header, by = "ori") %>%
+        dplyr::full_join(monthly_header, by = first_join_by)
+
+
+      if (type == "monthly") {
+        all_agencies_time <- data.frame(ori = rep(agency_header$ori, times = 12)) %>%
+          arrange(ori)
+        all_agencies_time$month <- rep(tolower(month.name), nrow(agency_header))
+        all_agencies_time <- all_agencies_time[!paste(all_agencies_time$ori,
+                                                      all_agencies_time$month) %in%
+                                                 paste(wide_data$ori,
+                                                       wide_data$month),]
+      } else if (type == "yearly") {
+        all_agencies_time <- data.frame(ori = agency_header$ori)
+        all_agencies_time <- all_agencies_time[!all_agencies_time$ori %in% wide_data$ori,
+                                               drop = FALSE, ]
+      }
+      wide_data <- bind_rows(wide_data, all_agencies_time)
+      wide_data[is.na(wide_data)] <- 0
+
+      wide_data <-
+        wide_data %>%
+        dplyr::full_join(agency_header,  by = "ori") %>%
         dplyr::left_join(number_of_months_reported_temp, by = "ori") %>%
         dplyr::left_join(crosswalk, by = "ori") %>%
         dplyr::mutate_if(is.character, tolower) %>%
@@ -199,8 +324,6 @@ long_to_wide_and_save <- function(detail_header,
                       state_abb = toupper(state_abb)) %>%
         dplyr::select(ori,
                       ori9,
-                      number_of_months_reported,
-                      monthly_cols,
                       population,
                       agency_name,
                       one_of(time_vars),
@@ -211,6 +334,8 @@ long_to_wide_and_save <- function(detail_header,
                       cross_names,
                       matches("date"),
                       covered_by,
+                      number_of_months_reported,
+                      monthly_cols,
                       everything()) %>%
         dplyr::select(-agency_type,
                       -crosswalk_agency_name,
@@ -218,105 +343,74 @@ long_to_wide_and_save <- function(detail_header,
         filter(!is.na(year)) %>%
         mutate_at(c("number_of_months_reported", monthly_cols), na_to_0)
 
-      save_files(data = wide_data,
-                 year = unique(wide_data$year),
-                 file_name = file_name,
-                 save_name = file_name,
-                 rda_only  = TRUE)
-      gc(); Sys.sleep(5); gc()
+
+      saveRDS(wide_data, file =  paste0(file_name, unique(wide_data$year), ".rds"))
+      if (type == "monthly") {
+        write_dta(wide_data, path = paste0(file_name, unique(wide_data$year), ".dta"))
+      }
+
+      gc()
 
     }
   }
 }
 
-
-save_files_monthly <- function() {
-  setwd("D:/ucr_data_storage/clean_data/arrests_temp")
-  #setwd(here::here("clean_data/arrests_temp"))
-  all_files <- list.files()
-  all_files <- all_files[grepl("monthly", all_files)]
-  print(all_files)
-
-  for (file in all_files) {
-    setwd("D:/ucr_data_storage/clean_data/arrests_temp")
-    # setwd(here::here("clean_data/arrests_temp"))
-    print(file)
-    file.copy(file, "D:/ucr_data_storage/clean_data/arrests",
-              overwrite = TRUE)
-
-    load(file)
-    assign("data", get(gsub(".rda", "", file))) # Change name
-    do.call("rm", list(as.name(gsub(".rda", "", file)))); gc()
-    file_name <- gsub(".rda$", "", file)
-    setwd("D:/ucr_data_storage/clean_data/arrests")
-
-    haven::write_dta(data, path = paste0(file_name, ".dta"))
-    rm(data); gc();
-    Sys.sleep(20)
-  }
-
-}
 
 combine_arrest_yearly <- function() {
-  setwd("D:/ucr_data_storage/clean_data/arrests_temp")
- # setwd(here::here("clean_data/arrests_temp"))
-  all_files <- list.files()
-  all_files <- gsub(".....rda$", "", all_files)
-  all_files <- unique(all_files)
-  all_files <- all_files[grepl("yearly", all_files)]
-  print(all_files)
-
-  for (temp_file in all_files) {
-    setwd("D:/ucr_data_storage/clean_data/arrests_temp")
-   # setwd(here::here("clean_data/arrests_temp"))
-    files <- list.files(pattern = temp_file)
-
-    files_1974_1994 <- files[readr::parse_number(files) %in% 1974:1994]
-    files_1995_2019 <- files[readr::parse_number(files) %in% 1995:2019]
-    combine_and_save(files_1974_1994)
-    combine_and_save(files_1995_2019)
+  setwd("E:/ucr_data_storage/clean_data/arrests")
+  file_categories <- list.files(pattern = "yearly.*rds")
+  file_categories <- gsub(".....rds$", "", file_categories)
+  file_categories <- file_categories[file_categories != "ucr_arrests_yearly_all_variables_"]
+  if (any(grep("[0-9]", file_categories))) {
+    file_categories <- file_categories[-grep("[0-9]", file_categories)]
   }
-  Sys.sleep(5)
-  message("\n\n\n\n")
-  message(temp_file)
-}
+  file_categories <- unique(file_categories)
 
-combine_and_save <- function(files) {
-  file_name <- gsub(".....rda$", "", files[1])
-  years <- paste0(min(readr::parse_number(files)), "_",
-                  max(readr::parse_number(files)))
-  if (length(files) == 1) {
-    years <- paste0(readr::parse_number(files))
-  }
-
-
-  # If file doesn't already exist, then make file
-  setwd("D:/ucr_data_storage/clean_data/arrests")
-  if (!paste0(file_name, years, ".rda") %in% list.files()) {
-
-
-    data <- data.frame(stringsAsFactors = FALSE)
-    setwd("D:/ucr_data_storage/clean_data/arrests_temp")
-    # setwd(here::here("clean_data/arrests_temp"))
-    for (file in files) {
-      load(file)
-      assign("temp", get(gsub(".rda", "", file))) # Change name
-      do.call("rm", list(as.name(gsub(".rda", "", file)))); gc()
-      data <- dplyr::bind_rows(data, temp)
-      message(file)
+  for (file_category in file_categories) {
+    annual_files <- list.files(pattern = file_category)
+    # Drop dta or already aggregated files
+    if (any(grep("dta$|[0-9]{4}_[0-9]{4}", annual_files))) {
+      annual_files <- annual_files[-grep("dta$|[0-9]{4}_[0-9]{4}", annual_files)]
+    }
+    data <- vector(mode = "list", length(annual_files))
+    for (i in 1:length(annual_files)) {
+      data[[i]] <- readRDS(annual_files[i])
+      message(annual_files[i])
     }
 
-    setwd("D:/ucr_data_storage/clean_data/arrests")
-    if (min(data$year) == max(data$year)) {
-      years <- unique(data$year)
-    }
-    save_files(data = data,
-               year = years,
-               file_name = file_name,
-               save_name = file_name)
-    rm(data); gc();
-    setwd("D:/ucr_data_storage/clean_data/arrests_temp")
-    #setwd(here::here("clean_data/arrests_temp"))
+
+    # 1974 and 1975 doesn't have possession crimes or total drug sale crimes
+    data <- data.table::rbindlist(data, use.names=TRUE,
+                                  fill = TRUE) %>%
+      arrange(ori,
+              desc(year)) %>%
+      dplyr::select(ori,
+                    ori9,
+                    population,
+                    agency_name,
+                    year,
+                    state,
+                    state_abb,
+                    population_group,
+                    country_division,
+                    fips_state_code,
+                    fips_county_code,
+                    fips_state_county_code,
+                    fips_place_code,
+                    longitude,
+                    latitude,
+                    covered_by,
+                    everything())
+    # Handles 1974 and 1975 having no drug possession arrests. Replaces those NAs with zero.
+    # Also for post-2020 years where some categories are missing.
+    data[is.na(data)] <- 0
+    saveRDS(data,
+            file = paste0(file_category, min(data$year), "_", max(data$year), ".rds"))
+    write_dta(data,
+              path = paste0(file_category, min(data$year), "_", max(data$year), ".dta"))
+    message(file_category)
+    message("\n\n\n")
+    rm(data); gc()
   }
 }
 

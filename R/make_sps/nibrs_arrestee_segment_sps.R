@@ -45,7 +45,7 @@ col_labels <- c("segment_level",
                 "race_of_arrestee",
                 "ethnicity_of_arrestee",
                 "resident_status_of_arrestee",
-                "disposition_of_arrestee_under_18")
+                "disposition_of_arrestee_under18")
 
 nibrs_arrestee_value_labels <-
   c(state_value_labels,
@@ -71,11 +71,12 @@ nibrs_arrestee_value_labels <-
     "r = resident",
     "N = nonresident",
     "U = unknown",
-    "disposition_of_arrestee_under_18 = ",
+    "disposition_of_arrestee_under18 = ",
     "H = handled within department (released to parents, released with warning, etc.)",
     "R = referred to other authorities (turned over to juvenile court, probation department, welfare agency, other police agency, criminal or adult court, etc.)",
     "multiple_arrestee_indicator = ",
     "M = multiple",
+    "m = multiple",
     "C = count arrestee",
     "c = count arrestee",
     "N = not applicable")

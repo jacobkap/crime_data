@@ -1,6 +1,6 @@
 nibrs_arrestee_segment
 
-This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2021-03-15 21:26:24. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.0) on 2022-10-06 05:19:11. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -48,7 +48,7 @@ V17      "sex_of_arrestee"
 V18      "race_of_arrestee"
 V19      "ethnicity_of_arrestee"
 V20      "resident_status_of_arrestee"
-V21      "disposition_of_arrestee_under_18"
+V21      "disposition_of_arrestee_under18"
 .
 
 value labels
@@ -131,6 +131,7 @@ V11
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -215,7 +216,7 @@ V18
 'W'        "white"
 'B'        "black"
 'I'        "american indian/alaskan native"
-'A'        "asian/pacific islander"
+'A'        "asian"
 'U'        "unknown"
 'P'        "native hawaiian or other pacific islander"
 'M'        "unknown"
@@ -233,6 +234,7 @@ V21
 'R'        "referred to other authorities (turned over to juvenile court, probation department, welfare agency, other police agency, criminal or adult court, etc.)"
 V10        
 'M'        "multiple"
+'m'        "multiple"
 'C'        "count arrestee"
 'c'        "count arrestee"
 'N'        "not applicable"

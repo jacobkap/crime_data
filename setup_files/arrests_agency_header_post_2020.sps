@@ -1,4 +1,4 @@
-arrests_agency_header_1980_present
+arrests_agency_header_post_2020
 
 This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2023-04-04 10:27:58. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
@@ -10,16 +10,21 @@ V3       4-10
 V4       11-12
 V5       13
 V6       14-15
-V7       16-17
-V8       18-20
-V9       21-23
-V10      24-28
-V11      29
-V12      30
-V13      31
-V14      32-40
-V15      41-64
-V16      65-70
+V7       16-18
+V8       19
+V9       20
+V10      21
+V11      22
+V12      23-25
+V13      26-27
+V14      28-32
+V15      33-35
+V16      36-39
+V17      40
+V18      41-50
+V19      51-109
+V20      110
+V21      111-135
 .
 
 variable labels
@@ -28,17 +33,22 @@ V2       "state"
 V3       "ori"
 V4       "population_group"
 V5       "country_division"
-V6       "agency_header_designation"
-V7       "year"
-V8       "msa"
-V9       "county"
-V10      "sequence_number"
-V11      "suburban"
-V12      "core_city"
-V13      "covered_by"
-V14      "population"
-V15      "agency_name"
-V16      "state_name"
+V6       "year"
+V7       "msa"
+V8       "suburban"
+V9       "not_used1"
+V10      "report_indication"
+V11      "adjustment"
+V12      "offense"
+V13      "not_used2"
+V14      "sequence_number"
+V15      "county"
+V16      "not_used3"
+V17      "core_city"
+V18      "population"
+V19      "not_used4"
+V20      "agency_count"
+V21      "agency_name"
 .
 
 value labels
@@ -145,17 +155,25 @@ V5
 'I'       "Pacific"
 V1        
 '3'       "ASR master file"
-V6        
-'00'      "agency header"
-V11       
+V8        
 '1'       "suburban"
 '0'       "non-suburban"
-V12       
+V10       
+'0'       "juvenile and adult reported"
+'1'       "juvenile only reported"
+'2'       "adult only reported"
+'3'       "not reported"
+V11       
+'0'       "age, race, and ethnic origin reported"
+'1'       "no age reported"
+'2'       "no race reported"
+'3'       "no ethnic origin reported"
+'4'       "no race or ethnic origin reported"
+'5'       "no age or ethnic origin reported"
+'6'       "no age or race reported"
+V17       
 'Y'       "agency is core city of an MSA"
 'N'       "agency is not a core city of an MSA"
-V13       
-'0'       "not covered by another agency"
-'1'       "covered by another agency"
 .
 
 

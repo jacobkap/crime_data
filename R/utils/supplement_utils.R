@@ -57,7 +57,15 @@ agency_desc_cols <- c(
   "fips_county_code",
   "fips_state_county_code",
   "fips_place_code",
-  "agency_type"
+  "agency_type",
+  "longitude",
+  "latitude",
+  "address_name",
+  "address_street_line_1",
+  "address_street_line_2",
+  "address_city",
+  "address_state",
+  "address_zip_code"
 )
 
 offense_col_order <- c(

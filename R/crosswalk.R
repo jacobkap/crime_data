@@ -22,8 +22,15 @@ cols_to_keep <- c("ORI",
                   "FIPS_COUNTY_CODE",
                   "FIPS_PLACE_CODE",
                   "AGENCY_NAME",
-                  "CENSUS_NAME"
-)
+                  "CENSUS_NAME",
+                  "LONGITUDE",
+                  "LATITUDE",
+                  "ADDRESS_NAME",
+                  "ADDRESS_STREET_LINE_1",
+                  "ADDRESS_STREET_LINE_2",
+                  "ADDRESS_CITY",
+                  "ADDRESS_STATE",
+                  "ADDRESS_ZIP_CODE")
 
 agency_type2005 <- c("^1$"  = 'Sheriffs office',              # Sheriff
                      "^2$"  = 'Local police department',      # County police
@@ -56,7 +63,6 @@ read_merge_crosswalks <- function(pop = FALSE) {
                                                                             "AGCYTYPE",
                                                                             "SUBTYPE1",
                                                                             "SUBTYPE2"))
-  crosswalk2012$LATITUDE <- NULL
 
   names(crosswalk1996)      <- stringr::str_replace_all(names(crosswalk1996),
                                                         name_fixes)
@@ -122,7 +128,15 @@ read_merge_crosswalks <- function(pop = FALSE) {
                  "fips_place_code",
                  "agency_type",
                  "agency_name",
-                 "census_name")
+                 "census_name",
+                 "longitude",
+                 "latitude",
+                 "address_name",
+                 "address_street_line_1",
+                 "address_street_line_2",
+                 "address_city",
+                 "address_state",
+                 "address_zip_code")
   if (pop) keep_cols <- c(keep_cols, "population")
 
   crosswalk <-

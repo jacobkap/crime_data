@@ -2,38 +2,44 @@ source(here::here('R/crosswalk.R'))
 source(here::here('R/make_sps/make_leoka_sps.R'))
 source(here::here('R/utils/global_utils.R'))
 crosswalk <- read_merge_crosswalks()
+#saveRDS(crosswalk, file = here::here("crosswalk.rds"))
 source(here::here('R/utils/leoka_utils.R'))
 
-#get_all_leoka_monthly()
+get_all_leoka_monthly()
 leoka_yearly <- get_all_leoka_yearly()
 global_checks(leoka_yearly)
 sapply(leoka_yearly, function(x) max(x, na.rm = TRUE))
 
-summary(leoka_yearly$one_man_veh_day_shift[leoka_yearly$year %in% 2018])
-summary(leoka_yearly$one_man_veh_day_shift[leoka_yearly$year %in% 2019])
-summary(leoka_yearly$traffic_assaults_cleared[leoka_yearly$year %in% 2018])
+summary(leoka_yearly$one_man_veh_day_shift[leoka_yearly$year %in% 2017])
+summary(leoka_yearly$one_man_veh_day_shift[leoka_yearly$year %in% 2021])
 summary(leoka_yearly$traffic_assaults_cleared[leoka_yearly$year %in% 2019])
-summary(leoka_yearly$male_employees_officers[leoka_yearly$year %in% 2018])
+summary(leoka_yearly$traffic_assaults_cleared[leoka_yearly$year %in% 2021])
 summary(leoka_yearly$male_employees_officers[leoka_yearly$year %in% 2019])
-summary(leoka_yearly$officers_killed_total[leoka_yearly$year %in% 2018])
+summary(leoka_yearly$male_employees_officers[leoka_yearly$year %in% 2021])
+summary(leoka_yearly$female_employees_officers[leoka_yearly$year %in% 2019])
+summary(leoka_yearly$female_employees_officers[leoka_yearly$year %in% 2021])
+
 summary(leoka_yearly$officers_killed_total[leoka_yearly$year %in% 2019])
-summary(leoka_yearly$assaults_no_injury_total[leoka_yearly$year %in% 2018])
+summary(leoka_yearly$officers_killed_total[leoka_yearly$year %in% 2021])
 summary(leoka_yearly$assaults_no_injury_total[leoka_yearly$year %in% 2019])
+summary(leoka_yearly$assaults_no_injury_total[leoka_yearly$year %in% 2021])
 
 table(leoka_yearly$year, leoka_yearly$number_of_months_reported)
 
-setwd(here::here("clean_data/LEOKA"))
-save_as_zip("ucr_leoka_monthly_1960_2019_", pattern = "month")
-save_as_zip("ucr_leoka_yearly_1960_2019_",  pattern = "year")
+setwd(here::here("E:/ucr_data_storage/clean_data/LEOKA"))
+save_as_zip("ucr_leoka_monthly_1960_2021_", pattern = "month")
+save_as_zip("ucr_leoka_yearly_1960_2021_",  pattern = "year")
 
 get_all_leoka_monthly <- function() {
-  setwd(here::here("raw_data/leoka_from_fbi"))
+  setwd(here::here("D:/ucr_data_storage/raw_data/leoka_from_fbi"))
   files <- list.files()
   files <- files[!grepl("sps", files)]
+  print(files)
   for (file in files) {
-    setwd(here::here("raw_data/leoka_from_fbi"))
+    setwd(here::here("D:/ucr_data_storage/raw_data/leoka_from_fbi"))
     data <- asciiSetupReader::spss_ascii_reader(file,
-                                                here::here("setup_files/ucr_leoka.sps"))
+                                                here::here("setup_files/ucr_leoka.sps")) %>%
+      filter(!ori %in% "0000000")
     data <- make_number_of_months_reporting(data)
 
     data <-
@@ -74,12 +80,11 @@ get_all_leoka_monthly <- function() {
     data$population_group[data$population_group %in% c("2c", "7b")] <- NA
 
     # Save the data in various formats
-    setwd(here::here("clean_data/LEOKA"))
+    setwd(here::here("D:/ucr_data_storage/clean_data/LEOKA"))
     save_files(data = data,
                year = data$year[1],
                file_name = "leoka_monthly_",
-               save_name = "leoka_monthly_",
-               rda_and_stata_only = FALSE)
+               save_name = "leoka_monthly_")
     message(unique(data$year))
     rm(data); gc(); Sys.sleep(3)
   }
@@ -87,22 +92,19 @@ get_all_leoka_monthly <- function() {
 
 
 get_all_leoka_yearly <- function() {
-  setwd(here::here("clean_data/LEOKA"))
-  files <- list.files(pattern = "monthly_.*.rda$")
-
+  setwd(here::here("D:/ucr_data_storage/clean_data/LEOKA"))
+  files <- list.files(pattern = "monthly_.*.rds$")
+  print(files)
   leoka_yearly <- data.frame()
   for (file in files) {
-    load(file)
-    file_name <- gsub(".rda", "", file)
-    assign("data", get(file_name))
-    do.call(rm, list(file_name))
+    data <- readRDS(file)
 
     month_cols <- grep("assault|ambush|disturbance|all_oth|arrest|traffic|robbery|burglary|prisoner|susp|derange|riot|total|kill", names(data), value = TRUE)
     month_cols <- month_cols[!grepl("indicator|employee", month_cols)]
 
-    data <- agg_yearly(data, month_cols)
-    data <- reorder_leoka_columns(data, crosswalk, type = "year")
-    data$msa <- as.character(data$msa)
+    data         <- agg_yearly(data, month_cols)
+    data         <- reorder_leoka_columns(data, crosswalk, type = "year")
+    data$msa     <- as.character(data$msa)
     leoka_yearly <- dplyr::bind_rows(leoka_yearly, data)
     message(data$year[1]); rm(data); gc(); Sys.sleep(3)
   }
@@ -113,12 +115,11 @@ get_all_leoka_yearly <- function() {
                    desc(year))
 
   # Save the data in various formats
-  setwd(here::here("clean_data/LEOKA"))
+  setwd(here::here("D:/ucr_data_storage/clean_data/LEOKA"))
   save_files(data = leoka_yearly,
-             year = "1960_2019",
+             year = "1960_2021",
              file_name = "leoka_yearly_",
-             save_name = "leoka_yearly_",
-             rda_and_stata_only = FALSE)
+             save_name = "leoka_yearly_")
 
   return(leoka_yearly)
 }

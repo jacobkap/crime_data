@@ -1,6 +1,6 @@
 nibrs_group_b_arrest_report_segment
 
-This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2021-03-15 21:23:20. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.0) on 2022-10-06 04:46:49. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -44,7 +44,7 @@ V15      "sex_of_arrestee"
 V16      "race_of_arrestee"
 V17      "ethnicity_of_arrestee"
 V18      "resident_status_of_arrestee"
-V19      "disposition_of_arrestee_under_18"
+V19      "disposition_of_arrestee_under18"
 .
 
 value labels
@@ -127,6 +127,7 @@ V9
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
@@ -203,13 +204,15 @@ V14
 'BB'       "7-364 days old"
 V15        
 'M'        "male"
+'m'        "male"
+'f'        "female"
 'F'        "female"
 'U'        "unknown"
 V16        
 'W'        "white"
 'B'        "black"
 'I'        "american indian/alaskan native"
-'A'        "asian/pacific islander"
+'A'        "asian"
 'U'        "unknown"
 'P'        "native hawaiian or other pacific islander"
 'M'        "unknown"
@@ -225,63 +228,6 @@ V18
 V19        
 'H'        "handled within department (released to parents, released with warning, etc.)"
 'R'        "referred to other authorities (turned over to juvenile court, probation department, welfare agency, other police agency, criminal or adult court, etc.)"
-V2         
-'50'       "Alaska"
-'01'       "Alabama"
-'03'       "Arkansas"
-'54'       "American Samoa"
-'02'       "Arizona"
-'04'       "California"
-'05'       "Colorado"
-'06'       "Connecticut"
-'52'       "Canal Zone"
-'08'       "District of Columbia"
-'07'       "Delaware"
-'09'       "Florida"
-'10'       "Georgia"
-'55'       "Guam"
-'51'       "Hawaii"
-'14'       "Iowa"
-'11'       "Idaho"
-'12'       "Illinois"
-'13'       "Indiana"
-'15'       "Kansas"
-'16'       "Kentucky"
-'17'       "Louisiana"
-'20'       "Massachusetts"
-'19'       "Maryland"
-'18'       "Maine"
-'21'       "Michigan"
-'22'       "Minnesota"
-'24'       "Missouri"
-'23'       "Mississippi"
-'25'       "Montana"
-'26'       "Nebraska"
-'32'       "North Carolina"
-'33'       "North Dakota"
-'28'       "New Hampshire"
-'29'       "New Jersey"
-'30'       "New Mexico"
-'27'       "Nevada"
-'31'       "New York"
-'34'       "Ohio"
-'35'       "Oklahoma"
-'36'       "Oregon"
-'37'       "Pennsylvania"
-'53'       "Puerto Rico"
-'38'       "Rhode Island"
-'39'       "South Carolina"
-'40'       "South Dakota"
-'41'       "Tennessee"
-'42'       "Texas"
-'43'       "Utah"
-'62'       "Virgin Islands"
-'45'       "Virginia"
-'44'       "Vermont"
-'46'       "Washington"
-'48'       "Wisconsin"
-'47'       "West Virginia"
-'49'       "Wyoming"
 .
 
 

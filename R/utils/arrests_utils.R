@@ -131,7 +131,20 @@ get_detail_header <- function(file, sps_years) {
   return(detail_header)
 }
 
-get_number_months_reported <- function(data) {
+get_number_months_reported <- function(data, monthly_header_data) {
+
+
+  total_months_reported <-
+    data %>%
+    filter(!is.na(offense_code)) %>%
+    mutate(temp = paste(ori, month)) %>%
+    distinct(temp, .keep_all = TRUE) %>%
+    select(ori, month, offense_code) %>%
+    mutate(dummy = 1) %>%
+    group_by(ori) %>%
+    summarize(number_of_months_reported = sum(dummy))
+
+
   data <-
     data %>%
     filter(!is.na(offense_code)) %>%
@@ -149,13 +162,13 @@ get_number_months_reported <- function(data) {
     ungroup()
 
   data <- reshape2::dcast(data, ori ~ offense_code,
-                            value.var = "number_of_months_reported")
+                          value.var = "number_of_months_reported")
   data[is.na(data)] <- 0
   names(data)[2:ncol(data)] <-
     paste0("num_months_", names(data)[2:ncol(data)])
 
+  data <- left_join(data, total_months_reported, by = "ori")
   # Gets largest value of offenses monthly reporting columns
-  data$number_of_months_reported <- apply(data[, 2:ncol(data)], 1, max)
   data <-
     data %>%
     select(ori,
@@ -218,9 +231,21 @@ make_long_to_wide <- function(data, type) {
                    measure.vars = measure_cols) %>%
     unite(temp, offense_code, variable) %>%
     spread(temp, value)
-  names(data) <- gsub("heroin_coke_tot_female_adult",
-                      "heroin_coke_tot_female_adul",
-                      names(data))
+  long_name_fix <- c("^gamble_bookmake_tot_female_adult$"  = "gamble_bookmake_tot_female_adul",
+                     "^poss_drug_total_tot_female_adult$"  = "poss_drug_total_tot_female_adul",
+                     "^poss_heroin_coke_female_under_10$"  = "poss_heroin_coke_female_under10",
+                     "^poss_heroin_coke_tot_female_adult$" = "poss_heroin_coke_tot_female_adu",
+                     "^poss_other_drug_tot_female_adult$"  = "poss_other_drug_tot_female_adul",
+                     "^poss_synth_narc_tot_female_adult$"  = "poss_synth_narc_tot_female_adul",
+                     "^sale_drug_total_tot_female_adult$"  = "sale_drug_total_tot_female_adul",
+                     "^sale_heroin_coke_female_under_10$"  = "sale_heroin_coke_female_under10",
+                     "^sale_heroin_coke_tot_female_adult$" = "sale_heroin_coke_tot_female_adu",
+                     "^sale_other_drug_tot_female_adult$"  = "sale_other_drug_tot_female_adul",
+                     "^sale_synth_narc_tot_female_adult$"  = "sale_synth_narc_tot_female_adul")
+
+  names(data) <- stringr::str_replace_all(names(data), long_name_fix)
+
+
   gc()
   return(data)
 }

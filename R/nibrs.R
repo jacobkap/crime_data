@@ -11,27 +11,30 @@ nibrs_segments <- c("administrative_segment",
                     "group_b_arrest_report_segment",
                     "window_exceptional_clearance_segment",
                     "window_recovered_property_segment",
-                    "window_arrestee_segment")
+                    "window_arrestee_segment",
+                    "batch_header")
 
-# read_and_save_nibrs_segments(nibrs_segments)
-save_nibrs_as_zip(nibrs_segments)
+
+
+read_and_save_nibrs_segments("property_segment", years = 2021)
+save_nibrs_as_zip("property_segment")
 save_nibrs_as_zip <- function(segments) {
+  setwd("E:/ucr_data_storage/raw_data/nibrs_master_files_parsed")
   for (segment in segments) {
-    setwd("D:/ucr_data_storage/clean_data/nibrs")
-    save_as_zip(paste0("nibrs_1991_2019_", segment, "_"), pattern = segment)
+    setwd("E:/ucr_data_storage/clean_data/nibrs")
+    save_as_zip(paste0("nibrs_1991_2021_", segment, "_"),
+                pattern = paste0("nibrs_", segment))
     message(segment)
   }
 }
 
 
-read_and_save_nibrs_segments(nibrs_segments, years = 2019)
-read_and_save_nibrs_segments(arrestee_segment)
 read_and_save_nibrs_segments <- function(segments, years = NULL) {
-  for (segment in nibrs_segments) {
+  for (segment in segments) {
 
 
     source(here::here(paste0("R/make_sps/nibrs_", segment, "_sps.R")))
-    setwd("D:/ucr_data_storage/raw_data/nibrs_master_files_parsed")
+    setwd("E:/ucr_data_storage/raw_data/nibrs_master_files_parsed")
     files <- list.files(pattern = paste0("^", segment))
 
 
@@ -42,9 +45,13 @@ read_and_save_nibrs_segments <- function(segments, years = NULL) {
 
 
     for (file in files) {
-      setwd("D:/ucr_data_storage/raw_data/nibrs_master_files_parsed")
+      setwd("E:/ucr_data_storage/raw_data/nibrs_master_files_parsed")
+
       data <- read_ascii_setup(file, here::here(paste0("setup_files/nibrs_",
-                                                       segment, ".sps"))) %>%
+                                                       segment, ".sps")))
+
+     data <-
+        data %>%
         select(-segment_level) %>%
         mutate(state_abb = crimeutils::make_state_abb(state),
                state     = tolower(state),
@@ -73,24 +80,27 @@ read_and_save_nibrs_segments <- function(segments, years = NULL) {
       data$city_submission <- NULL
 
 
+      if (all(c("incident_number", "ori") %in% names(data))) {
+        data$unique_incident_id <- paste(data$ori, data$incident_number)
+      }
 
 
-      setwd("D:/ucr_data_storage/clean_data/nibrs")
+      setwd("E:/ucr_data_storage/clean_data/nibrs")
       save_files(data = data,
                  year = unique(data$year),
-                 file_name = paste0("nibrs_", segment, "_segment_"),
-                 save_name = paste0("nibrs_", segment, "_segment_"))
+                 file_name = paste0("nibrs_", segment, "_"),
+                 save_name = paste0("nibrs_", segment, "_"))
       message(file)
-      print(names(data))
-      check_nibrs_data(data)
-      print(summary(data$incident_date))
-      print(summary(data$arrest_date))
-      rm(data); gc(); Sys.sleep(5)
+      #print(names(data))
+      print(nrow(data))
+      #check_nibrs_data(data)
+      rm(data); gc(); #Sys.sleep(5)
     }
   }
 }
 
 check_nibrs_data <- function(data) {
+  summary(data$incident_date)
   data$incident_number                 <- NULL
   data$ori                             <- NULL
   data$incident_date                   <- NULL
@@ -100,17 +110,19 @@ check_nibrs_data <- function(data) {
   data$arrestee_sequence_number        <- NULL
   data$exceptional_clearance_date      <- NULL
   data$date_recovered                  <- NULL
+  data$unique_incident_id              <- NULL
   print(sapply(data, function(x) sort(unique(x), na.last = TRUE)))
   message("\n\n\n\n")
 }
 
 # Check data
-# files <- list.files(pattern = "2018.rda")
-# for (file in files) {
-#   load(file)
-#   assign("data", get(gsub(".rda", "", file)))
-#   rm(list = gsub(".rda", "", file))
-#   message(file)
-#   check_nibrs_file(data)
-#
-# }
+files <- list.files(pattern = "2020.rds")
+files
+for (file in files) {
+  data <- readRDS(file)
+  message(file)
+  check_nibrs_data(data)
+
+}
+
+

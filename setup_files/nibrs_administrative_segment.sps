@@ -1,6 +1,6 @@
 nibrs_administrative_segment
 
-This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2021-03-15 21:24:29. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.0) on 2022-10-06 05:18:10. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list

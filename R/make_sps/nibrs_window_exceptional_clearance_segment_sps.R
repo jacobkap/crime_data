@@ -11,16 +11,22 @@ col_positions <- c(col_positions,
                    "77-79",
                    "80-82",
                    "83-85",
-                   "86-88")
+                   "86-88",
+                   "89")
 
 col_labels <- c(col_labels,
                 repeated_label_replace_fixer("ucr_offense_code_replace",
-                                             1:10))
+                                             1:10),
+                "cargo_theft_indicator")
 
 nibrs_window_exceptional_clearance_segment_value_labels <-
   c(nibrs_administrative_segment_value_labels,
     repeated_label_replace_fixer(ucr_offense_code_value_labels_replace,
-                                              1:10))
+                                              1:10),
+    "cargo_theft_indicator = ",
+    "Y = yes",
+    "N = no"
+    )
 
 setwd(here::here("setup_files"))
 make_sps_setup(file_name     = "nibrs_window_exceptional_clearance_segment",

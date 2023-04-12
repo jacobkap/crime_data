@@ -1,40 +1,41 @@
-source(here('R/crosswalk.R'))
-source(here('R/utils/global_utils.R'))
-source(here('R/make_sps/make_offenses_known_sps.R'))
-source(here('R/utils/offenses_known_utils.R'))
+source('R/crosswalk.R')
+source('R/utils/global_utils.R')
+source('R/utils/offenses_known_utils.R')
+source('R/make_sps/make_offenses_known_sps.R')
 crosswalk <- read_merge_crosswalks()
 
-# get_all_return_a_monthly(crosswalk)
+get_all_return_a_monthly(crosswalk)
 offenses_known_yearly <- get_data_yearly("offenses_known",
-                                         "1960_2019",
+                                         "1960_2021",
                                          "offenses_known_yearly_",
                                          crosswalk)
+table(offenses_known_yearly$year)
+sort(unique(offenses_known_yearly$year))
 global_checks(offenses_known_yearly)
 table(offenses_known_yearly$number_of_months_missing == offenses_known_yearly$arson_number_of_months_missing)
-table(offenses_known_yearly$number_of_months_missing == offenses_known_yearly$arson_number_of_months_missing) / nrow(offenses_known_yearly) * 100
 
-summary(offenses_known_yearly$tot_clr_rape_total[offenses_known_yearly$year %in% 2018])
-summary(offenses_known_yearly$tot_clr_rape_total[offenses_known_yearly$year %in% 2019])
-summary(offenses_known_yearly$actual_robbery_total[offenses_known_yearly$year %in% 2018])
-summary(offenses_known_yearly$actual_robbery_total[offenses_known_yearly$year %in% 2019])
-summary(offenses_known_yearly$officers_assaulted[offenses_known_yearly$year %in% 2018])
-summary(offenses_known_yearly$officers_assaulted[offenses_known_yearly$year %in% 2019])
-summary(offenses_known_yearly$clr_18_burg_total[offenses_known_yearly$year %in% 2018])
-summary(offenses_known_yearly$clr_18_burg_total[offenses_known_yearly$year %in% 2019])
-summary(offenses_known_yearly$actual_murder[offenses_known_yearly$year %in% 2018])
 summary(offenses_known_yearly$actual_murder[offenses_known_yearly$year %in% 2019])
+summary(offenses_known_yearly$actual_murder[offenses_known_yearly$year %in% 2021])
+summary(offenses_known_yearly$actual_robbery_total[offenses_known_yearly$year %in% 2019])
+summary(offenses_known_yearly$actual_robbery_total[offenses_known_yearly$year %in% 2021])
+summary(offenses_known_yearly$officers_assaulted[offenses_known_yearly$year %in% 2019])
+summary(offenses_known_yearly$officers_assaulted[offenses_known_yearly$year %in% 2021])
+summary(offenses_known_yearly$clr_18_burg_total[offenses_known_yearly$year %in% 2019])
+summary(offenses_known_yearly$clr_18_burg_total[offenses_known_yearly$year %in% 2021])
+summary(offenses_known_yearly$actual_murder[offenses_known_yearly$year %in% 2019])
+summary(offenses_known_yearly$actual_murder[offenses_known_yearly$year %in% 2021])
 
-setwd(here("clean_data/offenses_known"))
-save_as_zip("ucr_offenses_known_monthly_1960_2019_", pattern = "month")
-save_as_zip("ucr_offenses_known_yearly_1960_2019_",  pattern = "year")
+setwd(here("E:/ucr_data_storage/clean_data/offenses_known"))
+save_as_zip("ucr_offenses_known_monthly_1960_2021_", pattern = "month")
+save_as_zip("ucr_offenses_known_yearly_1960_2021_",  pattern = "year")
 
 get_all_return_a_monthly <- function(crosswalk) {
-  setwd(here("raw_data/offenses_known_from_fbi"))
+  setwd("E:/ucr_data_storage/raw_data/offenses_known_from_fbi")
   files <- list.files()
   print(files)
 
-  for (file in files) {
-    setwd(here("raw_data/offenses_known_from_fbi"))
+  for (file in files[c(44, 1:3)]) {
+    setwd("E:/ucr_data_storage/raw_data/offenses_known_from_fbi")
     data <- read_ascii_setup(file, here("setup_files/ucr_return_a.sps"))
 
     data <-
@@ -63,7 +64,7 @@ get_all_return_a_monthly <- function(crosswalk) {
              ori            = toupper(ori),
              state_abb      = make_state_abb(state),
              covered_by_ori = as.character(covered_by_ori)) %>%
-      # for some reason in 2018 there are a bunch of agencies with duplicate
+      # for some reason in 2019 there are a bunch of agencies with duplicate
       # rows
       distinct(ori, .keep_all = TRUE)
 
@@ -79,9 +80,7 @@ get_all_return_a_monthly <- function(crosswalk) {
 
     # Get arson data
     if (data$year[1] >= 1979) {
-      load(here(paste0("clean_data/arson/ucr_arson_monthly_", data$year[1], ".rda")))
-      assign("arson", get(paste0("ucr_arson_monthly_", data$year[1])))
-      rm(list = paste0("ucr_arson_monthly_", data$year[1]))
+      arson <- readRDS(paste0("E:/ucr_data_storage/clean_data/arson/ucr_arson_monthly_", data$year[1], ".rds"))
       arson <-
         arson %>%
         select(ori,
@@ -121,7 +120,7 @@ get_all_return_a_monthly <- function(crosswalk) {
     data$state[data$state %in% c("69", "98", "99")] <- NA
 
     # Save the data in various formats
-    setwd(here("clean_data/offenses_known"))
+    setwd(here("E:/ucr_data_storage/clean_data/offenses_known"))
     save_files(data = data,
                year = data$year[1],
                file_name = "offenses_known_monthly_",

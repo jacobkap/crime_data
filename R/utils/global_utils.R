@@ -1,5 +1,4 @@
 source(here::here('R/utils/saving_utils.R'))
-devtools::install_github("jacobkap/asciisetupreader")
 library(memisc)
 library(tidyverse)
 library(asciiSetupReader)
@@ -14,9 +13,9 @@ fix_number_of_months_reported <- function(data, type = "offenses") {
   if (type == "arson") {
     column <- "column_2_type"
   }
-  # if (type == "offenses" & unique(data$year) >= 2018) {
-  #   column <- "card_actual_type"
-  # }
+  if (type == "offenses" & unique(data$year) >= 2018) {
+    column <- "card_actual_type"
+  }
   months_reported_fix <- c("no months reported", tolower(month.name))
   names(months_reported_fix) <- paste0("^", as.character(0:12), "$")
 
@@ -129,15 +128,15 @@ get_data_yearly <- function(folder,
                             years,
                             name_to_save,
                             crosswalk) {
-  setwd(here::here(paste0("clean_data/", folder)))
-  files <- list.files(pattern = "monthly_.*.rda$")
+  setwd(here::here(paste0("E:/ucr_data_storage/clean_data/", folder)))
+  files <- list.files(pattern = "monthly_.*.rds$")
 
   data <- data.frame()
   for (file in files) {
-    load(file)
-    file_name <- gsub(".rda", "", file)
-    assign("temp", get(file_name))
-    do.call(rm, list(file_name))
+    temp <- readRDS(file)
+    if ("followup_indication" %in% names(temp)) {
+      temp$followup_indication <- as.character(temp$followup_indication)
+    }
     month_cols <- grep("^reported|unfound|actual|clear|uninhab|est_dam|tot_clr|clr_18|officer",
                        names(temp), value = TRUE)
 
@@ -163,12 +162,11 @@ get_data_yearly <- function(folder,
   data$last_update         <- NULL
 
     # Save the data in various formats
-    setwd(here::here(paste0("clean_data/", folder)))
+    setwd(here::here(paste0("E:/ucr_data_storage/clean_data/", folder)))
     save_files(data               = data,
                year               = years,
                file_name          = name_to_save,
-               save_name          = name_to_save,
-               rda_and_stata_only = FALSE)
+               save_name          = name_to_save)
 
 
   return(data)
@@ -229,6 +227,11 @@ fix_years <- function(year) {
   year <- as.numeric(year)
   year[year < 20] <- paste0("20", year[year < 20])
   year <- as.numeric(year)
+  year[year == 20] <- paste0("2020")
+  year[year == 21] <- paste0("2021")
+  year[year == 22] <- paste0("2022")
+  year[year == 23] <- paste0("2023")
+  year <- as.numeric(year)
   year[year < 100] <- paste0("19", year[year < 100])
   year <- as.numeric(year)
   year[year == 20000] <- 2000
@@ -268,7 +271,8 @@ month_wide_to_long <- function(data) {
                      names(data),
                      value = TRUE)
 
-  data[, grep("indicator", names(data), value = TRUE)] <- sapply(data[, grep("indicator", names(data), value = TRUE)], as.character)
+  data[, grep("indicator", names(data), value = TRUE)] <- sapply(data[, grep("indicator", names(data),
+                                                                             value = TRUE)], as.character)
 
   month_only_data <-
     data %>%

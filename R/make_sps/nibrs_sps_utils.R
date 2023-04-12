@@ -72,6 +72,7 @@ ucr_offense_code_value_labels = c("ucr_offense_code = ",
                                   "26C = impersonation",
                                   "26D = welfare fraud",
                                   "26E = wire fraud",
+                                  "26F = identity theft",
                                   # Gambling offenses
                                   "39A = betting/wagering",
                                   "39B = operating/promoting/assisting gambling",
@@ -144,7 +145,6 @@ suspected_drug_type_value_labels <- c("suspected_drug_type = ",
                                       "G = opium",
                                       "H = other narcotics: codeine, demerol, dihydromorphinone or dilaudid, hydrocodone or percodan, methadone, etc.",
                                       "I = LSD",
-                                      "P = PCP",
                                       "K = other hallucinogrens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc.",
                                       "L = amphetamines/methamphetamines",
                                       "M = other stimulants: adipex, fastine and ionamin (derivatives of phentermine), benzedrine, didrex, methylphenidate or ritalin, phenmetrazine or preludin, tenuate, etc.",
@@ -177,7 +177,7 @@ age_sex_race_ethnicity <- c("age_of_replace = ",
                             "W = white",
                             "B = black",
                             "I = american indian/alaskan native",
-                            "A = asian/pacific islander",
+                            "A = asian",
                             "U = unknown",
                             "P = native hawaiian or other pacific islander",
                             "M = unknown",
@@ -188,5 +188,12 @@ age_sex_race_ethnicity <- c("age_of_replace = ",
 
 
 
-
+agency_activity_indicators = c("replace_zero_report_submitted = ",
+                               "Y = zero-report was submitted",
+                               "replace_group_a_b_submitted = ",
+                               "Y = group a or b was submitted",
+                               "replace_window_record_submitted = ",
+                               "Y = window record was submitted")
+agency_activity_indicators <- repeated_label_replace_fixer(agency_activity_indicators,
+                                                           rep(tolower(month.name), each = 3))
 

@@ -45,7 +45,7 @@ col_labels <- c("segment_level",
                 "blank")
 
 setwd(here::here("setup_files"))
-make_sps_setup(file_name = "nibrs_batch_header_2",
+make_sps_setup(file_name     = "nibrs_batch_header_2",
                col_positions = col_positions,
                col_labels    = col_labels,
-               value_labels =  state_value_labels)
+               value_labels  =  state_value_labels)

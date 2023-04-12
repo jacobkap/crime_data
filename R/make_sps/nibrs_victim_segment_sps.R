@@ -52,7 +52,10 @@ col_positions <- c("1-2",
                    "116-117",
                    "118-119",
                    "120-121",
-                   "122-123")
+                   "122-123",
+                   "124-125",
+                   "126",
+                   "127-135")
 
 col_labels <- c("segment_level",
                 "state",
@@ -68,15 +71,20 @@ col_labels <- c("segment_level",
                 "race_of_victim",
                 "ethnicity_of_victim",
                 "resident_status_of_victim",
-                "agg_assault_homicide_circumsta_1",
-                "agg_assault_homicide_circumsta_2",
-                "addit_just_homicide_circumstance",
+                "agg_assault_homicide_circumsta1",
+                "agg_assault_homicide_circumsta2",
+                "addit_just_homicide_circumsta",
                 repeated_label_replace_fixer("type_of_injury_replace",
                                              1:5),
                 repeated_label_replace_fixer(
-                  c("offender_number_to_be_related_replace",
-                    "relation_of_vict_to_offender_replace"),
-                  1:10))
+                  c("offender_number_to_be_relatedreplace",
+                    "relation_of_vict_to_offenderreplace"),
+                  1:10),
+                "officer_type_activity",
+                "officer_assignment_type",
+                'officer_killed_other_agency_ori')
+
+
 
 
 nibrs_victim_value_labels <-
@@ -99,7 +107,7 @@ nibrs_victim_value_labels <-
     "R = resident",
     "N = nonresident",
     "U = unknown",
-    "addit_just_homicide_circumstance = ",
+    "addit_just_homicide_circumsta = ",
     "A = criminal attacked police officer and that officer killed criminal",
     "B = criminal attacked police officer and criminal killed by another police officer",
     "C = criminal attacked a civilian",
@@ -108,15 +116,15 @@ nibrs_victim_value_labels <-
     "F = criminal resisted arrest",
     "G = unable to determine/not enough information",
     repeated_label_replace_fixer(
-      c("agg_assault_homicide_circumsta_replace = ",
+      c("agg_assault_homicide_circumstareplace = ",
         # Aggravated assault/murder
         "01 = argument",
         "02 = assault on law enforcement officer(s)",
         "03 = drug dealing",
         "04 = gangland",
         "05 = juvenile gang",
-        "06 = lovers quarrel",
-        "07 = mercy killing (not applicable to aggravated assault)",
+        "06 = domestic violence (historically called lovers triangle/quarrel)",
+        "07 = mercy killing",
         "08 = other felony involved",
         "09 = other circumstances",
         "10 = unknown circumstances",
@@ -140,7 +148,7 @@ nibrs_victim_value_labels <-
                                    "L = severe laceration",
                                    "U = unconsciousness"),
                                  1:5),
-    repeated_label_replace_fixer(c("relation_of_vict_to_offender_replace = ",
+    repeated_label_replace_fixer(c("relation_of_vict_to_offenderreplace = ",
                                    # Within family
                                    "SE = victim was spouse",
                                    "CS = victim was common-law spouse",
@@ -172,7 +180,27 @@ nibrs_victim_value_labels <-
                                    "ST = victim was stranger",
                                    # FROM NIBRS codebook
                                    "XR = victim was ex-relationship (ex-boyfriend/ex-girlfriend)"),
-                                 1:10))
+                                 1:10),
+    "officer_type_activity = ",
+    "01 = responding to disturbance call (domestic violence, person with firearm, etc.)",
+    "02 = burglary in progress/pursuing burglary suspect",
+    "03 = robbery in progress/pursuing robbery suspect",
+    "04 = attempting other arrest",
+    "05 = civil disorder (e.g. riot, mass disobedience)",
+    "06 = handling/transporting/custody of prisoner(s)",
+    "07 = investigating suspicious persons/circumstances",
+    "08 = ambush - no warning",
+    "09 = mentally deranged assailant",
+    "10 = traffic pursuits and stops",
+    "11 = all other",
+    "officer_assignment_type = ",
+    "F = two-officer vehicle",
+    "G = one-officer vehicle (alone)",
+    "H = one-officer vehicle (assisted)",
+    "I = detective or special assignment (alone)",
+    "J = detective or special assignment (assisted)",
+    "K = other (alone)",
+    "L = other (assisted)")
 
 
 

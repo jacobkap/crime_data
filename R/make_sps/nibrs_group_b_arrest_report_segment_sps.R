@@ -40,7 +40,7 @@ col_labels <- c("segment_level",
                 "race_of_arrestee",
                 "ethnicity_of_arrestee",
                 "resident_status_of_arrestee",
-                "disposition_of_arrestee_under_18")
+                "disposition_of_arrestee_under18")
 
 
 
@@ -48,5 +48,4 @@ setwd(here::here("setup_files"))
 make_sps_setup(file_name = "nibrs_group_b_arrest_report_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
-               value_labels = c(nibrs_arrestee_value_labels[1:177],
-                                state_value_labels))
+               value_labels = c(nibrs_arrestee_value_labels[1:180]))

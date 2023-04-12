@@ -18,7 +18,7 @@ incident_values = c("data_source = ",
                     "A = Asian or Pacific Islander",
                     "M = Multi-racial Group",
                     "U = Unknown",
-                    "P = Unknown")
+                    "P = Native Hawaiian/Other Pacific Islander")
 
 offense_code_values = c("ucr_offense_code_replace = ",
                           "200 = Arson",
@@ -84,6 +84,10 @@ offense_code_values = c("ucr_offense_code_replace = ",
                           "120 = Robbery",
                           "280 = Stolen Property Offenses - Receiving, Selling, etc.",
                           "520 = Weapon Law Violations",
+                        # Unknown
+                           "720 = Unknown",
+                           "61A = Unknown",
+                           "101 = Unknown",
                           #
                           # Location value labels
                           "location_code_offense_1 = ",

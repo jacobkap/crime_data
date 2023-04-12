@@ -1,6 +1,6 @@
 nibrs_property_segment
 
-This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2021-03-15 21:24:36. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2023-04-11 17:28:11. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -43,15 +43,15 @@ V10      "number_of_stolen_motor_vehicles"
 V11      "num_of_recovered_motor_vehicles"
 V12      "suspected_drug_type_1"
 V13      "estimated_quantity_1"
-V14      "est_quantity_fractional_1000th_1"
+V14      "est_quantity_fractional_1000th1"
 V15      "type_of_measurement_1"
 V16      "suspected_drug_type_2"
 V17      "estimated_quantity_2"
-V18      "est_quantity_fractional_1000th_2"
+V18      "est_quantity_fractional_1000th2"
 V19      "type_of_measurement_2"
 V20      "suspected_drug_type_3"
 V21      "estimated_quantity_3"
-V22      "est_quantity_fractional_1000th_3"
+V22      "est_quantity_fractional_1000th3"
 V23      "type_of_measurement_3"
 .
 
@@ -135,7 +135,6 @@ V12
 'G'              "opium"
 'H'              "other narcotics: codeine, demerol, dihydromorphinone or dilaudid, hydrocodone or percodan, methadone, etc."
 'I'              "LSD"
-'P'              "PCP"
 'K'              "other hallucinogrens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc."
 'L'              "amphetamines/methamphetamines"
 'M'              "other stimulants: adipex, fastine and ionamin (derivatives of phentermine), benzedrine, didrex, methylphenidate or ritalin, phenmetrazine or preludin, tenuate, etc."
@@ -167,7 +166,6 @@ V16
 'G'              "opium"
 'H'              "other narcotics: codeine, demerol, dihydromorphinone or dilaudid, hydrocodone or percodan, methadone, etc."
 'I'              "LSD"
-'P'              "PCP"
 'K'              "other hallucinogrens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc."
 'L'              "amphetamines/methamphetamines"
 'M'              "other stimulants: adipex, fastine and ionamin (derivatives of phentermine), benzedrine, didrex, methylphenidate or ritalin, phenmetrazine or preludin, tenuate, etc."
@@ -199,7 +197,6 @@ V20
 'G'              "opium"
 'H'              "other narcotics: codeine, demerol, dihydromorphinone or dilaudid, hydrocodone or percodan, methadone, etc."
 'I'              "LSD"
-'P'              "PCP"
 'K'              "other hallucinogrens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc."
 'L'              "amphetamines/methamphetamines"
 'M'              "other stimulants: adipex, fastine and ionamin (derivatives of phentermine), benzedrine, didrex, methylphenidate or ritalin, phenmetrazine or preludin, tenuate, etc."

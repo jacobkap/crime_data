@@ -1,6 +1,6 @@
 nibrs_offense_segment
 
-This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2021-03-15 19:51:22. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.0) on 2022-10-05 19:00:31. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -120,7 +120,7 @@ V23
 '11'       "anti-white"
 '12'       "anti-black"
 '13'       "anti-american indian or alaskan native"
-'14'       "anti-asian/pacific islander"
+'14'       "anti-asian"
 '15'       "anti-multi-racial group"
 '21'       "anti-jewish"
 '22'       "anti-catholic"
@@ -131,10 +131,10 @@ V23
 '27'       "anti-atheism/agnosticism"
 '31'       "anti-arab"
 '32'       "anti-hispanic"
-'33'       "anti-other ethnicity/national origin"
-'41'       "anti-male homosexual (gay)"
-'42'       "anti-female homosexual (lesbian)"
-'43'       "anti-homosexual (both gay and lesbian)"
+'33'       "anti-other race/ethnicity/national origin"
+'41'       "anti-gay (male)"
+'42'       "anti-lesbian (female)"
+'43'       "anti-lesbian, gay, bisexual, or transgender (mixed group)"
 '44'       "anti-heterosexual"
 '45'       "anti-bisexual"
 '88'       "no bias motivation"
@@ -221,6 +221,7 @@ V6
 '26C'      "impersonation"
 '26D'      "welfare fraud"
 '26E'      "wire fraud"
+'26F'      "identity theft"
 '39A'      "betting/wagering"
 '39B'      "operating/promoting/assisting gambling"
 '39C'      "gambling equipment violations"
