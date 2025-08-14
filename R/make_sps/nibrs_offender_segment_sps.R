@@ -1,5 +1,5 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
-source(here::here('R/make_sps/nibrs_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
+source('R/make_sps/nibrs_sps_utils.R')
 # Page 70-71
 
 
@@ -30,8 +30,8 @@ nibrs_offender_value_labels <- c(state_value_labels,
                                  "00 = unknown",
                                  gsub("replace", "offender", age_sex_race_ethnicity))
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name     = "nibrs_offender_segment",
+
+make_sps_setup(file_name     = "setup_files/nibrs_offender_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels  = nibrs_offender_value_labels)

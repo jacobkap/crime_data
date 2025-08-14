@@ -1,6 +1,6 @@
 ucr_hate_crimes_batch_header
 
-This setup file was created using the R package asciiSetupReader(version 2.1.0) on 2019-07-14 20:34:49. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.2) on 2024-10-18 10:04:08.659233. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list

@@ -1,5 +1,5 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
-source(here::here('R/make_sps/nibrs_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
+source('R/make_sps/nibrs_sps_utils.R')
 # Page 20-32
 
 county <- c("106-114",
@@ -116,8 +116,7 @@ nibrs_batch_header_1_value_labels <-
     country_region,
     agency_activity_indicators)
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name = "nibrs_batch_header_1",
+make_sps_setup(file_name = "setup_files/nibrs_batch_header_1",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels  = nibrs_batch_header_1_value_labels)

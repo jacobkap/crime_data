@@ -1,5 +1,5 @@
 make_agg_assault <- function(data) {
-  crime_type <- c("actual", "clr_18", "tot_clr", "unfound")
+  crime_type <- c("actual", "cleared_18", "total_cleared", "unfounded")
 
   for (type in crime_type) {
 
@@ -27,29 +27,21 @@ make_agg_assault <- function(data) {
   return(data)
 }
 make_index_crimes <- function(data) {
-  crime_type <- c("actual", "clr_18", "tot_clr", "unfound")
-  #index_crimes <- c("index_violent", "index_property", "index_total")
+  crime_type <- c("actual", "cleared_18", "total_cleared", "unfounded")
 
   for (type in crime_type) {
     data[, paste0(type, "_index_violent")] <-
       data[, paste0(type, "_murder")] +
+      data[, paste0(type, "_manslaughter")] +
       data[, paste0(type, "_rape_total")] +
       data[, paste0(type, "_assault_aggravated")] +
       data[, paste0(type, "_robbery_total")]
 
-    if (data$year[1] >= 1979) {
-
-    data[, paste0(type, "_index_property")] <-
-      data[, paste0(type, "_theft_total")] +
-      data[, paste0(type, "_burg_total")] +
-      data[, paste0(type, "_mtr_veh_theft_total")] +
-      data[, paste0(type, "_arson_grand_total")]
-    } else {
       data[, paste0(type, "_index_property")] <-
         data[, paste0(type, "_theft_total")] +
-        data[, paste0(type, "_burg_total")] +
-        data[, paste0(type, "_mtr_veh_theft_total")]
-    }
+        data[, paste0(type, "_burglary_total")] +
+        data[, paste0(type, "_motor_vehicle_theft_total")]
+
 
     data[, paste0(type, "_index_total")] <-
       data[, paste0(type, "_index_violent")] +
@@ -57,55 +49,6 @@ make_index_crimes <- function(data) {
   }
   return(data)
 }
-
-
-
-fix_outliers <- function(data) {
-
-  data$population[data$population > 200000000] <- NA
-  # Incorrect ORI
-  if (data$year[1] == 1972) {
-    data$ori[data$state %in% "virginia" &
-               data$population_1 %in% "446963"] <- "VA02901"
-  }
-
-
-  # Impossibly high number of unfounded crimes in New Orleans in 2018
-  # Incorrect ORI
-  if (data$year[1] == 2018) {
-    data[data$ori %in% "LANPD00", grep("unfound", names(data))] <- NA
-  }
-
-  # Incorrect ORI
-  data <- data[!data$ori %in% "OKDI001",]
-
-  # Impossible numbers of officers killed.
-  if (data$year[1] == 1974) {
-    data$nov_officers_killed_by_accident[data$ori %in% "MA01301"] <- NA
-  }
-  if (data$year[1] == 1978) {
-    data$mar_officers_killed_by_accident[data$ori %in% "PAPPD00"] <- NA
-    data$apr_officers_killed_by_accident[data$ori %in% "NY06240"] <- NA
-    data$jun_officers_killed_by_accident[data$ori %in% "NY06240"] <- NA
-    data$may_officers_killed_by_accident[data$ori %in% "NY04040"] <- NA
-
-    data$apr_officers_killed_by_felony[data$ori %in% "NY06240"] <- NA
-    data$jun_officers_killed_by_felony[data$ori %in% "NY06240"] <- NA
-    data$may_officers_killed_by_felony[data$ori %in% "NY04040"] <- NA
-  }
-  if (data$year[1] == 1996) {
-    data$sep_officers_killed_by_felony[data$ori %in% "LA03102"] <- NA
-  }
-  if (data$year[1] == 1997) {
-    data$mar_officers_killed_by_felony[data$ori %in% "MO0950E"] <- NA
-  }
-  if (data$year[1] %in% 2014:2016) {
-    data[data$ori %in% "LANPD00", grep("unfound_", names(data))] <- NA
-  }
-  return(data)
-}
-
-
 
 crime_remove_special_characters <- function(col) {
   col <- iconv(col, "UTF-8", "ASCII", sub = "")

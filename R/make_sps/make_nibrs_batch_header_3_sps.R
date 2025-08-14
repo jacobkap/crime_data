@@ -1,4 +1,4 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
 
 
 month <- c("58-58",
@@ -32,7 +32,7 @@ col_labels <- c("segment_level",
                 "ucr_county_code_5",
                 "msa_code_5",
                 "last_population_5",
-                "01_06_12_indicator",
+                "x01_06_12_indicator",
                 "number_of_months_reported",
                 "master_file_year",
                 paste0(rep(tolower(month.name), each = 3), c("_zero_report_submitted",
@@ -42,8 +42,7 @@ col_labels <- c("segment_level",
                 "blank")
 
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name = "nibrs_batch_header_3",
+make_sps_setup(file_name = "setup_files/nibrs_batch_header_3",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels = c(state_value_labels,

@@ -1,5 +1,5 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
-source(here::here('R/make_sps/nibrs_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
+source('R/make_sps/nibrs_sps_utils.R')
 # Page 62-69
 
 
@@ -121,10 +121,10 @@ nibrs_victim_value_labels <-
         "01 = argument",
         "02 = assault on law enforcement officer(s)",
         "03 = drug dealing",
-        "04 = gangland",
+        "04 = gangland (organized crime involvement)",
         "05 = juvenile gang",
         "06 = domestic violence (historically called lovers triangle/quarrel)",
-        "07 = mercy killing",
+        "07 = mercy killing (not applicable to aggravated assault)",
         "08 = other felony involved",
         "09 = other circumstances",
         "10 = unknown circumstances",
@@ -146,28 +146,29 @@ nibrs_victim_value_labels <-
                                    "I = possible internal injury",
                                    "T = loss of teeth",
                                    "L = severe laceration",
-                                   "U = unconsciousness"),
+                                   "U = unconsciousness",
+                                   "G = gunshot wound"),
                                  1:5),
     repeated_label_replace_fixer(c("relation_of_vict_to_offenderreplace = ",
                                    # Within family
                                    "SE = victim was spouse",
                                    "CS = victim was common-law spouse",
                                    "PA = victim was parent",
-                                   "SB = victim was sibling",
+                                   "SB = victim was sibling (brother or sister)",
                                    "CH = victim was child",
                                    "GP = victim was grandparent",
                                    "GC = victim was grandchild",
                                    "IL = victim was in-law",
                                    "SP = victim was step-parent",
                                    "SC = victim was step-child",
-                                   "SS = victim was step-sibling",
+                                   "SS = victim was step-sibling (stepbrother or stepsister)",
                                    "OF = victim was other family member",
                                    "VO = victim was offender",
                                    # Outside family but known to victim
                                    "AQ = victim was acquaintance",
                                    "FR = victim was friend",
                                    "NE = victim was neighbor",
-                                   "BE = victim was babysittee (the baby)",
+                                   "BE = victim was babysittee (child in the care of a babysitter)",
                                    "BG = victim was boyfriend/girlfriend",
                                    "CF = victim was child of boyfriend/girlfriend",
                                    "HR = victim was in a homosexual relationship with the offender",
@@ -179,34 +180,36 @@ nibrs_victim_value_labels <-
                                    "RU = relationship unknown",
                                    "ST = victim was stranger",
                                    # FROM NIBRS codebook
-                                   "XR = victim was ex-relationship (ex-boyfriend/ex-girlfriend)"),
+                                   "XR = victim was ex-relationship (ex-boyfriend/ex-girlfriend)",
+                                   "FC = victim was foster child",
+                                   "CO = victim was cohabitant (non-intimate relationship)",
+                                   "FP = victim was foster parent"),
                                  1:10),
     "officer_type_activity = ",
     "01 = responding to disturbance call (domestic violence, person with firearm, etc.)",
     "02 = burglary in progress/pursuing burglary suspect",
     "03 = robbery in progress/pursuing robbery suspect",
     "04 = attempting other arrest",
-    "05 = civil disorder (e.g. riot, mass disobedience)",
+    "05 = civil disorder (e.g., riot, mass disobedience)",
     "06 = handling/transporting/custody of prisoner(s)",
     "07 = investigating suspicious persons/circumstances",
     "08 = ambush - no warning",
-    "09 = mentally deranged assailant",
+    "09 = handling persons with mentall illness",
     "10 = traffic pursuits and stops",
     "11 = all other",
     "officer_assignment_type = ",
-    "F = two-officer vehicle",
-    "G = one-officer vehicle (alone)",
-    "H = one-officer vehicle (assisted)",
-    "I = detective or special assignment (alone)",
-    "J = detective or special assignment (assisted)",
-    "K = other (alone)",
-    "L = other (assisted)")
+    "F = two-officer vehicle - uniformed law enforcement officers",
+    "G = one-officer vehicle (alone) - uniformed law enforcement officers",
+    "H = one-officer vehicle (assisted) - uniformed law enforcement officers",
+    "I = detective or special assignment (alone) - non-uniformed officers",
+    "J = detective or special assignment (assisted) - non-uniformed officers",
+    "K = other (alone) - law enforcement officers serving in other capacities (foot patrol, off duty, etc.)",
+    "L = other (assisted) - law enforcement officers serving in other capacities (foot patrol, off duty, etc.)")
 
 
 
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name     = "nibrs_victim_segment",
+make_sps_setup(file_name     = "setup_files/nibrs_victim_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels  = nibrs_victim_value_labels)

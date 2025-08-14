@@ -18,11 +18,6 @@ make_number_of_months_reporting <- function(data) {
     adder[data[, col] %in% c("normal update", "reported, no data")] <- 1
     data$number_of_months_reported <- data$number_of_months_reported + adder
 
-    # The record description says all years before 1971 have no
-    # month indicator info but that's not true in the data.
-    # if (data$year[1] < 1971) {
-    #   data$number_of_months_reported <- NA
-    # }
 
   }
 
@@ -80,7 +75,7 @@ reorder_leoka_columns <- function(data, crosswalk, type = "month") {
                   starts_with("assaults_with_injury"),
                   starts_with("assaults_no_injury"),
                   starts_with("ambush"),
-                  starts_with("oth_arr"),
+                  starts_with("other_arr"),
                   starts_with("burglary"),
                   starts_with("derang"),
                   starts_with("disturban"),
@@ -107,50 +102,4 @@ reorder_leoka_columns <- function(data, crosswalk, type = "month") {
   return(data)
 }
 
-
-fix_outliers <- function(data) {
-  if (data$year[1] == 1977) {
-    data$oct_officers_killed_by_accident[data$ori %in% "KS08703"] <- NA
-  }
-  if (data$year[1] == 1978) {
-    data$jul_officers_killed_by_accident[data$ori %in% "PAPPD00"] <- NA
-  }
-  if (data$year[1] == 1979) {
-    data$aug_officers_killed_by_felony[data$ori %in% "NJ01210"] <- NA
-  }
-  if (data$year[1] == 1979) {
-    data$dec_officers_killed_by_felony[data$ori %in% "WASPD00"] <- NA
-  }
-  if (data$year[1] == 1980) {
-    data$aug_officers_killed_by_felony[data$ori %in% "LA02600"] <- NA
-  }
-  if (data$year[1] == 1982) {
-    data$nov_officers_killed_by_felony[data$ori %in% "CA03801"] <- NA
-  }
-  if (data$year[1] == 1990) {
-    data$mar_officers_killed_by_accident[data$ori %in% "ME010SP"] <- NA
-  }
-  if (data$year[1] == 1996) {
-    data$sep_officers_killed_by_felony[data$ori %in% "LA03102"] <- NA
-  }
-  if (data$year[1] == 1997) {
-    data$mar_officers_killed_by_felony[data$ori %in% "MO0950E"] <- NA
-  }
-  if (data$year[1] == 2011) {
-    data[data$ori %in% "OR02405", grep("employee", names(data))] <- NA
-  }
-  if (data$year[1] == 2014) {
-    data <- data[!data$ori %in% "NDDI019", ]
-  }
-  if (data$year[1] == 2017) {
-    data$jan_officers_killed_by_accident[data$ori %in% "IN08200"] <- NA
-
-  }
-
-  # This agency has wrong state and is only there for first 5 years.
-  data <- data[!data$ori %in% "OKDI001", ]
-
-
-  return(data)
-}
 

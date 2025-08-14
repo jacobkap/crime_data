@@ -1,19 +1,46 @@
-source(here::here('R/utils/saving_utils.R'))
-library(memisc)
-library(tidyverse)
-library(asciiSetupReader)
-library(haven)
-library(lubridate)
-library(data.table)
-library(dplyr)
-library(here)
+library(groundhog)
+packages <- c(
+  "memisc",
+  "tidyverse",
+  "asciiSetupReader",
+  "haven",
+  "lubridate",
+  "data.table",
+  "dplyr",
+  "haven",
+  "zip",
+  "reticulate",
+  "stringi"
+)
+groundhog.library(packages, "2025-01-15")
+
+
+save_files <- function(data,
+                       year,
+                       file_name,
+                       save_name,
+                       rds_only = TRUE) {
+
+  data <-
+    data %>%
+    dplyr::mutate_if(is.Date, as.character)
+  data <- ungroup(data)
+  data <- as.data.frame(data)
+
+
+  saveRDS(data, file =  paste0(save_name, year, ".rds"))
+  if (!rds_only) {
+    write_dta(data, path = paste0(save_name, year, ".dta"))
+  }
+}
+
 
 fix_number_of_months_reported <- function(data, type = "offenses") {
   column <- "card_actual_pt"
-  if (type == "arson") {
+  if (type %in%  "arson") {
     column <- "column_2_type"
   }
-  if (type == "offenses" & unique(data$year) >= 2018) {
+  if (all(type %in% "offenses" & unique(data$year) >= 2018)) {
     column <- "card_actual_type"
   }
   months_reported_fix <- c("no months reported", tolower(month.name))
@@ -100,9 +127,9 @@ reorder_columns <- function(data, crosswalk, type = "month") {
                   dplyr::starts_with("card"),
                   dplyr::starts_with("officers"),
                   dplyr::starts_with("actual"),
-                  dplyr::starts_with("tot_clr"),
-                  dplyr::starts_with("clr_18"),
-                  dplyr::starts_with("unfound"),
+                  dplyr::starts_with("total_cleared"),
+                  dplyr::starts_with("cleared_18"),
+                  dplyr::starts_with("unfounded"),
                   dplyr::everything())
 
   if (type == "month") {
@@ -128,8 +155,10 @@ get_data_yearly <- function(folder,
                             years,
                             name_to_save,
                             crosswalk) {
-  setwd(here::here(paste0("E:/ucr_data_storage/clean_data/", folder)))
+  setwd(paste0("D:/ucr_data_storage/clean_data/", folder))
   files <- list.files(pattern = "monthly_.*.rds$")
+  files <- files[!grepl("[0-9]{4}_[0-9]{4}", files)]
+  print(files)
 
   data <- data.frame()
   for (file in files) {
@@ -137,7 +166,9 @@ get_data_yearly <- function(folder,
     if ("followup_indication" %in% names(temp)) {
       temp$followup_indication <- as.character(temp$followup_indication)
     }
-    month_cols <- grep("^reported|unfound|actual|clear|uninhab|est_dam|tot_clr|clr_18|officer",
+
+
+    month_cols <- grep("^reported|unfounded|actual|clear|uninhab|est_dam|total_cleared|cleared_18|officer",
                        names(temp), value = TRUE)
 
     temp1 <- data.frame()
@@ -149,24 +180,21 @@ get_data_yearly <- function(folder,
     rm(temp1, temp2)
 
 
-    temp$date_of_last_update <- NULL
-    temp$last_update         <- NULL
 
     data <- dplyr::bind_rows(data, temp)
-    message(temp$year[1]); rm(temp); gc(); Sys.sleep(3)
+    message(unique(temp$year)); rm(temp); gc();
   }
 
   data <- reorder_columns(data, crosswalk, type = "year")
   data$month_missing       <- NULL
-  data$date_of_last_update <- NULL
-  data$last_update         <- NULL
 
-    # Save the data in various formats
-    setwd(here::here(paste0("E:/ucr_data_storage/clean_data/", folder)))
-    save_files(data               = data,
-               year               = years,
-               file_name          = name_to_save,
-               save_name          = name_to_save)
+  # Save the data in various formats
+  setwd(paste0("D:/ucr_data_storage/clean_data/", folder))
+  save_files(data               = data,
+             year               = years,
+             file_name          = name_to_save,
+             save_name          = name_to_save)
+
 
 
   return(data)
@@ -231,6 +259,13 @@ fix_years <- function(year) {
   year[year == 21] <- paste0("2021")
   year[year == 22] <- paste0("2022")
   year[year == 23] <- paste0("2023")
+  year[year == 24] <- paste0("2024")
+  year[year == 25] <- paste0("2025")
+  year[year == 26] <- paste0("2026")
+  year[year == 27] <- paste0("2027")
+  year[year == 28] <- paste0("2028")
+  year[year == 29] <- paste0("2029")
+  year[year == 30] <- paste0("2030")
   year <- as.numeric(year)
   year[year < 100] <- paste0("19", year[year < 100])
   year <- as.numeric(year)
@@ -290,6 +325,10 @@ month_wide_to_long <- function(data) {
     temp$date   <- lubridate::ymd(paste(temp$year, temp$month, "1"))
     temp$date   <- as.character(temp$date)
 
+    if ("card_unfounded_pt" %in% names(temp)) {
+      temp$card_unfounded_pt <- as.character(temp$card_unfounded_pt)
+      final$card_unfounded_pt <- as.character(final$card_unfounded_pt)
+    }
     final       <- dplyr::bind_rows(final, temp)
   }
   return(final)
@@ -313,7 +352,7 @@ global_checks <- function(data) {
   print(table(data$state_abb))
   message("All ORIs in right state")
   print(table(substr(data$ori[!data$state %in% c("nebraska", "guam")], 1, 2) ==
-                     data$state_abb[!data$state %in% c("nebraska", "guam")]))
+                data$state_abb[!data$state %in% c("nebraska", "guam")]))
   message("Country divisions")
   print(table(data$country_division))
   message("Population groups")
@@ -338,57 +377,5 @@ global_checks <- function(data) {
   message("\n")
   print(table(data$year, data$number_of_months_missing))
 
-}
-
-
-read_clean_csv_for_tests <- function(file_name) {
-  data <- readr::read_csv(paste0(file_name, ".csv"), skip = 8)
-
-  data <- data[1:29, 1:13]
-  names(data) <- tolower(names(data))
-  names(data) <- gsub("\\/", "", names(data))
-  names(data) <- gsub(" |-", "_", names(data))
-
-  data$legacy_rape_1[is.na(data$legacy_rape_1)] <-
-    data$revised_rape_2[is.na(data$legacy_rape_1)]
-
-  data <-
-    data %>%
-    dplyr::select(-revised_rape_2,
-                  -violent_crime_total,
-                  -property_crime_total) %>%
-    dplyr::rename(murder = murder_and_nonnegligent_manslaughter,
-                  number_of_months_reported = months,
-                  rape  = legacy_rape_1,
-                  theft = larceny_theft) %>%
-    dplyr::mutate_if(is.character, readr::parse_number) %>%
-    dplyr::filter(!is.na(year))
-
-  return(data)
-}
-
-
-save_raw_data_from_zip <- function(from_folder, to_folder) {
-  setwd(from_folder)
-  zip_files <- list.files()
-  zip_files <- zip_files[grepl(".zip", zip_files, ignore.case = TRUE)]
-  for (zip_file in zip_files) {
-    unzip(zip_file)
-  }
-  files <- list.files()
-  files <- files[grepl(".txt$|.dat$", files, ignore.case = TRUE)]
-  for (file in files) {
-    file.copy(file, to_folder)
-  }
-}
-
-
-check_raw_files_nchar <- function(folder) {
-  files <- list.files()
-  for (file in files) {
-    z <- readr::read_lines(file)
-    message(file)
-    print(table(nchar(z)))
-  }
 }
 

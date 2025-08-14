@@ -1,5 +1,5 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
-source(here::here('R/make_sps/nibrs_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
+source('R/make_sps/nibrs_sps_utils.R')
 # Page 72-77
 
 col_positions <- c("1-2",
@@ -61,8 +61,8 @@ nibrs_arrestee_value_labels <-
                                    "13 = rifle",
                                    "14 = shotgun",
                                    "15 = other firearm",
-                                   "16 = lethal cutting instrument (e.g. switchblade knife, etc.)",
-                                   "17 = club/blackjack/brass knuckles",
+                                   "16 = lethal cutting instrument (knife, ice pick, screwdriver, ax, etc.)",
+                                   "17 = blunt object (e.g., club/blackjack/brass knuckles)",
                                    "automatic_weapon_indicator_replace = ",
                                    "A = automatic weapon"), 1:2),
     gsub("replace", "arrestee", age_sex_race_ethnicity),
@@ -79,10 +79,11 @@ nibrs_arrestee_value_labels <-
     "m = multiple",
     "C = count arrestee",
     "c = count arrestee",
-    "N = not applicable")
+    "N = not applicable",
+    "n = not applicable")
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name     = "nibrs_arrestee_segment",
+
+make_sps_setup(file_name     = "setup_files/nibrs_arrestee_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels  = nibrs_arrestee_value_labels)

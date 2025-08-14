@@ -47,7 +47,7 @@ agency_type2005 <- c("^1$"  = 'Sheriffs office',              # Sheriff
 # or 2005
 read_merge_crosswalks <- function(pop = FALSE) {
   old_dir <- getwd()
-  setwd(here::here("clean_data/crosswalk"))
+  setwd("E:/Dropbox/R_project/crime_data/clean_data/crosswalk")
   crosswalk1996      <- asciiSetupReader::read_ascii_setup("crosswalk1996.txt",
                                                            "crosswalk1996.sps",
                                                            use_value_labels = FALSE)

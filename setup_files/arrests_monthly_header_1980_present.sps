@@ -1,6 +1,6 @@
-arrests_monthly_header_1980_present
+setup_files/arrests_monthly_header_1980_present
 
-This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2023-04-04 10:27:58. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.2) on 2025-08-09 23:05:35.506019. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -38,17 +38,17 @@ V7       "year"
 V8       "monthly_header_designation"
 V9       "breakdown_indicator"
 V10      "age_race_ethnicity_indicator"
-V11      "juv_and_adult_indicators"
+V11      "juvenile_and_adult_indicators"
 V12      "zero_data_indicator"
 V13      "date_of_last_update"
 V14      "date_of_1st_previous_update"
 V15      "date_of_2nd_previous_update"
-V16      "juv_disposition_indicator"
-V17      "juv_handled_within_department"
-V18      "juv_referred_to_juv_court"
-V19      "juv_referred_to_welfare"
-V20      "juv_referred_to_police"
-V21      "juv_referred_to_crim_court"
+V16      "juvenile_disposition_indicator"
+V17      "juvenile_handled_in_department"
+V18      "juvenile_referred_juvenile_court"
+V19      "juvenile_referred_to_welfare"
+V20      "juvenile_referred_to_police"
+V21      "juvenile_referred_to_crim_court"
 .
 
 value labels

@@ -1,6 +1,6 @@
-nibrs_batch_header_3
+setup_files/nibrs_batch_header_3
 
-This setup file was created using the R package asciiSetupReader(version 2.5.0) on 2022-10-07 21:58:00. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.2) on 2025-08-10 08:37:10.535501. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -68,7 +68,7 @@ V5       "current_population_5"
 V6       "ucr_county_code_5"
 V7       "msa_code_5"
 V8       "last_population_5"
-V9       "01_06_12_indicator"
+V9       "x01_06_12_indicator"
 V10      "number_of_months_reported"
 V11      "master_file_year"
 V12      "january_zero_report_submitted"

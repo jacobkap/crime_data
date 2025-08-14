@@ -1,4 +1,4 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
 
 
 starting_nums <- c("1",
@@ -79,18 +79,18 @@ monthly_nums <- c("88-92",
 monthly_names <- c("replace_reported_commercial_sex_acts",
                    "replace_reported_involuntary_serv",
                    "replace_reported_total",
-                   "replace_unfound_commercial_sex_acts",
-                   "replace_unfound_involuntary_serv",
-                   "replace_unfound_total",
+                   "replace_unfounded_commercial_sex_acts",
+                   "replace_unfounded_involuntary_serv",
+                   "replace_unfounded_total",
                    "replace_actual_commercial_sex_acts",
                    "replace_actual_involuntary_serv",
                    "replace_actual_total",
-                   "replace_tot_clr_commercial_sex_acts",
-                   "replace_tot_clr_involuntary_serv",
-                   "replace_tot_clr_total",
-                   "replace_clr_18_commercial_sex_acts",
-                   "replace_clr_18_involuntary_serv",
-                   "replace_clr_18_total")
+                   "replace_total_cleared_commercial_sex_acts",
+                   "replace_total_cleared_involuntary_serv",
+                   "replace_total_cleared_total",
+                   "replace_cleared_18_commercial_sex_acts",
+                   "replace_cleared_18_involuntary_serv",
+                   "replace_cleared_18_total")
 
 report_code_value_labels <- c("replace_report_code = ",
                               "X = no human trafficking information reported",
@@ -142,8 +142,8 @@ col_positions <- c(starting_nums,
 col_labels <- c(starting_names,
                 all_month_names)
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name     = "human_trafficking",
+
+make_sps_setup(file_name = "setup_files/human_trafficking",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,
                                  value_labels  = human_trafficking_value_labels)

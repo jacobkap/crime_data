@@ -1,5 +1,5 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
-source(here::here('R/make_sps/nibrs_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
+source('R/make_sps/nibrs_sps_utils.R')
 # Page 54-61
 
 
@@ -80,12 +80,12 @@ nibrs_property_segment_value_labels <-
     "4 = destroyed/damaged/vandalized",
     "5 = recovered",
     "6 = seized",
-    "7 = stolen/etc. (includes bribed, defrauded, embezzled, extorted, ransomed, robbed, etc.)",
+    "7 = stolen (includes bribed, defrauded, embezzled, extorted, ransomed, robbed, etc.)",
     "8 = unknown",
     "property_description = ",
     "01 = aircraft",
     "02 = alcohol",
-    "03 = automobiles",
+    "03 = automobile",
     "04 = bicycles",
     "05 = buses",
     "06 = clothes/furs",
@@ -99,7 +99,7 @@ nibrs_property_segment_value_labels <-
     "14 = gambling equipment",
     "15 = heavy construction/industrial equipment",
     "16 = household goods",
-    "17 = jewelry/precious metals",
+    "17 = jewelry/precious metals/gems",
     "18 = livestock",
     "19 = merchandise",
     "20 = money",
@@ -108,12 +108,12 @@ nibrs_property_segment_value_labels <-
     "23 = office-type equipment",
     "24 = other motor vehicles",
     "25 = purses/handbags/wallets",
-    "26 = radios/TVs/VCRs",
+    "26 = radios/tv/vcr/dvd players",
     "27 = recordings - audio/visual",
     "28 = recreational vehicles",
     "29 = structures - single occupancy dwellings",
     "30 = structures - other dwellings",
-    "31 = structures - commercial/business",
+    "31 = structures - other commercial/business",
     "32 = structures - industrial manufacturing",
     "33 = structures - public/community",
     "34 = structures - storage",
@@ -153,10 +153,11 @@ nibrs_property_segment_value_labels <-
     "79 = watercraft equipment/parts/accessories",
     "80 = weapons - other",
     "value_of_property = ",
-    "000000001 = unknown")
+    "000000001 = unknown",
+    "######### = unknown")
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name = "nibrs_property_segment",
+
+make_sps_setup(file_name = "setup_files/nibrs_property_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels  = nibrs_property_segment_value_labels)

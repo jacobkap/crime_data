@@ -1,4 +1,4 @@
-source(here::here('R/make_sps/nibrs_arrestee_segment_sps.R'))
+source('R/make_sps/nibrs_arrestee_segment_sps.R')
 # Page 72-77
 
 col_positions <- c(col_positions,
@@ -27,8 +27,8 @@ nibrs_window_arrestee_segment_value_labels <-
     repeated_label_replace_fixer(ucr_offense_code_value_labels_replace,
                                  1:10))
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name     = "nibrs_window_arrestee_segment",
+
+make_sps_setup(file_name     = "setup_files/nibrs_window_arrestee_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels  = nibrs_window_arrestee_segment_value_labels)

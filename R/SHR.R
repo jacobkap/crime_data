@@ -1,42 +1,13 @@
-source(here::here('R/crosswalk.R'))
-source(here::here('R/utils/global_utils.R'))
-source(here::here('R/utils/SHR_utils.R'))
-source(here::here('R/make_sps/make_shr_sps.R'))
 
-crosswalk     <- read_merge_crosswalks()
-cross_names   <- names(crosswalk)
-cross_names   <- cross_names[!cross_names %in% c("ori", "ori9")]
-shr_1976_2021 <- agg_shr(crosswalk, cross_names)
-
-global_checks(shr_1976_2021)
-table(shr_1976_2021$month_of_offense)
-table(shr_1976_2021$victim_1_race[shr_1976_2021$year %in% 2019])
-table(shr_1976_2021$victim_1_race[shr_1976_2021$year %in% 2021])
-table(shr_1976_2021$offender_1_sex[shr_1976_2021$year %in% 2019])
-table(shr_1976_2021$offender_1_sex[shr_1976_2021$year %in% 2021])
-table(shr_1976_2021$offender_1_circumstance[shr_1976_2021$year %in% 2019])
-table(shr_1976_2021$offender_1_circumstance[shr_1976_2021$year %in% 2021])
-table(shr_1976_2021$month_of_offense[shr_1976_2021$year %in% 2019])
-table(shr_1976_2021$month_of_offense[shr_1976_2021$year %in% 2021])
-
-shr_checks(shr_1976_2021, age = FALSE)
-shr_checks(shr_1976_2021, age = TRUE)
-setwd(here::here("E:/ucr_data_storage/clean_data/SHR"))
-save_files(data = shr_1976_2021,
-           year = "1976_2021",
-           file_name = "shr_",
-           save_name = "shr_")
-save_as_zip("shr_1976_2021_")
 
 agg_shr <- function(crosswalk, cross_names) {
-  source(here::here('R/utils/global_utils.R'))
+  source('R/utils/global_utils.R')
   shr <- data.table()
 
-  setwd(here::here("D:/ucr_data_storage/raw_data/shr_from_fbi"))
-  files <- list.files()
+  files <- list.files(path = "E:/ucr_data_storage/raw_data/shr_from_fbi", full.names = TRUE)
   print(files)
   for (file in files) {
-    data <- read_ascii_setup(file, here::here("setup_files/ucr_shr.sps"))
+    data <- read_ascii_setup(file, "setup_files/ucr_shr.sps")
     data <- data[!is.na(data$ori), ]
     data$state_name <- NULL
     data$state_abb  <- make_state_abb(data$state)
@@ -48,7 +19,7 @@ agg_shr <- function(crosswalk, cross_names) {
 
   # Until FBI sends me the ASCII files for all years, will use NACJD data
   # for years 1976-1985!
-  setwd(here::here("D:/ucr_data_storage/raw_data/nacjd_data/SHR"))
+  setwd("E:/ucr_data_storage/raw_data/nacjd_data/SHR")
   for (year in 1976:1984) {
     data <- read_ascii_setup(data       = paste0("ucr_shr_", year, ".txt"),
                              setup_file = paste0("ucr_shr_", year, ".sps"))
@@ -229,3 +200,174 @@ shr_checks <- function(data, age = FALSE) {
   }
 }
 
+source('R/crosswalk.R')
+source('R/utils/global_utils.R')
+source('R/utils/SHR_utils.R')
+source('R/make_sps/make_shr_sps.R')
+
+crosswalk     <- read_merge_crosswalks()
+cross_names   <- names(crosswalk)
+cross_names   <- cross_names[!cross_names %in% c("ori", "ori9")]
+shr <- agg_shr(crosswalk, cross_names)
+
+names(shr)
+table(shr$year)
+sort(unique(shr$state))
+sort(unique(shr$state_abb))
+sort(unique(shr$month_of_offense))
+sort(unique(shr$situation))
+sort(unique(shr$type_of_action))
+
+sort(unique(shr$victim_1_age))
+sort(unique(shr$victim_2_age))
+sort(unique(shr$victim_3_age))
+sort(unique(shr$victim_4_age))
+sort(unique(shr$victim_5_age))
+sort(unique(shr$victim_6_age))
+sort(unique(shr$victim_7_age))
+sort(unique(shr$victim_8_age))
+sort(unique(shr$victim_9_age))
+sort(unique(shr$victim_10_age))
+sort(unique(shr$victim_11_age))
+
+sort(unique(shr$victim_1_sex))
+sort(unique(shr$victim_2_sex))
+sort(unique(shr$victim_3_sex))
+sort(unique(shr$victim_4_sex))
+sort(unique(shr$victim_5_sex))
+sort(unique(shr$victim_6_sex))
+sort(unique(shr$victim_7_sex))
+sort(unique(shr$victim_8_sex))
+sort(unique(shr$victim_9_sex))
+sort(unique(shr$victim_10_sex))
+sort(unique(shr$victim_11_sex))
+
+sort(unique(shr$victim_1_race))
+sort(unique(shr$victim_2_race))
+sort(unique(shr$victim_3_race))
+sort(unique(shr$victim_4_race))
+sort(unique(shr$victim_5_race))
+sort(unique(shr$victim_6_race))
+sort(unique(shr$victim_7_race))
+sort(unique(shr$victim_8_race))
+sort(unique(shr$victim_9_race))
+sort(unique(shr$victim_10_race))
+sort(unique(shr$victim_11_race))
+
+sort(unique(shr$victim_1_ethnic_origin))
+sort(unique(shr$victim_2_ethnic_origin))
+sort(unique(shr$victim_3_ethnic_origin))
+sort(unique(shr$victim_4_ethnic_origin))
+sort(unique(shr$victim_5_ethnic_origin))
+sort(unique(shr$victim_6_ethnic_origin))
+sort(unique(shr$victim_7_ethnic_origin))
+sort(unique(shr$victim_8_ethnic_origin))
+sort(unique(shr$victim_9_ethnic_origin))
+sort(unique(shr$victim_10_ethnic_origin))
+sort(unique(shr$victim_11_ethnic_origin))
+
+sort(unique(shr$victim_1_relation_to_offender_1))
+sort(unique(shr$victim_1_relation_to_offender_2))
+sort(unique(shr$victim_1_relation_to_offender_3))
+sort(unique(shr$victim_1_relation_to_offender_4))
+sort(unique(shr$victim_1_relation_to_offender_5))
+sort(unique(shr$victim_1_relation_to_offender_6))
+sort(unique(shr$victim_1_relation_to_offender_7))
+sort(unique(shr$victim_1_relation_to_offender_8))
+sort(unique(shr$victim_1_relation_to_offender_9))
+sort(unique(shr$victim_1_relation_to_offender_10))
+sort(unique(shr$victim_1_relation_to_offender_11))
+
+
+
+sort(unique(shr$offender_1_age))
+sort(unique(shr$offender_2_age))
+sort(unique(shr$offender_3_age))
+sort(unique(shr$offender_4_age))
+sort(unique(shr$offender_5_age))
+sort(unique(shr$offender_6_age))
+sort(unique(shr$offender_7_age))
+sort(unique(shr$offender_8_age))
+sort(unique(shr$offender_9_age))
+sort(unique(shr$offender_10_age))
+sort(unique(shr$offender_11_age))
+
+sort(unique(shr$offender_1_sex))
+sort(unique(shr$offender_2_sex))
+sort(unique(shr$offender_3_sex))
+sort(unique(shr$offender_4_sex))
+sort(unique(shr$offender_5_sex))
+sort(unique(shr$offender_6_sex))
+sort(unique(shr$offender_7_sex))
+sort(unique(shr$offender_8_sex))
+sort(unique(shr$offender_9_sex))
+sort(unique(shr$offender_10_sex))
+sort(unique(shr$offender_11_sex))
+
+sort(unique(shr$offender_1_race))
+sort(unique(shr$offender_2_race))
+sort(unique(shr$offender_3_race))
+sort(unique(shr$offender_4_race))
+sort(unique(shr$offender_5_race))
+sort(unique(shr$offender_6_race))
+sort(unique(shr$offender_7_race))
+sort(unique(shr$offender_8_race))
+sort(unique(shr$offender_9_race))
+sort(unique(shr$offender_10_race))
+sort(unique(shr$offender_11_race))
+
+sort(unique(shr$offender_1_ethnic_origin))
+sort(unique(shr$offender_2_ethnic_origin))
+sort(unique(shr$offender_3_ethnic_origin))
+sort(unique(shr$offender_4_ethnic_origin))
+sort(unique(shr$offender_5_ethnic_origin))
+sort(unique(shr$offender_6_ethnic_origin))
+sort(unique(shr$offender_7_ethnic_origin))
+sort(unique(shr$offender_8_ethnic_origin))
+sort(unique(shr$offender_9_ethnic_origin))
+sort(unique(shr$offender_10_ethnic_origin))
+sort(unique(shr$offender_11_ethnic_origin))
+
+sort(unique(shr$offender_1_circumstance))
+sort(unique(shr$offender_2_circumstance))
+sort(unique(shr$offender_3_circumstance))
+sort(unique(shr$offender_4_circumstance))
+sort(unique(shr$offender_5_circumstance))
+sort(unique(shr$offender_6_circumstance))
+sort(unique(shr$offender_7_circumstance))
+sort(unique(shr$offender_8_circumstance))
+sort(unique(shr$offender_9_circumstance))
+sort(unique(shr$offender_10_circumstance))
+sort(unique(shr$offender_11_circumstance))
+
+
+sort(unique(shr$offender_1_subcircumstance))
+sort(unique(shr$offender_2_subcircumstance))
+sort(unique(shr$offender_3_subcircumstance))
+sort(unique(shr$offender_4_subcircumstance))
+sort(unique(shr$offender_5_subcircumstance))
+sort(unique(shr$offender_6_subcircumstance))
+sort(unique(shr$offender_7_subcircumstance))
+sort(unique(shr$offender_8_subcircumstance))
+sort(unique(shr$offender_9_subcircumstance))
+sort(unique(shr$offender_10_subcircumstance))
+sort(unique(shr$offender_11_subcircumstance))
+
+
+sort(unique(shr$offender_1_weapon))
+sort(unique(shr$offender_2_weapon))
+sort(unique(shr$offender_3_weapon))
+sort(unique(shr$offender_4_weapon))
+sort(unique(shr$offender_5_weapon))
+sort(unique(shr$offender_6_weapon))
+sort(unique(shr$offender_7_weapon))
+sort(unique(shr$offender_8_weapon))
+sort(unique(shr$offender_9_weapon))
+sort(unique(shr$offender_10_weapon))
+sort(unique(shr$offender_11_weapon))
+
+setwd("E:/ucr_data_storage/clean_data/SHR")
+save_files(data = shr,
+           year = "1976_2024",
+           file_name = "shr_",
+           save_name = "shr_")

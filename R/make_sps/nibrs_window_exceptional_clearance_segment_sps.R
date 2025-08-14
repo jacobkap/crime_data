@@ -1,4 +1,4 @@
-source(here::here('R/make_sps/nibrs_administrative_segment_sps.R'))
+source('R/make_sps/nibrs_administrative_segment_sps.R')
 # Page 42-45
 
 col_positions <- c(col_positions,
@@ -28,8 +28,8 @@ nibrs_window_exceptional_clearance_segment_value_labels <-
     "N = no"
     )
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name     = "nibrs_window_exceptional_clearance_segment",
+
+make_sps_setup(file_name     = "setup_files/nibrs_window_exceptional_clearance_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels  = nibrs_window_exceptional_clearance_segment_value_labels)

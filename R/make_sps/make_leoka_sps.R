@@ -1,4 +1,4 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
 
 starting_numbers <- c("1",
                       "2-3",
@@ -91,17 +91,17 @@ middle_names <- c("report_indicator",
                   "blank",
                   "no_male_female_breakdown")
 
-patrol_type_names <- c("one_man_veh_day_shift",
-                       "one_man_veh_evening_shift",
-                       "one_man_veh_night_shift",
-                       "one_man_veh_other_shift",
-                       "one_man_veh_total_shift",
+patrol_type_names <- c("one_man_vehicle_day_shift",
+                       "one_man_vehicle_evening_shift",
+                       "one_man_vehicle_night_shift",
+                       "one_man_vehicle_other_shift",
+                       "one_man_vehicle_total_shift",
 
-                       "two_man_veh_day_shift",
-                       "two_man_veh_evening_shift",
-                       "two_man_veh_night_shift",
-                       "two_man_veh_other_shift",
-                       "two_man_veh_total_shift",
+                       "two_man_vehicle_day_shift",
+                       "two_man_vehicle_evening_shift",
+                       "two_man_vehicle_night_shift",
+                       "two_man_vehicle_other_shift",
+                       "two_man_vehicle_total_shift",
 
                        "one_man_foot_day_shift",
                        "one_man_foot_evening_shift",
@@ -121,7 +121,7 @@ patrol_type_names <- c("one_man_veh_day_shift",
                        "other_patrols_other_shift",
                        "other_patrols_total_shift",
 
-                       "total_patrols_veh_day_shift",
+                       "total_patrols_vehicle_day_shift",
                        "total_patrols_evening_shift",
                        "total_patrols_night_shift",
                        "total_patrols_other_shift",
@@ -133,19 +133,19 @@ monthly_assault_names <- c("assault_injury_indicator",
                            "officers_killed_by_accident",
                            "assaults_with_injury_gun",
                            "assaults_with_injury_knife",
-                           "assaults_with_injury_oth_weap",
+                           "assaults_with_injury_other_weapon",
                            "assaults_with_injury_unarmed",
                            "assaults_with_injury_total",
                            "assaults_no_injury_gun",
                            "assaults_no_injury_knife",
-                           "assaults_no_injury_oth_weap",
+                           "assaults_no_injury_other_weapon",
                            "assaults_no_injury_unarmed",
                            "assaults_no_injury_total")
 
 assault_by_call_type_names <- c("total_assaults",
                                 "assault_gun",
                                 "assault_knife",
-                                "assault_oth_weap",
+                                "assault_other_weapon",
                                 "assault_unarmed",
                                 "two_man_veh",
                                 "one_man_alone",
@@ -158,13 +158,13 @@ assault_by_call_type_names <- c("total_assaults",
 disturbance_names    <- paste0("disturbance_", assault_by_call_type_names)
 burglary_names       <- paste0("burglary_", assault_by_call_type_names)
 robbery_names        <- paste0("robbery_", assault_by_call_type_names)
-oth_arrest_names     <- paste0("oth_arrest_", assault_by_call_type_names)
+other_arrest_names     <- paste0("other_arrest_", assault_by_call_type_names)
 riot_names           <- paste0("riot_", assault_by_call_type_names)
 riot_names           <- gsub("riot_detective_assist",
                              'riot_detective_assiste',
                              riot_names)
 prisoners_names      <- paste0("prisoner_", assault_by_call_type_names)
-suspicious_names     <- paste0("susp_pers_", assault_by_call_type_names)
+suspicious_names     <- paste0("suspicious_person_", assault_by_call_type_names)
 ambush_names         <- paste0("ambush_", assault_by_call_type_names)
 deranged_names       <- paste0("deranged_", assault_by_call_type_names)
 traffic_names        <- paste0("traffic_", assault_by_call_type_names)
@@ -191,7 +191,7 @@ monthly_names <- c(monthly_assault_names,
                    disturbance_names,
                    burglary_names,
                    robbery_names,
-                   oth_arrest_names,
+                   other_arrest_names,
                    riot_names,
                    prisoners_names,
                    suspicious_names,
@@ -328,8 +328,7 @@ col_positions <- col_positions[-length(col_positions)]
 col_labels    <- col_labels[-length(col_labels)]
 
 
-setwd(here::here("setup_files"))
-asciiSetupReader::make_sps_setup(file_name     = "ucr_leoka",
+asciiSetupReader::make_sps_setup(file_name     = "setup_files/ucr_leoka",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,
                                  value_labels  = leoka_value_labels)

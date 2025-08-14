@@ -1,5 +1,5 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
-source(here::here('R/make_sps/nibrs_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
+source('R/make_sps/nibrs_sps_utils.R')
 # Page 42-45
 
 col_positions <- c("1-2",
@@ -62,16 +62,19 @@ nibrs_administrative_segment_value_labels <-
     "21 = on or between 21:00 and 21:59",
     "22 = on or between 22:00 and 22:59",
     "23 = on or between 23:00 and 23:59",
+    "1- = unknown",
+    "2- = unknown",
     "cleared_exceptionally = ",
     "A = death of offender",
-    "B = prosecution declined (for other than lack of probable cause)",
+    "B = prosecution declined (by the prosecutor for other than lack of probable cause)",
     "C = extradition denied",
-    "D = victim refused to cooperate",
-    "E = juvenile/no custody",
-    "N = not applicable")
+    "D = victim refused to cooperate (in the prosecution)",
+    "E = juvenile/no custody (the handling of a juvenile without taking him/her into custody, but rather by oral or written notice given to the parents or legal guardian in a case involving a minor offense, such as a petty larceny)",
+    "N = not applicable (not cleared exceptionally)")
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name     = "nibrs_administrative_segment",
+
+make_sps_setup(file_name     = "setup_files/nibrs_administrative_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels  = nibrs_administrative_segment_value_labels)
+

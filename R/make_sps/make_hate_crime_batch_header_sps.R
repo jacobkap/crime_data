@@ -1,4 +1,4 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
 
 batch_header_values <- c(state_group_division_value_labels,
                          "country_region = ",
@@ -167,8 +167,8 @@ col_labels <- c("hate_crime_record_type",
                 "fips_county_code_4",
                 "fips_county_code_5")
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name     = "ucr_hate_crimes_batch_header.sps",
+
+make_sps_setup(file_name     = "setup_files/ucr_hate_crimes_batch_header.sps",
                col_positions = col_positions,
                col_labels    = col_labels,
                value_labels  = batch_header_values_labels)

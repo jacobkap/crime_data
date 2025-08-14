@@ -1,4 +1,4 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
 
 starting_nums <- c("1",
                    "2-3",
@@ -77,7 +77,7 @@ location_types <- c("single_occupancy",
                     "industrial",
                     "other_commercial",
                     "community_public",
-                    "all_oth_structures",
+                    "all_other_structures",
                     "total_structures",
                     "motor_vehicles",
                     "other_mobile",
@@ -90,17 +90,17 @@ abandoned_types <- c("single_occupancy",
                      "industrial",
                      "other_commercial",
                      "community_public",
-                     "all_oth_structures",
+                     "all_other_structures",
                      "total_structures",
                      "grand_total")
 single_month_names <- c(monthly_indicator_names,
                         paste0("reported_", location_types),
                         paste0("unfounded_", location_types),
                         paste0("actual_", location_types),
-                        paste0("cleared_", location_types),
+                        paste0("total_cleared_", location_types),
                         paste0("cleared_18_", location_types),
                         paste0("uninhabited_", abandoned_types),
-                        paste0("est_damage_", location_types))
+                        paste0("estimated_damage_", location_types))
 
 
 monthly_names <- paste0("replace_", single_month_names)
@@ -166,8 +166,8 @@ col_positions <- c(starting_nums,
 col_labels <- c(starting_names,
                 all_month_names)
 
-setwd(here::here("setup_files"))
-asciiSetupReader::make_sps_setup(file_name     = "ucr_arson",
+
+asciiSetupReader::make_sps_setup(file_name     = "setup_files/ucr_arson",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,
                                  value_labels  = state_group_division_value_labels)

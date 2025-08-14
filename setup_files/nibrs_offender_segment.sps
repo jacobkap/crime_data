@@ -1,6 +1,6 @@
-nibrs_offender_segment
+setup_files/nibrs_offender_segment
 
-This setup file was created using the R package asciiSetupReader(version 2.5.0) on 2022-10-06 02:55:04. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.2) on 2025-08-10 00:54:24.951961. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -93,8 +93,8 @@ V7
 '00'      "unknown"
 '99'      "over 98 years old"
 'NN'      "under 24 hours (neonate)"
-'NB'      "1-6 days old"
-'BB'      "7-364 days old"
+'NB'      "1 to 6 days old (newborn)"
+'BB'      "between 6 days and 1 year old (baby)"
 V8        
 'M'       "male"
 'm'       "male"
@@ -110,8 +110,8 @@ V9
 'P'       "native hawaiian or other pacific islander"
 'M'       "unknown"
 V10       
-'H'       "hispanic origin"
-'N'       "not of hispanic origin"
+'H'       "hispanic or latino"
+'N'       "not hispanic or latino"
 'U'       "unknown"
 .
 

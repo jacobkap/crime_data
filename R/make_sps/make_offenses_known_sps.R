@@ -1,4 +1,4 @@
-source(here::here('R/make_sps/make_sps_utils.R'))
+source('R/make_sps/make_sps_utils.R')
 
 starting_nums <- c("1",
                    "2-3",
@@ -97,7 +97,7 @@ card_types_nums <- c("306-307",
                      "321",
                      "322")
 
-monthly_card_unfound_nums <- c("323-327",
+monthly_card_unfounded_nums <- c("323-327",
                                "328-332",
                                "333-337",
                                "338-342",
@@ -125,20 +125,20 @@ monthly_card_unfound_nums <- c("323-327",
                                "448-452",
                                "453-457",
                                "458-462")
-monthly_card_nums <- c(monthly_card_unfound_nums,
-                       setup_num_adder(monthly_card_unfound_nums, 140, 3))
+monthly_card_nums <- c(monthly_card_unfounded_nums,
+                       setup_num_adder(monthly_card_unfounded_nums, 140, 3))
 
 card_types_names <- c("month_included_in",
                       "date_of_last_update",
-                      "card_unfound_type",
+                      "card_unfounded_type",
                       "card_actual_type",
-                      "card_tot_clr_type",
-                      "card_clr_18_type",
+                      "card_total_cleared_type",
+                      "card_cleared_18_type",
                       "card_officers_type",
-                      "card_unfound_pt",
+                      "card_unfounded_pt",
                       "card_actual_pt",
-                      "card_tot_clr_pt",
-                      "card_clr_18_pt")
+                      "card_total_cleared_pt",
+                      "card_cleared_18_pt")
 
 card_names <- c("murder",
                 "manslaughter",
@@ -156,25 +156,25 @@ card_names <- c("murder",
                 "assault_other_weapon",
                 "assault_unarmed",
                 "assault_simple",
-                "burg_total",
-                "burg_force_entry",
-                "burg_nonforce_entry",
-                "burg_attempted",
+                "burglary_total",
+                "burglary_force_entry",
+                "burglary_nonforce_entry",
+                "burglary_attempted",
                 "theft_total",
-                "mtr_veh_theft_total",
-                "mtr_veh_theft_car",
-                "mtr_veh_theft_truck",
-                "mtr_veh_theft_other",
+                "motor_vehicle_theft_total",
+                "motor_vehicle_theft_car",
+                "motor_vehicle_theft_truck",
+                "motor_vehicle_theft_other",
                 "all_crimes",
                 "theft_under50_dollar",
                 "blank")
-unfound_card_names       <- paste0("unfound_", card_names)
+unfounded_card_names       <- paste0("unfounded_", card_names)
 actual_card_names        <- paste0("actual_", card_names)
-total_cleared_card_names <- paste0("tot_clr_", card_names)
-cleared_18_card_names    <- paste0("clr_18_", card_names)
+total_cleared_card_names <- paste0("total_cleared_", card_names)
+cleared_18_card_names    <- paste0("cleared_18_", card_names)
 
 monthly_card_names <- c(card_types_names,
-                        unfound_card_names,
+                        unfounded_card_names,
                         actual_card_names,
                         total_cleared_card_names,
                         cleared_18_card_names)
@@ -205,7 +205,7 @@ col_positions <- c(starting_nums,
 col_labels <- c(starting_names,
                 all_month_names)
 
-card_value_labels <- c( "replace_card_unfound_type = ",
+card_value_labels <- c( "replace_card_unfounded_type = ",
                         "0 = not updated",
                         "2 = adjustment",
                         "4 = not available",
@@ -215,12 +215,12 @@ card_value_labels <- c( "replace_card_unfound_type = ",
                         "2 = adjustment",
                         "4 = not available",
                         "5 = normal return",
-                        "replace_card_tot_clr_type = ",
+                        "replace_card_total_cleared_type = ",
                         "0 = not updated",
                         "2 = adjustment",
                         "4 = not available",
                         "5 = normal return",
-                        "replace_card_clr_18_type = ",
+                        "replace_card_cleared_18_type = ",
                         "0 = not updated",
                         "2 = adjustment",
                         "4 = not available",
@@ -230,7 +230,7 @@ card_value_labels <- c( "replace_card_unfound_type = ",
                         "2 = adjustment",
                         "4 = not available",
                         "5 = normal return",
-                        "replace_card_unfound_pt = ",
+                        "replace_card_unfounded_pt = ",
                         " = no return received",
                         "0 = missing",
                         "P = breakdown offenses",
@@ -240,12 +240,12 @@ card_value_labels <- c( "replace_card_unfound_type = ",
                         "0 = missing",
                         "P = breakdown offenses",
                         "T = totals only",
-                        "replace_card_tot_clr_pt = ",
+                        "replace_card_total_cleared_pt = ",
                         " = no return received",
                         "0 = missing",
                         "P = breakdown offenses",
                         "T = totals only",
-                        "replace_card_clr_18_pt = ",
+                        "replace_card_cleared_18_pt = ",
                         " = no return received",
                         "0 = missing",
                         "P = breakdown offenses",
@@ -297,8 +297,8 @@ return_a_value_labels <- c(state_group_division_value_labels,
                            "Y = special mailing address",
                            "N = not a special mailing address")
 
-setwd(here::here("setup_files"))
-asciiSetupReader::make_sps_setup(file_name     = "ucr_return_a",
+
+asciiSetupReader::make_sps_setup(file_name     = "setup_files/ucr_return_a",
                                  col_positions = col_positions,
                                  col_labels    = col_labels,
                                  value_labels  = return_a_value_labels)

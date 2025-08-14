@@ -1,4 +1,4 @@
-source(here::here('R/make_sps/nibrs_arrestee_segment_sps.R'))
+source('R/make_sps/nibrs_arrestee_segment_sps.R')
 # Page 78-82
 
 col_positions <- c("1-2",
@@ -44,8 +44,8 @@ col_labels <- c("segment_level",
 
 
 
-setwd(here::here("setup_files"))
-make_sps_setup(file_name = "nibrs_group_b_arrest_report_segment",
+
+make_sps_setup(file_name = "setup_files/nibrs_group_b_arrest_report_segment",
                col_positions = col_positions,
                col_labels    = col_labels,
-               value_labels = c(nibrs_arrestee_value_labels[1:180]))
+               value_labels = nibrs_arrestee_value_labels[1:202])

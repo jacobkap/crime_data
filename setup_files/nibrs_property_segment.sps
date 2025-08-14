@@ -1,6 +1,6 @@
-nibrs_property_segment
+setup_files/nibrs_property_segment
 
-This setup file was created using the R package asciiSetupReader(version 2.4.0) on 2023-04-11 17:28:11. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.2) on 2025-08-10 02:22:08.98236. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -135,7 +135,7 @@ V12
 'G'              "opium"
 'H'              "other narcotics: codeine, demerol, dihydromorphinone or dilaudid, hydrocodone or percodan, methadone, etc."
 'I'              "LSD"
-'K'              "other hallucinogrens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc."
+'K'              "other hallucinogens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc."
 'L'              "amphetamines/methamphetamines"
 'M'              "other stimulants: adipex, fastine and ionamin (derivatives of phentermine), benzedrine, didrex, methylphenidate or ritalin, phenmetrazine or preludin, tenuate, etc."
 'N'              "barbiturates"
@@ -166,7 +166,7 @@ V16
 'G'              "opium"
 'H'              "other narcotics: codeine, demerol, dihydromorphinone or dilaudid, hydrocodone or percodan, methadone, etc."
 'I'              "LSD"
-'K'              "other hallucinogrens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc."
+'K'              "other hallucinogens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc."
 'L'              "amphetamines/methamphetamines"
 'M'              "other stimulants: adipex, fastine and ionamin (derivatives of phentermine), benzedrine, didrex, methylphenidate or ritalin, phenmetrazine or preludin, tenuate, etc."
 'N'              "barbiturates"
@@ -197,7 +197,7 @@ V20
 'G'              "opium"
 'H'              "other narcotics: codeine, demerol, dihydromorphinone or dilaudid, hydrocodone or percodan, methadone, etc."
 'I'              "LSD"
-'K'              "other hallucinogrens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc."
+'K'              "other hallucinogens: BMDA (white acid), DMT, MDA, MDMA, mescaline or peyote, psilocybin, STP, etc."
 'L'              "amphetamines/methamphetamines"
 'M'              "other stimulants: adipex, fastine and ionamin (derivatives of phentermine), benzedrine, didrex, methylphenidate or ritalin, phenmetrazine or preludin, tenuate, etc."
 'N'              "barbiturates"
@@ -213,12 +213,12 @@ V6
 '4'              "destroyed/damaged/vandalized"
 '5'              "recovered"
 '6'              "seized"
-'7'              "stolen/etc. (includes bribed, defrauded, embezzled, extorted, ransomed, robbed, etc.)"
+'7'              "stolen (includes bribed, defrauded, embezzled, extorted, ransomed, robbed, etc.)"
 '8'              "unknown"
 V7               
 '01'             "aircraft"
 '02'             "alcohol"
-'03'             "automobiles"
+'03'             "automobile"
 '04'             "bicycles"
 '05'             "buses"
 '06'             "clothes/furs"
@@ -232,7 +232,7 @@ V7
 '14'             "gambling equipment"
 '15'             "heavy construction/industrial equipment"
 '16'             "household goods"
-'17'             "jewelry/precious metals"
+'17'             "jewelry/precious metals/gems"
 '18'             "livestock"
 '19'             "merchandise"
 '20'             "money"
@@ -241,12 +241,12 @@ V7
 '23'             "office-type equipment"
 '24'             "other motor vehicles"
 '25'             "purses/handbags/wallets"
-'26'             "radios/TVs/VCRs"
+'26'             "radios/tv/vcr/dvd players"
 '27'             "recordings - audio/visual"
 '28'             "recreational vehicles"
 '29'             "structures - single occupancy dwellings"
 '30'             "structures - other dwellings"
-'31'             "structures - commercial/business"
+'31'             "structures - other commercial/business"
 '32'             "structures - industrial manufacturing"
 '33'             "structures - public/community"
 '34'             "structures - storage"
@@ -286,6 +286,7 @@ V7
 '80'             "weapons - other"
 V8               
 '000000001'      "unknown"
+'#########'      "unknown"
 .
 
 

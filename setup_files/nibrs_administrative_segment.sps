@@ -1,6 +1,6 @@
-nibrs_administrative_segment
+setup_files/nibrs_administrative_segment
 
-This setup file was created using the R package asciiSetupReader(version 2.5.0) on 2022-10-06 05:18:10. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
+This setup file was created using the R package asciiSetupReader(version 2.5.2) on 2025-08-10 02:21:49.208467. For any feedback or problems (or if the file looks odd), please make a report on https://github.com/jacobkap/asciiSetupReader/issues. For more information on this package see here: https://jacobkap.github.io/asciiSetupReader/.
 
 
 data list
@@ -123,13 +123,15 @@ V7
 '21'      "on or between 21:00 and 21:59"
 '22'      "on or between 22:00 and 22:59"
 '23'      "on or between 23:00 and 23:59"
+'1-'      "unknown"
+'2-'      "unknown"
 V13       
 'A'       "death of offender"
-'B'       "prosecution declined (for other than lack of probable cause)"
+'B'       "prosecution declined (by the prosecutor for other than lack of probable cause)"
 'C'       "extradition denied"
-'D'       "victim refused to cooperate"
-'E'       "juvenile/no custody"
-'N'       "not applicable"
+'D'       "victim refused to cooperate (in the prosecution)"
+'E'       "juvenile/no custody (the handling of a juvenile without taking him/her into custody, but rather by oral or written notice given to the parents or legal guardian in a case involving a minor offense, such as a petty larceny)"
+'N'       "not applicable (not cleared exceptionally)"
 .
 
 
